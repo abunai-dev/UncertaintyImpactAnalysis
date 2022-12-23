@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Uncertainty Impact Analysis
+Bundle-SymbolicName: edu.kit.kastel.dsis.uncertainty.impactanalysis
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: edu.kit.kastel.dsis.uncertainty.impactanalysis.Activator
+Require-Bundle: org.eclipse.core.runtime
+Bundle-RequiredExecutionEnvironment: JavaSE-17
+Automatic-Module-Name: edu.kit.kastel.dsis.uncertainty.impactanalysis
+Bundle-ActivationPolicy: lazy
