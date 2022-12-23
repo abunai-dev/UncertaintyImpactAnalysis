@@ -3,8 +3,10 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Uncertainty Impact Analysis
 Bundle-SymbolicName: edu.kit.kastel.dsis.uncertainty.impactanalysis
 Bundle-Version: 1.0.0.qualifier
+Export-Package: edu.kit.kastel.dsis.uncertainty.impactanalysis
 Bundle-Activator: edu.kit.kastel.dsis.uncertainty.impactanalysis.Activator
-Require-Bundle: org.eclipse.core.runtime
+Require-Bundle: org.eclipse.core.runtime,
+ org.palladiosimulator.dataflow.confidentiality.analysis;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: edu.kit.kastel.dsis.uncertainty.impactanalysis
 Bundle-ActivationPolicy: lazy
