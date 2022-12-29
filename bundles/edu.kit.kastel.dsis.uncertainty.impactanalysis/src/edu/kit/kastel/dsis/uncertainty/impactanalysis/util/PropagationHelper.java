@@ -11,6 +11,7 @@ import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.A
 import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.pcm.AbstractPCMActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.pcm.SEFFActionSequenceElement;
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
+import org.palladiosimulator.pcm.core.entity.Entity;
 import org.palladiosimulator.pcm.seff.StartAction;
 
 public class PropagationHelper {
@@ -34,6 +35,11 @@ public class PropagationHelper {
 		return Optional.empty();
 	}
 
+	public Optional<? extends Entity> findActionOfType(String id, ActionType behaviorActionType) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	public List<SEFFActionSequenceElement<StartAction>> findStartActionsOfAssemblyContext(AssemblyContext component) {
 		List<SEFFActionSequenceElement<StartAction>> matches = new ArrayList<>();
 
@@ -49,6 +55,12 @@ public class PropagationHelper {
 		}
 
 		return matches;
+	}
+
+	public List<? extends AbstractPCMActionSequenceElement<?>> findProccessesWithActionOfType(Entity action,
+			ActionType actionType) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	public Optional<ActionSequence> findActionSequenceWithElement(AbstractActionSequenceElement<?> element) {

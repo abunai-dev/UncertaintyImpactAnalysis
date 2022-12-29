@@ -17,6 +17,7 @@ public class ComponentUncertaintySource extends UncertaintySource<AssemblyContex
 
 	public ComponentUncertaintySource(AssemblyContext component, PropagationHelper propagationHelper) {
 		Objects.requireNonNull(component);
+		Objects.requireNonNull(propagationHelper);
 		this.component = component;
 		this.propagationHelper = propagationHelper;
 	}
@@ -36,7 +37,8 @@ public class ComponentUncertaintySource extends UncertaintySource<AssemblyContex
 	@Override
 	public String toString() {
 		// TODO: If all elements inherit from entity, this can be generalized
-		return String.format("Component Uncertainty annotated to assembly context \"%s\" (%s).", this.getArchitecturalElement().getEntityName(), this.getArchitecturalElement().getId());
+		return String.format("Component Uncertainty annotated to assembly context \"%s\" (%s).",
+				this.getArchitecturalElement().getEntityName(), this.getArchitecturalElement().getId());
 	}
 
 }

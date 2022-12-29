@@ -1,7 +1,6 @@
 package edu.kit.kastel.dsis.uncertainty.impactanalysis;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.runtime.Plugin;
@@ -9,8 +8,10 @@ import org.palladiosimulator.dataflow.confidentiality.analysis.StandalonePCMData
 import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.ActionSequence;
 
 import edu.kit.kastel.dsis.uncertainty.impactanalysis.model.impact.UncertaintyImpact;
+import edu.kit.kastel.dsis.uncertainty.impactanalysis.model.source.BehaviorUncertaintySource;
 import edu.kit.kastel.dsis.uncertainty.impactanalysis.model.source.ComponentUncertaintySource;
 import edu.kit.kastel.dsis.uncertainty.impactanalysis.model.source.UncertaintySource;
+import edu.kit.kastel.dsis.uncertainty.impactanalysis.util.ActionType;
 import edu.kit.kastel.dsis.uncertainty.impactanalysis.util.PropagationHelper;
 
 public class StandalonePCMUncertaintyImpactAnalysis extends StandalonePCMDataFlowConfidentialtyAnalysis {
@@ -56,5 +57,15 @@ public class StandalonePCMUncertaintyImpactAnalysis extends StandalonePCMDataFlo
 			this.uncertaintySources.add(new ComponentUncertaintySource(component.get(), propagationHelper));
 		}
 
+	}
+	
+	public void addBehaviorUncertainty(String id, ActionType behaviorActionType) {
+		var action = this.propagationHelper.findActionOfType(id, behaviorActionType);
+		
+		if(action.isEmpty()) {
+			throw new IllegalArgumentException("Unable to find an action with the given type and ID.");
+		} else {
+			this.uncertaintySources.add(BehaviorUncertaintySource.of(action.get(), behaviorActionType, propagationHelper));
+		}
 	}
 }
