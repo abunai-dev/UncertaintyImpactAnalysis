@@ -36,8 +36,15 @@ public class PropagationHelper {
 	}
 
 	public Optional<? extends Entity> findAction(String id) {
-		// TODO Auto-generated method stub
-		return null;
+		for (ActionSequence sequence : actionSequences) {
+			var candidates = sequence.getElements().stream().map(AbstractPCMActionSequenceElement.class::cast)
+					.filter(it -> EcoreUtil.getID(it.getElement()).equals(id)).toList();
+
+			return candidates.stream().map(AbstractPCMActionSequenceElement::getElement)
+					.filter(Entity.class::isInstance).map(Entity.class::cast).findFirst();
+		}
+
+		return Optional.empty();
 	}
 
 	public List<SEFFActionSequenceElement<StartAction>> findStartActionsOfAssemblyContext(AssemblyContext component) {
@@ -57,9 +64,18 @@ public class PropagationHelper {
 		return matches;
 	}
 
-	public List<? extends AbstractPCMActionSequenceElement<?>> findProccessesWithActionOfType(Entity action) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<AbstractPCMActionSequenceElement<?>> findProccessesWithAction(Entity action) {
+		List<AbstractPCMActionSequenceElement<?>> matches = new ArrayList<>();
+
+		for (ActionSequence sequence : actionSequences) {
+			var candidates = sequence.getElements().stream().map(AbstractPCMActionSequenceElement.class::cast)
+					.filter(it -> it.getElement().equals(action)).map(it -> (AbstractPCMActionSequenceElement<?>) it)
+					.toList();
+
+			matches.addAll(candidates);
+		}
+
+		return matches;
 	}
 
 	public Optional<ActionSequence> findActionSequenceWithElement(AbstractActionSequenceElement<?> element) {
