@@ -8,6 +8,7 @@ import org.palladiosimulator.dataflow.confidentiality.analysis.StandalonePCMData
 import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.ActionSequence;
 
 import edu.kit.kastel.dsis.uncertainty.impactanalysis.model.impact.UncertaintyImpact;
+import edu.kit.kastel.dsis.uncertainty.impactanalysis.model.source.ActorUncertaintySource;
 import edu.kit.kastel.dsis.uncertainty.impactanalysis.model.source.BehaviorUncertaintySource;
 import edu.kit.kastel.dsis.uncertainty.impactanalysis.model.source.ComponentUncertaintySource;
 import edu.kit.kastel.dsis.uncertainty.impactanalysis.model.source.UncertaintySource;
@@ -57,14 +58,24 @@ public class StandalonePCMUncertaintyImpactAnalysis extends StandalonePCMDataFlo
 		}
 
 	}
-	
+
 	public void addBehaviorUncertainty(String id) {
 		var action = this.propagationHelper.findAction(id);
-		
-		if(action.isEmpty()) {
-			throw new IllegalArgumentException("Unable to find an action with the given type and ID.");
+
+		if (action.isEmpty()) {
+			throw new IllegalArgumentException("Unable to find an action with the given ID.");
 		} else {
 			this.uncertaintySources.add(BehaviorUncertaintySource.of(action.get(), propagationHelper));
+		}
+	}
+
+	public void addActorUncertainty(String id) {
+		var annotation = this.propagationHelper.findEnumCharacteristicAnnotation(id);
+
+		if (annotation.isEmpty()) {
+			throw new IllegalArgumentException("Unable to find the characteristic annotation with the given ID.");
+		} else {
+			this.uncertaintySources.add(new ActorUncertaintySource(annotation.get(), propagationHelper));
 		}
 	}
 }
