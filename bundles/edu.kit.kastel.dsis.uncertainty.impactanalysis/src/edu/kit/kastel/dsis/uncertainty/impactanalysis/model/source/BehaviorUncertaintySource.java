@@ -18,17 +18,17 @@ public class BehaviorUncertaintySource<T extends Entity> extends UncertaintySour
 	private final T action;
 	private final PropagationHelper propagationHelper;
 
-	public BehaviorUncertaintySource(T action,  PropagationHelper propagationHelper) {
+	public BehaviorUncertaintySource(T action, PropagationHelper propagationHelper) {
 		Objects.requireNonNull(action);
 		Objects.requireNonNull(propagationHelper);
 		this.action = action;
 		this.propagationHelper = propagationHelper;
 	}
 
-	public static BehaviorUncertaintySource<?> of(Entity action,
-			PropagationHelper propagationHelper) {
-		if(action instanceof EntryLevelSystemCall) {
-			return new BehaviorUncertaintySource<EntryLevelSystemCall>((EntryLevelSystemCall) action, propagationHelper);
+	public static BehaviorUncertaintySource<?> of(Entity action, PropagationHelper propagationHelper) {
+		if (action instanceof EntryLevelSystemCall) {
+			return new BehaviorUncertaintySource<EntryLevelSystemCall>((EntryLevelSystemCall) action,
+					propagationHelper);
 		} else if (action instanceof ExternalCallAction) {
 			return new BehaviorUncertaintySource<ExternalCallAction>((ExternalCallAction) action, propagationHelper);
 		} else if (action instanceof SetVariableAction) {
@@ -45,16 +45,13 @@ public class BehaviorUncertaintySource<T extends Entity> extends UncertaintySour
 
 	@Override
 	public List<? extends UncertaintyImpact<T>> propagate() {
-		List<AbstractPCMActionSequenceElement<?>> processes = this.propagationHelper
-				.findProccessesWithAction(action);
+		List<AbstractPCMActionSequenceElement<?>> processes = this.propagationHelper.findProccessesWithAction(action);
 		return processes.stream().map(it -> new BehaviorUncertaintyImpact<>(it, this, this.propagationHelper)).toList();
 	}
 
 	@Override
-	public String toString() {
-		return String.format("Behavior Uncertainty annotated to action \"%s\" (%s) of type %s.",
-				this.getArchitecturalElement().getEntityName(), this.getArchitecturalElement().getId(),
-				this.action.getClass().toString());
+	public String getUncertaintyType() {
+		return "Behavior";
 	}
 
 }

@@ -35,10 +35,8 @@ public class ComponentUncertaintySource extends UncertaintySource<AssemblyContex
 	}
 
 	@Override
-	public String toString() {
-		// TODO: If all elements inherit from entity, this can be generalized
-		return String.format("Component Uncertainty annotated to assembly context \"%s\" (%s).",
-				this.getArchitecturalElement().getEntityName(), this.getArchitecturalElement().getId());
+	public String getUncertaintyType() {
+		return "Component";
 	}
 
 }
