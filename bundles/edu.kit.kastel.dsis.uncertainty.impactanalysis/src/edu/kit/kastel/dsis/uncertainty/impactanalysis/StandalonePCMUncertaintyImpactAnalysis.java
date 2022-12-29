@@ -1,6 +1,7 @@
 package edu.kit.kastel.dsis.uncertainty.impactanalysis;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.runtime.Plugin;
@@ -31,23 +32,19 @@ public class StandalonePCMUncertaintyImpactAnalysis extends StandalonePCMDataFlo
 		this.propagationHelper = new PropagationHelper(this.actionSequences);
 		return initSuccessful;
 	}
-	
-	public void propagate() {
-		for (UncertaintySource<?> uncertaintySource: uncertaintySources) {
-			var element = uncertaintySource.getArchitecturalElement();
-			System.out.println(element);
-			
-			var uncertaintyImpacts = uncertaintySource.propagate();
-			System.out.println(uncertaintyImpacts);
-			
-			for (UncertaintyImpact<?> uncertaintyImpact : uncertaintyImpacts) {
-				var affectedElement = uncertaintyImpact.getAffectedElement();
-				System.out.println(affectedElement);
-				
-				var affectedDataFlow = uncertaintyImpact.getAffectedDataFlow();
-				System.out.println(affectedDataFlow);
+
+	public List<UncertaintyImpact<?>> propagate() {
+		List<UncertaintyImpact<?>> allImpacts = new ArrayList<>();
+
+		for (UncertaintySource<?> source : this.uncertaintySources) {
+			var localImpacts = source.propagate();
+
+			for (var impact : localImpacts) {
+				allImpacts.add(impact);
 			}
 		}
+
+		return allImpacts;
 	}
 
 	public void addComponentUncertainty(String id) {

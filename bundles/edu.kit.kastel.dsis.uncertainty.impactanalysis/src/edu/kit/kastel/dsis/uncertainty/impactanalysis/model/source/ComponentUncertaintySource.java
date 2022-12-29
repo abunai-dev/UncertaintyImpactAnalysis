@@ -33,4 +33,10 @@ public class ComponentUncertaintySource extends UncertaintySource<AssemblyContex
 		return startActions.stream().map(it -> new ComponentUncertaintyImpact(it, this, propagationHelper)).toList();
 	}
 
+	@Override
+	public String toString() {
+		// TODO: If all elements inherit from entity, this can be generalized
+		return String.format("Component Uncertainty annotated to assembly context \"%s\" (%s).", this.getArchitecturalElement().getEntityName(), this.getArchitecturalElement().getId());
+	}
+
 }

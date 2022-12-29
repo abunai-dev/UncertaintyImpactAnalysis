@@ -11,5 +11,7 @@ public abstract class UncertaintySource<P extends Entity> {
 	public abstract P getArchitecturalElement();
 
 	public abstract List<? extends UncertaintyImpact<? extends P>> propagate();
-
+	
+	@Override
+	public abstract String toString();
 }

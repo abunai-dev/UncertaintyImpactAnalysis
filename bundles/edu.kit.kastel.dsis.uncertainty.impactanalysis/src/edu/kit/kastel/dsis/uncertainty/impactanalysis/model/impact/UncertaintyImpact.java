@@ -1,5 +1,7 @@
 package edu.kit.kastel.dsis.uncertainty.impactanalysis.model.impact;
 
+import java.util.Optional;
+
 import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.AbstractActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.ActionSequence;
 import org.palladiosimulator.pcm.core.entity.Entity;
@@ -12,5 +14,8 @@ public abstract class UncertaintyImpact<P extends Entity> {
 	
 	public abstract AbstractActionSequenceElement<?> getAffectedElement();
 
-	public abstract ActionSequence getAffectedDataFlow();
+	public abstract Optional<ActionSequence> getAffectedDataFlow();
+	
+	@Override
+	public abstract String toString();
 }
