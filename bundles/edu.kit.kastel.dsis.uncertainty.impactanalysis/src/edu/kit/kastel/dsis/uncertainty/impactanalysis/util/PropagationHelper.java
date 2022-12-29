@@ -35,7 +35,7 @@ public class PropagationHelper {
 		return Optional.empty();
 	}
 
-	public Optional<? extends Entity> findActionOfType(String id, ActionType behaviorActionType) {
+	public Optional<? extends Entity> findAction(String id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -57,8 +57,7 @@ public class PropagationHelper {
 		return matches;
 	}
 
-	public List<? extends AbstractPCMActionSequenceElement<?>> findProccessesWithActionOfType(Entity action,
-			ActionType actionType) {
+	public List<? extends AbstractPCMActionSequenceElement<?>> findProccessesWithActionOfType(Entity action) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -11,7 +11,6 @@ import edu.kit.kastel.dsis.uncertainty.impactanalysis.model.impact.UncertaintyIm
 import edu.kit.kastel.dsis.uncertainty.impactanalysis.model.source.BehaviorUncertaintySource;
 import edu.kit.kastel.dsis.uncertainty.impactanalysis.model.source.ComponentUncertaintySource;
 import edu.kit.kastel.dsis.uncertainty.impactanalysis.model.source.UncertaintySource;
-import edu.kit.kastel.dsis.uncertainty.impactanalysis.util.ActionType;
 import edu.kit.kastel.dsis.uncertainty.impactanalysis.util.PropagationHelper;
 
 public class StandalonePCMUncertaintyImpactAnalysis extends StandalonePCMDataFlowConfidentialtyAnalysis {
@@ -59,13 +58,13 @@ public class StandalonePCMUncertaintyImpactAnalysis extends StandalonePCMDataFlo
 
 	}
 	
-	public void addBehaviorUncertainty(String id, ActionType behaviorActionType) {
-		var action = this.propagationHelper.findActionOfType(id, behaviorActionType);
+	public void addBehaviorUncertainty(String id) {
+		var action = this.propagationHelper.findAction(id);
 		
 		if(action.isEmpty()) {
 			throw new IllegalArgumentException("Unable to find an action with the given type and ID.");
 		} else {
-			this.uncertaintySources.add(BehaviorUncertaintySource.of(action.get(), behaviorActionType, propagationHelper));
+			this.uncertaintySources.add(BehaviorUncertaintySource.of(action.get(), propagationHelper));
 		}
 	}
 }
