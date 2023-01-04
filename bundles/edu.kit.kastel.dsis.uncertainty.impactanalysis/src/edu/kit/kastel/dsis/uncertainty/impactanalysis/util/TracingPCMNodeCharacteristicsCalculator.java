@@ -52,7 +52,7 @@ public class TracingPCMNodeCharacteristicsCalculator {
 		return nodeCharacteristics;
 	}
 	
-	// Dirty copy paste from PCMNnodeCharacteriticsCalculator, adapted for EnumCharacteristics
+	// Simple copy from PCMNnodeCharacteriticsCalculator, adapted for EnumCharacteristics
 	
 	 /**
      * Returns the node characteristics that are present at the given node with the assembly context provided. For User Actions the assembly context should be empty

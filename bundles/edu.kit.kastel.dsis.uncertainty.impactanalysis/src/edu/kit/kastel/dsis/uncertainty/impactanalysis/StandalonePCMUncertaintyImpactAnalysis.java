@@ -7,7 +7,6 @@ import org.eclipse.core.runtime.Plugin;
 import org.palladiosimulator.dataflow.confidentiality.analysis.StandalonePCMDataFlowConfidentialtyAnalysis;
 import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.ActionSequence;
 import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.pcm.SEFFActionSequenceElement;
-import org.palladiosimulator.pcm.repository.BasicComponent;
 import org.palladiosimulator.pcm.repository.Repository;
 import org.palladiosimulator.pcm.repository.RepositoryComponent;
 import org.palladiosimulator.pcm.seff.AbstractAction;
@@ -16,6 +15,7 @@ import edu.kit.kastel.dsis.uncertainty.impactanalysis.model.impact.UncertaintyIm
 import edu.kit.kastel.dsis.uncertainty.impactanalysis.model.source.ActorUncertaintySource;
 import edu.kit.kastel.dsis.uncertainty.impactanalysis.model.source.BehaviorUncertaintySource;
 import edu.kit.kastel.dsis.uncertainty.impactanalysis.model.source.ComponentUncertaintySource;
+import edu.kit.kastel.dsis.uncertainty.impactanalysis.model.source.InterfaceUncertaintySource;
 import edu.kit.kastel.dsis.uncertainty.impactanalysis.model.source.UncertaintySource;
 import edu.kit.kastel.dsis.uncertainty.impactanalysis.util.PropagationHelper;
 
@@ -40,7 +40,7 @@ public class StandalonePCMUncertaintyImpactAnalysis extends StandalonePCMDataFlo
 	}
 
 	private Repository getRepository() {
-		// TODO: Dirty fix for now. Retrieving some SEFF element, looking up the
+		// TODO: Simple fix for now. Retrieving some SEFF element, looking up the
 		// repository above. This works under assumptions regarding the nesting of the
 		// first found SEFF Element (must be directly in the SEFF, must be contained in
 		// a simple Component)
@@ -97,6 +97,12 @@ public class StandalonePCMUncertaintyImpactAnalysis extends StandalonePCMDataFlo
 	}
 
 	public void addInterfaceUncertainty(String id) {
-		// TODO Auto-generated method stub
+		var interfaze = this.propagationHelper.findInterface(id, this.getRepository());
+		
+		if (interfaze.isEmpty()) {
+			throw new IllegalArgumentException("Unable to find the interface with the given ID.");
+		} else {
+			this.uncertaintySources.add(new InterfaceUncertaintySource(interfaze.get(), propagationHelper));
+		}
 	}
 }
