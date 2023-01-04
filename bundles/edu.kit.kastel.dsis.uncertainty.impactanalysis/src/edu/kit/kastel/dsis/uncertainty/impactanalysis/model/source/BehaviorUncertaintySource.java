@@ -10,7 +10,6 @@ import org.palladiosimulator.pcm.seff.SetVariableAction;
 import org.palladiosimulator.pcm.usagemodel.EntryLevelSystemCall;
 
 import edu.kit.kastel.dsis.uncertainty.impactanalysis.model.impact.BehaviorUncertaintyImpact;
-import edu.kit.kastel.dsis.uncertainty.impactanalysis.model.impact.UncertaintyImpact;
 import edu.kit.kastel.dsis.uncertainty.impactanalysis.util.PropagationHelper;
 
 public class BehaviorUncertaintySource<T extends Entity> extends UncertaintySource<T> {

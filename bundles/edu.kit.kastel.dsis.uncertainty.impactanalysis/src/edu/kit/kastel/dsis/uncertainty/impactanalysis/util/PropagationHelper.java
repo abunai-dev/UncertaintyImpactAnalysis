@@ -63,12 +63,7 @@ public class PropagationHelper {
 
 					var calculator = new TracingPCMNodeCharacteristicsCalculator((Entity) architectureElement, id);
 					if (calculator.isAnnotatedWithNodeCharacteristic(node.getContext())) {
-						// TODO: Find correct object and get correct element. Optional.empty() is wrong
-						// and only a placeholder!
-						// TODO: This tracing might require to completely rewrite the
-						// CharacteristicsCalculator. If this is not the case, make a PR to the DFD
-						// repository.
-						return Optional.empty();
+						return calculator.getNodeCharacteristics(node.getContext()).stream().findFirst();
 					}
 				}
 			}
@@ -103,6 +98,27 @@ public class PropagationHelper {
 					.toList();
 
 			matches.addAll(candidates);
+		}
+
+		return matches;
+	}
+
+	public List<AbstractPCMActionSequenceElement<?>> findProcessesWithAnnotation(EnumCharacteristic annotation) {
+		List<AbstractPCMActionSequenceElement<?>> matches = new ArrayList<>();
+
+		for (ActionSequence sequence : actionSequences) {
+			for (AbstractActionSequenceElement<?> node : sequence.getElements()) {
+				var pcmNode = (AbstractPCMActionSequenceElement<?>) node;
+
+				if (pcmNode.getElement() instanceof Entity) {
+					var calculator = new TracingPCMNodeCharacteristicsCalculator((Entity) pcmNode.getElement(),
+							annotation.getId());
+
+					if (calculator.isAnnotatedWithNodeCharacteristic(pcmNode.getContext())) {
+						matches.add(pcmNode);
+					}
+				}
+			}
 		}
 
 		return matches;

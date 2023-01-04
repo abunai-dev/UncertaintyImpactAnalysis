@@ -37,6 +37,4 @@ public class BehaviorUncertaintyImpact<T extends Entity> extends UncertaintyImpa
 		return propagationHelper.findActionSequenceWithElement(affectedElement);
 	}
 
-	
-
 }
