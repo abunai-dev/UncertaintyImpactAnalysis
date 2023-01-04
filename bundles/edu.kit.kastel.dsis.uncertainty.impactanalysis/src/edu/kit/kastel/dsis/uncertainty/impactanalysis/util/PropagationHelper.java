@@ -14,22 +14,14 @@ import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.p
 import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.pcm.CallingSEFFActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.pcm.CallingUserActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.pcm.SEFFActionSequenceElement;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.pcm.PCMQueryUtils;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.pcm.SEFFWithContext;
 import org.palladiosimulator.dataflow.confidentiality.pcm.model.confidentiality.characteristics.EnumCharacteristic;
 import org.palladiosimulator.dataflow.confidentiality.pcm.model.confidentiality.repository.OperationalDataStoreComponent;
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
 import org.palladiosimulator.pcm.core.entity.Entity;
-import org.palladiosimulator.pcm.repository.BasicComponent;
 import org.palladiosimulator.pcm.repository.OperationInterface;
-import org.palladiosimulator.pcm.repository.OperationSignature;
-import org.palladiosimulator.pcm.repository.ProvidedRole;
 import org.palladiosimulator.pcm.repository.Repository;
-import org.palladiosimulator.pcm.repository.RepositoryComponent;
-import org.palladiosimulator.pcm.repository.RequiredRole;
-import org.palladiosimulator.pcm.repository.Signature;
 import org.palladiosimulator.pcm.seff.AbstractAction;
-import org.palladiosimulator.pcm.seff.ExternalCallAction;
+import org.palladiosimulator.pcm.seff.ResourceDemandingSEFF;
 import org.palladiosimulator.pcm.seff.StartAction;
 import org.palladiosimulator.pcm.usagemodel.AbstractUserAction;
 
@@ -151,10 +143,10 @@ public class PropagationHelper {
 			matches.addAll(entryLevelSystemCallsCandidates);
 
 		}
-		
+
 		return matches;
 	}
-	
+
 	public List<CallingSEFFActionSequenceElement> findExternalCallsViaInterface(OperationInterface interfaze) {
 		List<CallingSEFFActionSequenceElement> matches = new ArrayList<>();
 
@@ -172,38 +164,27 @@ public class PropagationHelper {
 		return matches;
 	}
 
-//	public List<BasicComponent> findComponentsThatImplement(OperationInterface interfaze) {
-//		Repository repository = interfaze.getRepository__Interface();
-//		List<BasicComponent> components = repository.getComponents__Repository().stream()
-//				.filter(BasicComponent.class::isInstance).map(BasicComponent.class::cast).toList();
-//		
-//		for(BasicComponent component : components) {
-//			List<Signature> signatures = component.getServiceEffectSpecifications__BasicComponent().stream().map(it -> it.getDescribedService__SEFF()).toList();
-//		}
-//		
-//		return null;
-//	}
+	public List<SEFFActionSequenceElement<StartAction>> findStartActionsOfSEFFsThatImplement(
+			OperationInterface interfaze) {
+		List<SEFFActionSequenceElement<StartAction>> matches = new ArrayList<>();
 
-	public List<StartAction> findStartActionsOfSEFFsThatImplement(OperationInterface interfaze) {
-		List<Optional<SEFFWithContext>> candidates = new ArrayList<>();
+		for (ActionSequence sequence : actionSequences) {
+			@SuppressWarnings("unchecked")
+			var startActions = sequence.getElements().stream().map(AbstractPCMActionSequenceElement.class::cast)
+					.filter(it -> it instanceof SEFFActionSequenceElement)
+					.filter(it -> (it.getElement() instanceof StartAction))
+					.map(it -> (SEFFActionSequenceElement<StartAction>) it).toList();
 
-		List<OperationSignature> signatures = interfaze.getSignatures__OperationInterface();
-		List<Deque<AssemblyContext>> allContexts = this.findAllAssemblyContexts().stream().filter(it -> !it.isEmpty())
-				.toList();
-
-		for (Deque<AssemblyContext> contexts : allContexts) {
-			RepositoryComponent component = contexts.getLast().getEncapsulatedComponent__AssemblyContext();
-
-			for (OperationSignature signature : signatures) {
-				for (RequiredRole role : component.getRequiredRoles_InterfaceRequiringEntity()) {
-					candidates.add(PCMQueryUtils.findCalledSEFF(role, signature, contexts));
+			for (SEFFActionSequenceElement<StartAction> action : startActions) {
+				if (action.getElement().eContainer() instanceof ResourceDemandingSEFF seff) {
+					if (interfaze.getSignatures__OperationInterface().contains(seff.getDescribedService__SEFF())) {
+						matches.add(action);
+					}
 				}
 			}
 		}
 
-		List<SEFFWithContext> filteredCandidates = candidates.stream().flatMap(Optional::stream).toList();
-		return filteredCandidates.stream().map(it -> it.seff().getSteps_Behaviour().get(0))
-				.filter(StartAction.class::isInstance).map(StartAction.class::cast).distinct().toList();
+		return matches;
 	}
 
 	public Optional<ActionSequence> findActionSequenceWithElement(AbstractActionSequenceElement<?> element) {
