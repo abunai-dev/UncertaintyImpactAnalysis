@@ -6,6 +6,11 @@ import java.util.List;
 import org.eclipse.core.runtime.Plugin;
 import org.palladiosimulator.dataflow.confidentiality.analysis.StandalonePCMDataFlowConfidentialtyAnalysis;
 import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.ActionSequence;
+import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.pcm.SEFFActionSequenceElement;
+import org.palladiosimulator.pcm.repository.BasicComponent;
+import org.palladiosimulator.pcm.repository.Repository;
+import org.palladiosimulator.pcm.repository.RepositoryComponent;
+import org.palladiosimulator.pcm.seff.AbstractAction;
 
 import edu.kit.kastel.dsis.uncertainty.impactanalysis.model.impact.UncertaintyImpact;
 import edu.kit.kastel.dsis.uncertainty.impactanalysis.model.source.ActorUncertaintySource;
@@ -32,6 +37,18 @@ public class StandalonePCMUncertaintyImpactAnalysis extends StandalonePCMDataFlo
 		this.actionSequences = super.findAllSequences();
 		this.propagationHelper = new PropagationHelper(this.actionSequences);
 		return initSuccessful;
+	}
+
+	private Repository getRepository() {
+		// TODO: Dirty fix for now. Retrieving some SEFF element, looking up the
+		// repository above. This works under assumptions regarding the nesting of the
+		// first found SEFF Element (must be directly in the SEFF, must be contained in
+		// a simple Component)
+		SEFFActionSequenceElement<? extends AbstractAction> someSEFFElement = (SEFFActionSequenceElement<?>) super.findAllSequences()
+				.get(0).getElements().stream().filter(SEFFActionSequenceElement.class::isInstance).findFirst().get();
+		RepositoryComponent component = (RepositoryComponent) someSEFFElement.getElement().eContainer().eContainer();
+		Repository repository = component.getRepository__RepositoryComponent();
+		return repository;
 	}
 
 	public List<UncertaintyImpact<?>> propagate() {
@@ -77,5 +94,9 @@ public class StandalonePCMUncertaintyImpactAnalysis extends StandalonePCMDataFlo
 		} else {
 			this.uncertaintySources.add(new ActorUncertaintySource(annotation.get(), propagationHelper));
 		}
+	}
+
+	public void addInterfaceUncertainty(String id) {
+		// TODO Auto-generated method stub
 	}
 }
