@@ -1,15 +1,16 @@
 package edu.kit.kastel.dsis.uncertainty.impactanalysis;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.Plugin;
+import org.eclipse.emf.common.util.URI;
+import org.palladiosimulator.dataflow.confidentiality.analysis.PCMAnalysisUtils;
 import org.palladiosimulator.dataflow.confidentiality.analysis.StandalonePCMDataFlowConfidentialtyAnalysis;
 import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.ActionSequence;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.pcm.SEFFActionSequenceElement;
 import org.palladiosimulator.pcm.repository.Repository;
-import org.palladiosimulator.pcm.repository.RepositoryComponent;
-import org.palladiosimulator.pcm.seff.AbstractAction;
+import org.palladiosimulator.pcm.system.System;
 
 import edu.kit.kastel.dsis.uncertainty.impactanalysis.model.impact.UncertaintyImpact;
 import edu.kit.kastel.dsis.uncertainty.impactanalysis.model.source.ActorUncertaintySource;
@@ -19,45 +20,52 @@ import edu.kit.kastel.dsis.uncertainty.impactanalysis.model.source.ConnectorUnce
 import edu.kit.kastel.dsis.uncertainty.impactanalysis.model.source.InterfaceUncertaintySource;
 import edu.kit.kastel.dsis.uncertainty.impactanalysis.model.source.UncertaintySource;
 import edu.kit.kastel.dsis.uncertainty.impactanalysis.util.PropagationHelper;
-import org.palladiosimulator.pcm.system.System;
 
 public class StandalonePCMUncertaintyImpactAnalysis extends StandalonePCMDataFlowConfidentialtyAnalysis {
 
-	public StandalonePCMUncertaintyImpactAnalysis(String modelProjectName,
-			Class<? extends Plugin> modelProjectActivator, String relativeUsageModelPath,
-			String relativeAllocationModelPath) {
-		super(modelProjectName, modelProjectActivator, relativeUsageModelPath, relativeAllocationModelPath);
-	}
+	private final URI repositoryModelURI;
+	private Repository repositoryModel;
+
+	private final URI systemModleURI;
+	private System systemModel;
+
+	private final String modelProjectName;
 
 	private List<ActionSequence> actionSequences = null;
 	private PropagationHelper propagationHelper = null;
 	private List<UncertaintySource<?>> uncertaintySources = new ArrayList<>();
 
+	public StandalonePCMUncertaintyImpactAnalysis(String modelProjectName,
+			Class<? extends Plugin> modelProjectActivator, String relativeUsageModelPath,
+			String relativeAllocationModelPath, String relativeRepositoryModelPath, String relativeSystemModelPath) {
+
+		super(modelProjectName, modelProjectActivator, relativeUsageModelPath, relativeAllocationModelPath);
+		this.modelProjectName = modelProjectName;
+
+		this.repositoryModelURI = createRelativePluginURI(relativeRepositoryModelPath);
+		this.systemModleURI = createRelativePluginURI(relativeSystemModelPath);
+	}
+
+	private URI createRelativePluginURI(String relativePath) {
+		String path = Paths.get(this.modelProjectName, relativePath).toString();
+		return URI.createPlatformPluginURI(path, false);
+	}
+
 	@Override
 	public boolean initalizeAnalysis() {
 		boolean initSuccessful = super.initalizeAnalysis();
+
+		try {
+			this.repositoryModel = (Repository) PCMAnalysisUtils.loadModelContent(repositoryModelURI);
+			this.systemModel = (System) PCMAnalysisUtils.loadModelContent(systemModleURI);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+			return false;
+		}
+
 		this.actionSequences = super.findAllSequences();
 		this.propagationHelper = new PropagationHelper(this.actionSequences);
 		return initSuccessful;
-	}
-
-	private Repository getRepository() {
-		// TODO: Simple fix for now. Retrieving some SEFF element, looking up the
-		// repository above. This works under assumptions regarding the nesting of the
-		// first found SEFF Element (must be directly in the SEFF, must be contained in
-		// a simple Component)
-		SEFFActionSequenceElement<? extends AbstractAction> someSEFFElement = (SEFFActionSequenceElement<?>) super.findAllSequences()
-				.get(0).getElements().stream().filter(SEFFActionSequenceElement.class::isInstance).findFirst().get();
-		RepositoryComponent component = (RepositoryComponent) someSEFFElement.getElement().eContainer().eContainer();
-		Repository repository = component.getRepository__RepositoryComponent();
-		return repository;
-	}
-
-	private System getSystem() {
-		// TODO: Simple fix for now. Only works with the symbol model, composite
-		// components are ignored.
-		return null;
-		// TODO: Try loading models directly
 	}
 
 	public List<UncertaintyImpact<?>> propagate() {
@@ -106,7 +114,7 @@ public class StandalonePCMUncertaintyImpactAnalysis extends StandalonePCMDataFlo
 	}
 
 	public void addInterfaceUncertainty(String id) {
-		var interfaze = this.propagationHelper.findInterface(id, this.getRepository());
+		var interfaze = this.propagationHelper.findInterface(id, this.repositoryModel);
 
 		if (interfaze.isEmpty()) {
 			throw new IllegalArgumentException("Unable to find the interface with the given ID.");
@@ -116,7 +124,7 @@ public class StandalonePCMUncertaintyImpactAnalysis extends StandalonePCMDataFlo
 	}
 
 	public void addConnectorUncertainty(String id) {
-		var connector = this.propagationHelper.findConnector(id, this.getSystem());
+		var connector = this.propagationHelper.findConnector(id, this.systemModel);
 
 		if (connector.isEmpty()) {
 			throw new IllegalArgumentException("Unable to find the connector with the given ID.");
