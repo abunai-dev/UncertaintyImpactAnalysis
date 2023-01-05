@@ -17,7 +17,7 @@ public class BehaviorUncertaintySource<T extends Entity> extends UncertaintySour
 	private final T action;
 	private final PropagationHelper propagationHelper;
 
-	public BehaviorUncertaintySource(T action, PropagationHelper propagationHelper) {
+	private BehaviorUncertaintySource(T action, PropagationHelper propagationHelper) {
 		Objects.requireNonNull(action);
 		Objects.requireNonNull(propagationHelper);
 		this.action = action;

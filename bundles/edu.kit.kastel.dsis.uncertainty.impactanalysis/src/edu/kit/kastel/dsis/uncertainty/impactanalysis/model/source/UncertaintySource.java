@@ -6,11 +6,11 @@ import org.palladiosimulator.pcm.core.entity.Entity;
 
 import edu.kit.kastel.dsis.uncertainty.impactanalysis.model.impact.UncertaintyImpact;
 
-public abstract class UncertaintySource<P extends Entity> {
+public abstract class UncertaintySource<T extends Entity> {
 
-	public abstract P getArchitecturalElement();
+	public abstract T getArchitecturalElement();
 
-	public abstract List<? extends UncertaintyImpact<? extends P>> propagate();
+	public abstract List<? extends UncertaintyImpact<? extends T>> propagate();
 
 	public abstract String getUncertaintyType();
 

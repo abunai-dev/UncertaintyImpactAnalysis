@@ -15,9 +15,11 @@ import edu.kit.kastel.dsis.uncertainty.impactanalysis.model.impact.UncertaintyIm
 import edu.kit.kastel.dsis.uncertainty.impactanalysis.model.source.ActorUncertaintySource;
 import edu.kit.kastel.dsis.uncertainty.impactanalysis.model.source.BehaviorUncertaintySource;
 import edu.kit.kastel.dsis.uncertainty.impactanalysis.model.source.ComponentUncertaintySource;
+import edu.kit.kastel.dsis.uncertainty.impactanalysis.model.source.ConnectorUncertaintySource;
 import edu.kit.kastel.dsis.uncertainty.impactanalysis.model.source.InterfaceUncertaintySource;
 import edu.kit.kastel.dsis.uncertainty.impactanalysis.model.source.UncertaintySource;
 import edu.kit.kastel.dsis.uncertainty.impactanalysis.util.PropagationHelper;
+import org.palladiosimulator.pcm.system.System;
 
 public class StandalonePCMUncertaintyImpactAnalysis extends StandalonePCMDataFlowConfidentialtyAnalysis {
 
@@ -49,6 +51,13 @@ public class StandalonePCMUncertaintyImpactAnalysis extends StandalonePCMDataFlo
 		RepositoryComponent component = (RepositoryComponent) someSEFFElement.getElement().eContainer().eContainer();
 		Repository repository = component.getRepository__RepositoryComponent();
 		return repository;
+	}
+
+	private System getSystem() {
+		// TODO: Simple fix for now. Only works with the symbol model, composite
+		// components are ignored.
+		return null;
+		// TODO: Try loading models directly
 	}
 
 	public List<UncertaintyImpact<?>> propagate() {
@@ -98,11 +107,22 @@ public class StandalonePCMUncertaintyImpactAnalysis extends StandalonePCMDataFlo
 
 	public void addInterfaceUncertainty(String id) {
 		var interfaze = this.propagationHelper.findInterface(id, this.getRepository());
-		
+
 		if (interfaze.isEmpty()) {
 			throw new IllegalArgumentException("Unable to find the interface with the given ID.");
 		} else {
 			this.uncertaintySources.add(new InterfaceUncertaintySource(interfaze.get(), propagationHelper));
 		}
 	}
+
+	public void addConnectorUncertainty(String id) {
+		var connector = this.propagationHelper.findConnector(id, this.getSystem());
+
+		if (connector.isEmpty()) {
+			throw new IllegalArgumentException("Unable to find the connector with the given ID.");
+		} else {
+			this.uncertaintySources.add(ConnectorUncertaintySource.of(connector.get(), propagationHelper));
+		}
+	}
+
 }

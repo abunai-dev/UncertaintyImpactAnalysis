@@ -17,12 +17,14 @@ import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.p
 import org.palladiosimulator.dataflow.confidentiality.pcm.model.confidentiality.characteristics.EnumCharacteristic;
 import org.palladiosimulator.dataflow.confidentiality.pcm.model.confidentiality.repository.OperationalDataStoreComponent;
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
+import org.palladiosimulator.pcm.core.composition.Connector;
 import org.palladiosimulator.pcm.core.entity.Entity;
 import org.palladiosimulator.pcm.repository.OperationInterface;
 import org.palladiosimulator.pcm.repository.Repository;
 import org.palladiosimulator.pcm.seff.AbstractAction;
 import org.palladiosimulator.pcm.seff.ResourceDemandingSEFF;
 import org.palladiosimulator.pcm.seff.StartAction;
+import org.palladiosimulator.pcm.system.System;
 import org.palladiosimulator.pcm.usagemodel.AbstractUserAction;
 
 public class PropagationHelper {
@@ -76,6 +78,12 @@ public class PropagationHelper {
 		return repository.getInterfaces__Repository().stream().filter(it -> it.getId().equals(id))
 				.filter(OperationInterface.class::isInstance).map(OperationInterface.class::cast).findFirst();
 	}
+	
+	public Optional<Connector> findConnector(String id, System system) {
+		// TODO Auto-generated method stub
+		return Optional.empty();
+	}
+
 
 	public List<SEFFActionSequenceElement<StartAction>> findStartActionsOfAssemblyContext(AssemblyContext component) {
 		List<SEFFActionSequenceElement<StartAction>> matches = new ArrayList<>();
