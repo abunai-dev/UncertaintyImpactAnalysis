@@ -78,12 +78,10 @@ public class PropagationHelper {
 		return repository.getInterfaces__Repository().stream().filter(it -> it.getId().equals(id))
 				.filter(OperationInterface.class::isInstance).map(OperationInterface.class::cast).findFirst();
 	}
-	
-	public Optional<Connector> findConnector(String id, System system) {
-		// TODO Auto-generated method stub
-		return Optional.empty();
-	}
 
+	public Optional<Connector> findConnector(String id, System system) {
+		return system.getConnectors__ComposedStructure().stream().filter(it -> it.getId().equals(id)).findFirst();
+	}
 
 	public List<SEFFActionSequenceElement<StartAction>> findStartActionsOfAssemblyContext(AssemblyContext component) {
 		List<SEFFActionSequenceElement<StartAction>> matches = new ArrayList<>();
