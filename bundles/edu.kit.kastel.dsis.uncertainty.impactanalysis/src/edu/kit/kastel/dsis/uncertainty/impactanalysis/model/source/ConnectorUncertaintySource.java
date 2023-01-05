@@ -39,6 +39,27 @@ public class ConnectorUncertaintySource<T extends Connector> extends Uncertainty
 		}
 	}
 
+	private OperationInterface getConnectorInterface() {
+		if (connector instanceof AssemblyConnector castedConnector) {
+			return castedConnector.getProvidedRole_AssemblyConnector().getProvidedInterface__OperationProvidedRole();
+		} else if (connector instanceof ProvidedDelegationConnector castedConnector) {
+			return castedConnector.getInnerProvidedRole_ProvidedDelegationConnector()
+					.getProvidedInterface__OperationProvidedRole();
+		} else {
+			throw new IllegalStateException("Unrecognized connector type.");
+		}
+	}
+
+	private AssemblyContext getConnectorProvidingContext() {
+		if (connector instanceof AssemblyConnector castedConnector) {
+			return castedConnector.getProvidingAssemblyContext_AssemblyConnector();
+		} else if (connector instanceof ProvidedDelegationConnector castedConnector) {
+			return castedConnector.getAssemblyContext_ProvidedDelegationConnector();
+		} else {
+			throw new IllegalStateException("Unrecognized connector type.");
+		}
+	}
+
 	@Override
 	public T getArchitecturalElement() {
 		return connector;
@@ -48,20 +69,20 @@ public class ConnectorUncertaintySource<T extends Connector> extends Uncertainty
 	public List<? extends UncertaintyImpact<? extends T>> propagate() {
 		List<AbstractPCMActionSequenceElement<?>> matches = new ArrayList<>();
 
-		OperationInterface interfaze = getConnectorInterface(this.connector);
+		OperationInterface interfaze = getConnectorInterface();
+		AssemblyContext providingContext = getConnectorProvidingContext();
+
 		var startNodes = propagationHelper.findStartActionsOfSEFFsThatImplement(interfaze);
 		var systemCallNodes = propagationHelper.findEntryLevelSystemCallsViaInterface(interfaze);
 		var externalCallNodes = propagationHelper.findExternalCallsViaInterface(interfaze);
 
 		if (!startNodes.isEmpty()) {
-			AssemblyContext providingContext = getProvidingContext(this.connector);
 			var filteredStartNodes = startNodes.stream().filter(it -> it.getContext().contains(providingContext))
 					.toList();
 			matches.addAll(filteredStartNodes);
 		}
 
-		if (!systemCallNodes.isEmpty()) {
-			var castedConnector = (ProvidedDelegationConnector) connector;
+		if (!systemCallNodes.isEmpty() && connector instanceof ProvidedDelegationConnector castedConnector) {
 			var filteredSystemCallNodes = systemCallNodes.stream()
 					.filter(it -> it.getElement().getProvidedRole_EntryLevelSystemCall()
 							.equals(castedConnector.getOuterProvidedRole_ProvidedDelegationConnector()))
@@ -69,8 +90,7 @@ public class ConnectorUncertaintySource<T extends Connector> extends Uncertainty
 			matches.addAll(filteredSystemCallNodes);
 		}
 
-		if (!externalCallNodes.isEmpty()) {
-			var castedConnector = (AssemblyConnector) connector;
+		if (!externalCallNodes.isEmpty() && connector instanceof AssemblyConnector castedConnector) {
 			var filteredExternalCallNodes = externalCallNodes.stream().filter(it -> it.getElement()
 					.getRole_ExternalService().equals(castedConnector.getRequiredRole_AssemblyConnector())).toList();
 			matches.addAll(filteredExternalCallNodes);
@@ -83,26 +103,4 @@ public class ConnectorUncertaintySource<T extends Connector> extends Uncertainty
 	public String getUncertaintyType() {
 		return "Connector";
 	}
-
-	private static OperationInterface getConnectorInterface(Connector connector) {
-		if (connector instanceof AssemblyConnector castedConnector) {
-			return castedConnector.getProvidedRole_AssemblyConnector().getProvidedInterface__OperationProvidedRole();
-		} else if (connector instanceof ProvidedDelegationConnector castedConnector) {
-			return castedConnector.getInnerProvidedRole_ProvidedDelegationConnector()
-					.getProvidedInterface__OperationProvidedRole();
-		} else {
-			throw new IllegalStateException("Unrecognized connector type.");
-		}
-	}
-
-	private static AssemblyContext getProvidingContext(Connector connector) {
-		if (connector instanceof AssemblyConnector castedConnector) {
-			return castedConnector.getProvidingAssemblyContext_AssemblyConnector();
-		} else if (connector instanceof ProvidedDelegationConnector castedConnector) {
-			return castedConnector.getAssemblyContext_ProvidedDelegationConnector();
-		} else {
-			throw new IllegalStateException("Unrecognized connector type.");
-		}
-	}
-
 }
