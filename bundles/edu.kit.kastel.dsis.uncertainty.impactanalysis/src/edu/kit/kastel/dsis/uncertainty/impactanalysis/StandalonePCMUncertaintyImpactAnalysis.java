@@ -2,6 +2,7 @@ package edu.kit.kastel.dsis.uncertainty.impactanalysis;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -14,6 +15,7 @@ import org.eclipse.core.runtime.Plugin;
 import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.dataflow.confidentiality.analysis.PCMAnalysisUtils;
 import org.palladiosimulator.dataflow.confidentiality.analysis.StandalonePCMDataFlowConfidentialtyAnalysis;
+import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.AbstractActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.ActionSequence;
 import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.pcm.AbstractPCMActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.pcm.PCMActionSequence;
@@ -100,7 +102,7 @@ public class StandalonePCMUncertaintyImpactAnalysis extends StandalonePCMDataFlo
 		return allImpacts.stream().map(it -> it.getAffectedDataFlowSection().get()).toList();
 	}
 
-	public Set<ActionSequence> getImpactSet() {
+	public Set<ActionSequence> getImpactSet(boolean distinct) {
 		List<ActionSequence> allAffectedSequences = this.getAllAffectedDataFlowSectionsAfterPropagation();
 
 		Set<ActionSequence> impactSet = new HashSet<ActionSequence>();
@@ -120,8 +122,39 @@ public class StandalonePCMUncertaintyImpactAnalysis extends StandalonePCMDataFlo
 				impactSet.add(actionSequence);
 			}
 		}
+		
+		if(distinct) {
+			Set<ActionSequence> entriesToRemove = new HashSet<ActionSequence>();
+			for (ActionSequence actionSequence : impactSet) {
+				List<ActionSequence> similarDataFlows = impactSet.stream().filter(it -> getActionSequenceIndex(
+						it.getElements()) == getActionSequenceIndex(actionSequence.getElements())).toList();
+
+				for (ActionSequence similarDataFlow : similarDataFlows) {
+					if (similarDataFlow.equals(actionSequence)) {
+						continue;
+					} else if (actionSequence.getElements().size() >= similarDataFlow.getElements().size()) {
+						entriesToRemove.add(similarDataFlow);
+					} else {
+						entriesToRemove.add(actionSequence);
+					}
+				}
+			}
+			impactSet.removeAll(entriesToRemove);
+		}
 
 		return impactSet;
+	}
+
+	public int getActionSequenceIndex(List<AbstractActionSequenceElement<?>> entries) {
+		for (int i = 0; i < this.actionSequences.size(); i++) {
+			var elements = this.actionSequences.get(i).getElements().stream()
+					.map(AbstractPCMActionSequenceElement.class::cast).toList();
+
+			if (Collections.indexOfSubList(elements, entries) != -1) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	public void addComponentUncertainty(String id) {
