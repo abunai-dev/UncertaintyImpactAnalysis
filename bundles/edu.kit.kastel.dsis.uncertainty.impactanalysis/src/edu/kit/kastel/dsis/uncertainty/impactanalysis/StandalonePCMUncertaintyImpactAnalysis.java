@@ -2,13 +2,21 @@ package edu.kit.kastel.dsis.uncertainty.impactanalysis;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.dataflow.confidentiality.analysis.PCMAnalysisUtils;
 import org.palladiosimulator.dataflow.confidentiality.analysis.StandalonePCMDataFlowConfidentialtyAnalysis;
 import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.ActionSequence;
+import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.pcm.AbstractPCMActionSequenceElement;
+import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.pcm.PCMActionSequence;
 import org.palladiosimulator.pcm.repository.Repository;
 import org.palladiosimulator.pcm.system.System;
 
@@ -80,6 +88,40 @@ public class StandalonePCMUncertaintyImpactAnalysis extends StandalonePCMDataFlo
 		}
 
 		return allImpacts;
+	}
+
+	public List<AbstractPCMActionSequenceElement<?>> getAllAffectedElementsAfterPropagation() {
+		List<UncertaintyImpact<?>> allImpacts = this.propagate();
+		return allImpacts.stream().map(it -> it.getAffectedElement()).collect(Collectors.toList());
+	}
+
+	public List<ActionSequence> getAllAffectedDataFlowSectionsAfterPropagation() {
+		List<UncertaintyImpact<?>> allImpacts = this.propagate();
+		return allImpacts.stream().map(it -> it.getAffectedDataFlowSection().get()).toList();
+	}
+
+	public Set<ActionSequence> getImpactSet() {
+		List<ActionSequence> allAffectedSequences = this.getAllAffectedDataFlowSectionsAfterPropagation();
+
+		Set<ActionSequence> impactSet = new HashSet<ActionSequence>();
+		for (ActionSequence actionSequence : allAffectedSequences) {
+			if (impactSet.stream().anyMatch(it -> {
+				var otherNodes = it.getElements().stream().map(AbstractPCMActionSequenceElement.class::cast).toList();
+				var ownNodes = actionSequence.getElements().stream().map(AbstractPCMActionSequenceElement.class::cast)
+						.toList();
+
+				var otherPCMElements = otherNodes.stream().map(AbstractPCMActionSequenceElement::getElement).toList();
+				var ownPCMElements = ownNodes.stream().map(AbstractPCMActionSequenceElement::getElement).toList();
+
+				return otherPCMElements.equals(ownPCMElements);
+			})) {
+				continue;
+			} else {
+				impactSet.add(actionSequence);
+			}
+		}
+
+		return impactSet;
 	}
 
 	public void addComponentUncertainty(String id) {
