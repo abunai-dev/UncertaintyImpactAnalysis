@@ -123,6 +123,7 @@ public class StandalonePCMUncertaintyImpactAnalysis extends StandalonePCMDataFlo
 			}
 		}
 		
+		// TODO: Rewrite using iterator, move to separate method
 		if(distinct) {
 			Set<ActionSequence> entriesToRemove = new HashSet<ActionSequence>();
 			for (ActionSequence actionSequence : impactSet) {
