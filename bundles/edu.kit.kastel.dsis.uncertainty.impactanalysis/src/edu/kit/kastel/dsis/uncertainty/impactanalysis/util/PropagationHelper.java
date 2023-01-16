@@ -46,8 +46,10 @@ public class PropagationHelper {
 			var candidates = sequence.getElements().stream().map(AbstractPCMActionSequenceElement.class::cast)
 					.filter(it -> EcoreUtil.getID(it.getElement()).equals(id)).toList();
 
-			return candidates.stream().map(AbstractPCMActionSequenceElement::getElement)
-					.filter(Entity.class::isInstance).map(Entity.class::cast).findFirst();
+			if(candidates.size() > 0) {
+				return candidates.stream().map(AbstractPCMActionSequenceElement::getElement)
+						.filter(Entity.class::isInstance).map(Entity.class::cast).findFirst();
+			}
 		}
 
 		return Optional.empty();
