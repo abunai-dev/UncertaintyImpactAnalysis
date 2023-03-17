@@ -2,6 +2,7 @@ package edu.kit.kastel.dsis.uncertainty.impactanalysis;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -99,7 +100,7 @@ public class StandalonePCMUncertaintyImpactAnalysis extends StandalonePCMDataFlo
 
 	public List<ActionSequence> getAllAffectedDataFlowSectionsAfterPropagation() {
 		List<UncertaintyImpact<?>> allImpacts = this.propagate();
-		return allImpacts.stream().map(it -> it.getAffectedDataFlowSection().get()).toList();
+		return allImpacts.stream().map(it -> it.getAffectedDataFlowSections()).flatMap(Collection::stream).toList();
 	}
 
 	public Set<ActionSequence> getImpactSet(boolean distinct) {

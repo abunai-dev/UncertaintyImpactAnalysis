@@ -19,19 +19,21 @@ public abstract class UncertaintyImpact<T extends Entity> {
 
 	public abstract AbstractPCMActionSequenceElement<?> getAffectedElement();
 
-	public abstract Optional<ActionSequence> getAffectedDataFlow();
+	public abstract List<ActionSequence> getAffectedDataFlows();
 
-	public Optional<ActionSequence> getAffectedDataFlowSection() {
-		Optional<ActionSequence> dataFlow = this.getAffectedDataFlow();
+	private ActionSequence getAffectedDataFlowSectionOf(ActionSequence dataflow) {
 
-		if (dataFlow.isEmpty()) {
-			return dataFlow;
-		} else {
-			List<AbstractActionSequenceElement<?>> affectedElements = dataFlow.get().getElements().stream()
-					.dropWhile(it -> !it.equals(this.getAffectedElement())).toList();
+		List<AbstractActionSequenceElement<?>> affectedElements = dataflow.getElements().stream()
+				.dropWhile(it -> !it.equals(this.getAffectedElement())).toList();
 
-			return Optional.of(new PCMActionSequence(affectedElements));
-		}
+		return new PCMActionSequence(affectedElements);
+
+	}
+
+	public List<ActionSequence> getAffectedDataFlowSections() {
+		var affectedDataFlows = this.getAffectedDataFlows();
+
+		return affectedDataFlows.stream().map(it -> getAffectedDataFlowSectionOf(it)).toList();
 	}
 
 	@Override
@@ -41,16 +43,23 @@ public abstract class UncertaintyImpact<T extends Entity> {
 				EcoreUtil.getID(this.getAffectedElement().getElement()),
 				this.getAffectedElement().getElement().getClass().getSimpleName());
 		var originInfo = String.format("Origin of this impact: %s", this.getOrigin().toString());
-		var affectedDataFlowInfo = String.format("Affected Data Flow: %s", this.getAffectedDataFlow().get()
-				.getElements().stream().map(it -> it.toString()).collect(Collectors.joining(", ")));
-		var affectedDataFlowElementIndex = String.format("Affected Element Index: %d",
-				this.getAffectedDataFlow().get().getElements().indexOf(this.getAffectedElement()));
-		var affectedDataFlowSectionInfo = String.format("Affected Data Flow Section: %s",
-				this.getAffectedDataFlowSection().get().getElements().stream().map(it -> it.toString())
-						.collect(Collectors.joining(", ")));
-		var emptyLine = "";
 
-		return String.join(System.lineSeparator(), generalInfo, originInfo, affectedDataFlowInfo,
-				affectedDataFlowElementIndex, affectedDataFlowSectionInfo, emptyLine);
+		var dataFlowInfo = "";
+
+		for (var affectedDataFlow : this.getAffectedDataFlows()) {
+			var affectedDataFlowInfo = String.format("Affected Data Flows: %s",
+					affectedDataFlow.getElements().stream().map(it -> it.toString()).collect(Collectors.joining(", ")));
+			var affectedDataFlowElementIndex = String.format("Affected Element Index: %d",
+					affectedDataFlow.getElements().indexOf(this.getAffectedElement()));
+			var affectedDataFlowSectionInfo = String.format("Affected Data Flow Section: %s",
+					this.getAffectedDataFlowSectionOf(affectedDataFlow).getElements().stream().map(it -> it.toString())
+							.collect(Collectors.joining(", ")));
+			var emptyLine = "";
+
+			dataFlowInfo += String.join(affectedDataFlowInfo, affectedDataFlowElementIndex, affectedDataFlowSectionInfo,
+					emptyLine);
+		}
+
+		return String.join(System.lineSeparator(), generalInfo, originInfo, dataFlowInfo);
 	}
 }

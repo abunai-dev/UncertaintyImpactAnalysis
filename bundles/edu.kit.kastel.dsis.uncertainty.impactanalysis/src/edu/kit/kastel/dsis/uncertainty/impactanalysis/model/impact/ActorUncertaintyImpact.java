@@ -1,5 +1,6 @@
 package edu.kit.kastel.dsis.uncertainty.impactanalysis.model.impact;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.ActionSequence;
@@ -34,8 +35,8 @@ public class ActorUncertaintyImpact extends UncertaintyImpact<EnumCharacteristic
 	}
 
 	@Override
-	public Optional<ActionSequence> getAffectedDataFlow() {
-		return propagationHelper.findActionSequenceWithElement(affectedElement);
+	public List<ActionSequence> getAffectedDataFlows() {
+		return propagationHelper.findActionSequencesWithElement(affectedElement);
 	}
 
 }

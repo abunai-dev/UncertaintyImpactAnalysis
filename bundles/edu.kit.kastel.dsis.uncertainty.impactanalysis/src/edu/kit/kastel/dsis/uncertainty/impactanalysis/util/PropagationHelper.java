@@ -195,8 +195,8 @@ public class PropagationHelper {
 		return matches;
 	}
 
-	public Optional<ActionSequence> findActionSequenceWithElement(AbstractActionSequenceElement<?> element) {
-		return actionSequences.stream().filter(it -> it.getElements().contains(element)).findFirst();
+	public List<ActionSequence> findActionSequencesWithElement(AbstractActionSequenceElement<?> element) {
+		return actionSequences.stream().filter(it -> it.getElements().contains(element)).toList();
 	}
 
 	private List<Deque<AssemblyContext>> findAllAssemblyContexts() {
