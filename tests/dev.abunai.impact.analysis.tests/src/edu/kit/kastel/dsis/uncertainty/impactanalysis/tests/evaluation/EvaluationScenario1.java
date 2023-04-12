@@ -7,7 +7,7 @@ public class EvaluationScenario1 extends EvaluationBase {
 
 	@Override
 	protected String getFolderName() {
-		return "CWA_Scenario1";
+		return "CoronaWarnApp_UncertaintyScenario1";
 	}
 
 	@Override

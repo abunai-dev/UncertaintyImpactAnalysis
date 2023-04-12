@@ -3,12 +3,12 @@ package edu.kit.kastel.dsis.uncertainty.impactanalysis.tests.evaluation;
 import java.util.List;
 import java.util.function.BiPredicate;
 
-public class EvaluationScenario3 extends EvaluationBase {
+public class EvaluationScenario4 extends EvaluationBase {
 
 
 	@Override
 	protected String getFolderName() {
-		return "CWA_Scenario3";
+		return "CoronaWarnApp_UncertaintyScenario4";
 	}
 
 	@Override
@@ -18,29 +18,29 @@ public class EvaluationScenario3 extends EvaluationBase {
 
 	@Override
 	String getScenarioName() {
-		return "Scenario 3";
+		return "Scenario 4";
 	}
 
 	@Override
 	void addUncertaintySources() {
-		// Scenario 3: "Focus on behavior, as critical regarding confidentiality"
-		analysis.addBehaviorUncertainty("_gK7oULm8Ee2dIMSi7oNVYQ"); // S3_1
-		analysis.addBehaviorUncertainty("_kSKnoLm1Ee2dIMSi7oNVYQ"); // S3_2
+		// Scenario 4: "Critical points in the system with wide impact"
+		analysis.addComponentUncertainty("_v1LV8LNhEe2o46d27a6tVQ"); // S4_1
+		analysis.addInterfaceUncertainty("_FC4gkLHzEe2fRLFFhL_FWA"); // S4_2
 	}
 
 	@Override
 	BiPredicate<List<String>, List<String>> getConstraint() {
 		return (List<String> dataLiterals, List<String> nodeLiterals) -> {
-			// S3_1
-			if (dataLiterals.contains("ConfidentialDataNotExpected") & nodeLiterals.contains("Laboratory")) {
+			// S4_1
+			if(dataLiterals.contains("KeyIssue")) {
 				return true;
 			}
-
-			// S3_2
-			if (dataLiterals.contains("ValidationFailed")) {
+			
+			// S4_2
+			if(dataLiterals.contains("RetrievedConfidentialDetails")) {
 				return true;
 			}
-
+			
 			return false;
 		};
 	}

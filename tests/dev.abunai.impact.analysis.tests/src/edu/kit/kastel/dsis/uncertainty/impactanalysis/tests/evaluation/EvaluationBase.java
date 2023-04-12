@@ -16,6 +16,11 @@ public abstract class EvaluationBase extends TestBase {
 	abstract String getScenarioName();
 
 	abstract BiPredicate<List<String>, List<String>> getConstraint();
+	
+	@Override
+	protected String getBaseFolder() {
+		return "casestudies/CaseStudy-CoronaWarnApp";
+	}
 
 	@Test
 	public void evaluateScenario() {

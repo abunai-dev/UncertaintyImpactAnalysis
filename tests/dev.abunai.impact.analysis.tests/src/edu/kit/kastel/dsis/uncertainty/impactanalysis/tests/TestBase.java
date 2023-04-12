@@ -15,19 +15,23 @@ import edu.kit.kastel.dsis.uncertainty.impactanalysis.testmodels.Activator;
 
 public abstract class TestBase {
 
-	public static final String TEST_MODEL_PROJECT_NAME = "edu.kit.kastel.dsis.uncertainty.impactanalysis.testmodels";
+	public static final String TEST_MODEL_PROJECT_NAME = "dev.abunai.impact.analysis.testmodels";
 	protected StandalonePCMUncertaintyImpactAnalysis analysis = null;
 
 	protected abstract String getFolderName();
 
 	protected abstract String getFilesName();
+	
+	protected String getBaseFolder() {
+		return "models";
+	}
 
 	@BeforeEach
 	public void setup() {
-		final var usageModelPath = Paths.get("models", getFolderName(), getFilesName() + ".usagemodel").toString();
-		final var allocationPath = Paths.get("models", getFolderName(), getFilesName() + ".allocation").toString();
-		final var repositoryPath = Paths.get("models", getFolderName(), getFilesName() + ".repository").toString();
-		final var systemPath = Paths.get("models", getFolderName(), getFilesName() + ".system").toString();
+		final var usageModelPath = Paths.get(getBaseFolder(), getFolderName(), getFilesName() + ".usagemodel").toString();
+		final var allocationPath = Paths.get(getBaseFolder(), getFolderName(), getFilesName() + ".allocation").toString();
+		final var repositoryPath = Paths.get(getBaseFolder(), getFolderName(), getFilesName() + ".repository").toString();
+		final var systemPath = Paths.get(getBaseFolder(), getFolderName(), getFilesName() + ".system").toString();
 
 		var analysis = new StandalonePCMUncertaintyImpactAnalysis(TEST_MODEL_PROJECT_NAME, Activator.class,
 				usageModelPath, allocationPath, repositoryPath, systemPath);
