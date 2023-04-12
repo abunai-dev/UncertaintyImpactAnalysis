@@ -3,10 +3,10 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Uncertainty Impact Analysis
 Bundle-SymbolicName: edu.kit.kastel.dsis.uncertainty.impactanalysis
 Bundle-Version: 1.0.0.qualifier
-Export-Package: edu.kit.kastel.dsis.uncertainty.impactanalysis,
- edu.kit.kastel.dsis.uncertainty.impactanalysis.model.impact,
- edu.kit.kastel.dsis.uncertainty.impactanalysis.util
-Bundle-Activator: edu.kit.kastel.dsis.uncertainty.impactanalysis.Activator
+Export-Package: dev.abunai.impact.analysis,
+ dev.abunai.impact.analysis.model.impact,
+ dev.abunai.impact.analysis.util
+Bundle-Activator: dev.abunai.impact.analysis.Activator
 Require-Bundle: org.eclipse.core.runtime,
  org.palladiosimulator.dataflow.confidentiality.analysis;bundle-version="1.0.0";visibility:=reexport
 Bundle-RequiredExecutionEnvironment: JavaSE-17
