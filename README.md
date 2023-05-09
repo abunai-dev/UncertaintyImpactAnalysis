@@ -10,7 +10,7 @@ More information can be found in this publication: S. Hahner, R. Heinrich, and R
 ## Installation
 
 1. Install the version `2022-12` of the Eclipse Modelling Tools from the [official site](https://www.eclipse.org/downloads/packages/release/2022-12/r/eclipse-modeling-tools)
-2. Clone the confidentiality analysis repository from [GitHub](https://github.com/PalladioSimulator/Palladio-Addons-DataFlowConfidentiality-Analysis)
+2. Clone the confidentiality analysis repository from [GitHub](https://github.com/PalladioSimulator/Palladio-Addons-DataFlowConfidentiality-Analysis). **Important**: We currently only support an older version of the data flow analysis, please checkout commit [97e1a32](https://github.com/PalladioSimulator/Palladio-Addons-DataFlowConfidentiality-Analysis/commit/97e1a328f47a319ab64bd0ef4931a0983284698d).
 3. Import the dependencies.p2f file into Eclipse to install the dependencies of the project. This is achieved by going to File->Import->General->Install from File
 4. Import all projects of the data flow analysis and also all projects from the `bundles` and `tests` folders from this repository
 5. **Optional**: If you wish to run the analysis on the [Corona Warn App case study](https://github.com/abunai-dev/CaseStudy-CoronaWarnApp), also clone that repository into the case studies folder. The structure should look like this: `tests/dev.abunai.impact.analysis.testmodels/casestudies/CaseStudy-CoronaWarnApp`
