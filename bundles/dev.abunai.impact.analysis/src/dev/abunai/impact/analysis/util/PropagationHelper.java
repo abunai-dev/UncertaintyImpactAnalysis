@@ -8,12 +8,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.AbstractActionSequenceElement;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.ActionSequence;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.pcm.AbstractPCMActionSequenceElement;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.pcm.CallingSEFFActionSequenceElement;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.pcm.CallingUserActionSequenceElement;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.pcm.SEFFActionSequenceElement;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.AbstractActionSequenceElement;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.ActionSequence;
+import org.palladiosimulator.dataflow.confidentiality.analysis.resource.ResourceLoader;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.AbstractPCMActionSequenceElement;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.seff.CallingSEFFActionSequenceElement;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.user.CallingUserActionSequenceElement;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.seff.SEFFActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.pcm.model.confidentiality.characteristics.EnumCharacteristic;
 import org.palladiosimulator.dataflow.confidentiality.pcm.model.confidentiality.repository.OperationalDataStoreComponent;
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
@@ -30,9 +31,11 @@ import org.palladiosimulator.pcm.usagemodel.AbstractUserAction;
 public class PropagationHelper {
 
 	private List<ActionSequence> actionSequences;
+	private final ResourceLoader resourceLoader;
 
-	public PropagationHelper(List<ActionSequence> actionSequences) {
+	public PropagationHelper(List<ActionSequence> actionSequences, ResourceLoader resourceLoader) {
 		this.actionSequences = actionSequences;
+		this.resourceLoader = resourceLoader;
 	}
 
 	public Optional<AssemblyContext> findAssemblyContext(String id) {
@@ -65,7 +68,7 @@ public class PropagationHelper {
 				if (architectureElement instanceof AbstractUserAction || architectureElement instanceof AbstractAction
 						|| architectureElement instanceof OperationalDataStoreComponent) {
 
-					var calculator = new TracingPCMNodeCharacteristicsCalculator((Entity) architectureElement, id);
+					var calculator = new TracingPCMNodeCharacteristicsCalculator((Entity) architectureElement, id, resourceLoader);
 					if (calculator.isAnnotatedWithNodeCharacteristic(node.getContext())) {
 						return calculator.getNodeCharacteristics(node.getContext()).stream().findFirst();
 					}
@@ -125,7 +128,7 @@ public class PropagationHelper {
 
 				if (pcmNode.getElement() instanceof Entity) {
 					var calculator = new TracingPCMNodeCharacteristicsCalculator((Entity) pcmNode.getElement(),
-							annotation.getId());
+							annotation.getId(), resourceLoader);
 
 					if (calculator.isAnnotatedWithNodeCharacteristic(pcmNode.getContext())) {
 						matches.add(pcmNode);

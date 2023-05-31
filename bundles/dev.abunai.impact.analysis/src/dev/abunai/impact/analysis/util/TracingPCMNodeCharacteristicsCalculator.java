@@ -7,8 +7,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.eclipse.emf.ecore.EObject;
-import org.palladiosimulator.dataflow.confidentiality.analysis.PCMAnalysisUtils;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.pcm.PCMQueryUtils;
+import org.palladiosimulator.dataflow.confidentiality.analysis.resource.ResourceLoader;
+import org.palladiosimulator.dataflow.confidentiality.analysis.utils.pcm.PCMQueryUtils;
 import org.palladiosimulator.dataflow.confidentiality.pcm.model.confidentiality.characteristics.EnumCharacteristic;
 import org.palladiosimulator.dataflow.confidentiality.pcm.model.confidentiality.repository.OperationalDataStoreComponent;
 import org.palladiosimulator.dataflow.confidentiality.pcm.model.profile.ProfileConstants;
@@ -26,10 +26,12 @@ public class TracingPCMNodeCharacteristicsCalculator {
 
 	private final String filterID;
 	private final EObject node;
+	private final ResourceLoader resourceLoader; // FIXME: Requires export in the confidentiality analysis, shall be removed in the next analysis version
 
-	public TracingPCMNodeCharacteristicsCalculator(Entity node, String filterID) {
+	public TracingPCMNodeCharacteristicsCalculator(Entity node, String filterID, ResourceLoader resourceLoader) {
 		this.node = node;
 		this.filterID = filterID;
+		this.resourceLoader = resourceLoader;
 	}
 
 	public boolean isAnnotatedWithNodeCharacteristic(Deque<AssemblyContext> context) {
@@ -76,7 +78,7 @@ public class TracingPCMNodeCharacteristicsCalculator {
      * @return List of node variables present at the node
      */
     private List<EnumCharacteristic> getUserNodeCharacteristics(AbstractUserAction node) {
-    	var usageScenario = PCMQueryUtils.findParentOfType(node, UsageScenario.class, false).get();
+    	var usageScenario = PCMQueryUtils.findParentOfType(node, UsageScenario.class, false).get(); // FIXME: Requires export in the confidentiality analysis, shall be removed in the next analysis version
     	return this.evaluateNodeCharacteristics(usageScenario);
     }
     
@@ -88,7 +90,7 @@ public class TracingPCMNodeCharacteristicsCalculator {
     private List<EnumCharacteristic> getSEFFNodeCharacteristics(Deque<AssemblyContext> context) {
     	List<EnumCharacteristic> nodeVariables = new ArrayList<>();
     	
-    	var allocations = PCMAnalysisUtils.lookupElementOfType(AllocationPackage.eINSTANCE.getAllocation()).stream()
+    	var allocations = resourceLoader.lookupElementOfType(AllocationPackage.eINSTANCE.getAllocation()).stream()
     			.filter(Allocation.class::isInstance)
     			.map(Allocation.class::cast)
     			.collect(Collectors.toList());
@@ -113,5 +115,5 @@ public class TracingPCMNodeCharacteristicsCalculator {
     	}
     	return nodeVariables;
 	}
-
+    
 }

@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -16,10 +17,13 @@ import org.eclipse.core.runtime.Plugin;
 import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.dataflow.confidentiality.analysis.PCMAnalysisUtils;
 import org.palladiosimulator.dataflow.confidentiality.analysis.StandalonePCMDataFlowConfidentialtyAnalysis;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.AbstractActionSequenceElement;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.ActionSequence;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.pcm.AbstractPCMActionSequenceElement;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.pcm.PCMActionSequence;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.AbstractActionSequenceElement;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.ActionSequence;
+import org.palladiosimulator.dataflow.confidentiality.analysis.resource.PCMURIResourceLoader;
+import org.palladiosimulator.dataflow.confidentiality.analysis.resource.ResourceLoader;
+import org.palladiosimulator.dataflow.confidentiality.analysis.utils.pcm.PCMResourceUtils;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.AbstractPCMActionSequenceElement;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.PCMActionSequence;
 import org.palladiosimulator.pcm.repository.Repository;
 import org.palladiosimulator.pcm.system.System;
 
@@ -32,6 +36,7 @@ import dev.abunai.impact.analysis.model.source.InterfaceUncertaintySource;
 import dev.abunai.impact.analysis.model.source.UncertaintySource;
 import dev.abunai.impact.analysis.util.PropagationHelper;
 
+// FIXME: Fix inheritance, use builder pattern
 public class StandalonePCMUncertaintyImpactAnalysis extends StandalonePCMDataFlowConfidentialtyAnalysis {
 
 	private final URI repositoryModelURI;
@@ -45,6 +50,7 @@ public class StandalonePCMUncertaintyImpactAnalysis extends StandalonePCMDataFlo
 	private List<ActionSequence> actionSequences = null;
 	private PropagationHelper propagationHelper = null;
 	private List<UncertaintySource<?>> uncertaintySources = new ArrayList<>();
+	private final ResourceLoader resourceLoader;
 
 	public StandalonePCMUncertaintyImpactAnalysis(String modelProjectName,
 			Class<? extends Plugin> modelProjectActivator, String relativeUsageModelPath,
@@ -55,6 +61,9 @@ public class StandalonePCMUncertaintyImpactAnalysis extends StandalonePCMDataFlo
 
 		this.repositoryModelURI = createRelativePluginURI(relativeRepositoryModelPath);
 		this.systemModleURI = createRelativePluginURI(relativeSystemModelPath);
+		
+		this.resourceLoader = new PCMURIResourceLoader(PCMResourceUtils.createRelativePluginURI(relativeUsageModelPath, modelProjectName), 
+				PCMResourceUtils.createRelativePluginURI(relativeAllocationModelPath, modelProjectName), Optional.empty()); // FIXME: Remove after fixing inheritance
 	}
 
 	private URI createRelativePluginURI(String relativePath) {
@@ -73,9 +82,9 @@ public class StandalonePCMUncertaintyImpactAnalysis extends StandalonePCMDataFlo
 			e.printStackTrace();
 			return false;
 		}
-
+		
 		this.actionSequences = super.findAllSequences();
-		this.propagationHelper = new PropagationHelper(this.actionSequences);
+		this.propagationHelper = new PropagationHelper(this.actionSequences, resourceLoader);
 		return initSuccessful;
 	}
 
