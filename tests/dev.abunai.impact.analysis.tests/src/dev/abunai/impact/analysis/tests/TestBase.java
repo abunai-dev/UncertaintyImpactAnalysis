@@ -2,12 +2,18 @@ package dev.abunai.impact.analysis.tests;
 
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.ActionSequence;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.pcm.AbstractPCMActionSequenceElement;
+import org.palladiosimulator.dataflow.confidentiality.analysis.builder.AnalysisData;
+import org.palladiosimulator.dataflow.confidentiality.analysis.characteristics.node.LegacyPCMNodeCharacteristicsCalculator;
+import org.palladiosimulator.dataflow.confidentiality.analysis.characteristics.variable.PCMDataCharacteristicsCalculatorFactory;
+import org.palladiosimulator.dataflow.confidentiality.analysis.resource.PCMURIResourceLoader;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.ActionSequence;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.AbstractPCMActionSequenceElement;
+import org.palladiosimulator.dataflow.confidentiality.analysis.utils.pcm.PCMResourceUtils;
 
 import dev.abunai.impact.analysis.StandalonePCMUncertaintyImpactAnalysis;
 import dev.abunai.impact.analysis.model.impact.UncertaintyImpact;
@@ -25,17 +31,20 @@ public abstract class TestBase {
 	protected String getBaseFolder() {
 		return "models";
 	}
-
+	
 	@BeforeEach
 	public void setup() {
 		final var usageModelPath = Paths.get(getBaseFolder(), getFolderName(), getFilesName() + ".usagemodel").toString();
 		final var allocationPath = Paths.get(getBaseFolder(), getFolderName(), getFilesName() + ".allocation").toString();
-		final var repositoryPath = Paths.get(getBaseFolder(), getFolderName(), getFilesName() + ".repository").toString();
-		final var systemPath = Paths.get(getBaseFolder(), getFolderName(), getFilesName() + ".system").toString();
 
-		var analysis = new StandalonePCMUncertaintyImpactAnalysis(TEST_MODEL_PROJECT_NAME, Activator.class,
-				usageModelPath, allocationPath, repositoryPath, systemPath);
-		analysis.initalizeAnalysis();
+		// FIXME: Write proper builder instead
+		var resourceLoader = new PCMURIResourceLoader(PCMResourceUtils.createRelativePluginURI(usageModelPath, TEST_MODEL_PROJECT_NAME), 
+				PCMResourceUtils.createRelativePluginURI(allocationPath, TEST_MODEL_PROJECT_NAME), Optional.empty());
+		
+		var analysisData = new AnalysisData(resourceLoader, new LegacyPCMNodeCharacteristicsCalculator(resourceLoader), new PCMDataCharacteristicsCalculatorFactory(resourceLoader));
+		
+		var analysis = new StandalonePCMUncertaintyImpactAnalysis(TEST_MODEL_PROJECT_NAME, Activator.class, analysisData);
+		analysis.initializeAnalysis();
 
 		this.analysis = analysis;
 	}

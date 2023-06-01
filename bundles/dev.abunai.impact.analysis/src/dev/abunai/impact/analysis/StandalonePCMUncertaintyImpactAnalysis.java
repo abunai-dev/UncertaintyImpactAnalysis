@@ -1,29 +1,20 @@
 package dev.abunai.impact.analysis;
 
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Plugin;
-import org.eclipse.emf.common.util.URI;
-import org.palladiosimulator.dataflow.confidentiality.analysis.PCMAnalysisUtils;
-import org.palladiosimulator.dataflow.confidentiality.analysis.StandalonePCMDataFlowConfidentialtyAnalysis;
+import org.palladiosimulator.dataflow.confidentiality.analysis.builder.AnalysisData;
+import org.palladiosimulator.dataflow.confidentiality.analysis.core.AbstractStandalonePCMDataFlowConfidentialityAnalysis;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.AbstractPCMActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.AbstractActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.ActionSequence;
-import org.palladiosimulator.dataflow.confidentiality.analysis.resource.PCMURIResourceLoader;
-import org.palladiosimulator.dataflow.confidentiality.analysis.resource.ResourceLoader;
-import org.palladiosimulator.dataflow.confidentiality.analysis.utils.pcm.PCMResourceUtils;
-import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.AbstractPCMActionSequenceElement;
-import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.PCMActionSequence;
 import org.palladiosimulator.pcm.repository.Repository;
 import org.palladiosimulator.pcm.system.System;
 
@@ -37,55 +28,41 @@ import dev.abunai.impact.analysis.model.source.UncertaintySource;
 import dev.abunai.impact.analysis.util.PropagationHelper;
 
 // FIXME: Fix inheritance, use builder pattern
-public class StandalonePCMUncertaintyImpactAnalysis extends StandalonePCMDataFlowConfidentialtyAnalysis {
+public class StandalonePCMUncertaintyImpactAnalysis extends AbstractStandalonePCMDataFlowConfidentialityAnalysis {
 
-	private final URI repositoryModelURI;
-	private Repository repositoryModel;
-
-	private final URI systemModleURI;
-	private System systemModel;
-
-	private final String modelProjectName;
-
+	private final AnalysisData analysisData;
 	private List<ActionSequence> actionSequences = null;
 	private PropagationHelper propagationHelper = null;
 	private List<UncertaintySource<?>> uncertaintySources = new ArrayList<>();
-	private final ResourceLoader resourceLoader;
-
-	public StandalonePCMUncertaintyImpactAnalysis(String modelProjectName,
-			Class<? extends Plugin> modelProjectActivator, String relativeUsageModelPath,
-			String relativeAllocationModelPath, String relativeRepositoryModelPath, String relativeSystemModelPath) {
-
-		super(modelProjectName, modelProjectActivator, relativeUsageModelPath, relativeAllocationModelPath);
-		this.modelProjectName = modelProjectName;
-
-		this.repositoryModelURI = createRelativePluginURI(relativeRepositoryModelPath);
-		this.systemModleURI = createRelativePluginURI(relativeSystemModelPath);
+	
+	public StandalonePCMUncertaintyImpactAnalysis(String modelProjectName, Class<? extends Plugin> pluginActivator, AnalysisData analysisData) {
+		super(analysisData,
+				Logger.getLogger(StandalonePCMUncertaintyImpactAnalysis.class),
+				modelProjectName, pluginActivator);
 		
-		this.resourceLoader = new PCMURIResourceLoader(PCMResourceUtils.createRelativePluginURI(relativeUsageModelPath, modelProjectName), 
-				PCMResourceUtils.createRelativePluginURI(relativeAllocationModelPath, modelProjectName), Optional.empty()); // FIXME: Remove after fixing inheritance
-	}
-
-	private URI createRelativePluginURI(String relativePath) {
-		String path = Paths.get(this.modelProjectName, relativePath).toString();
-		return URI.createPlatformPluginURI(path, false);
+		this.analysisData = analysisData;
+    }
+	
+	@Override
+	public boolean setupAnalysis() {
+		return true;
 	}
 
 	@Override
-	public boolean initalizeAnalysis() {
-		boolean initSuccessful = super.initalizeAnalysis();
-
-		try {
-			this.repositoryModel = (Repository) PCMAnalysisUtils.loadModelContent(repositoryModelURI);
-			this.systemModel = (System) PCMAnalysisUtils.loadModelContent(systemModleURI);
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-			return false;
-		}
+	public boolean initializeAnalysis() {
+		boolean initSuccessful = super.initializeAnalysis();
 		
 		this.actionSequences = super.findAllSequences();
-		this.propagationHelper = new PropagationHelper(this.actionSequences, resourceLoader);
+		this.propagationHelper = new PropagationHelper(this.actionSequences, analysisData.getResourceLoader());
 		return initSuccessful;
+	}
+	
+	private Repository getRepositoryModel() {
+		return this.getSystemModel().getAssemblyContexts__ComposedStructure().get(0).getEncapsulatedComponent__AssemblyContext().getRepository__RepositoryComponent();
+	}
+	
+	private System getSystemModel() {
+		return analysisData.getResourceLoader().getAllocation().getSystem_Allocation();
 	}
 
 	public List<UncertaintyImpact<?>> propagate() {
@@ -200,7 +177,7 @@ public class StandalonePCMUncertaintyImpactAnalysis extends StandalonePCMDataFlo
 	}
 
 	public void addInterfaceUncertainty(String id) {
-		var interfaze = this.propagationHelper.findInterface(id, this.repositoryModel);
+		var interfaze = this.propagationHelper.findInterface(id, this.getRepositoryModel());
 
 		if (interfaze.isEmpty()) {
 			throw new IllegalArgumentException("Unable to find the interface with the given ID.");
@@ -210,7 +187,7 @@ public class StandalonePCMUncertaintyImpactAnalysis extends StandalonePCMDataFlo
 	}
 
 	public void addConnectorUncertainty(String id) {
-		var connector = this.propagationHelper.findConnector(id, this.systemModel);
+		var connector = this.propagationHelper.findConnector(id, this.getSystemModel());
 
 		if (connector.isEmpty()) {
 			throw new IllegalArgumentException("Unable to find the connector with the given ID.");

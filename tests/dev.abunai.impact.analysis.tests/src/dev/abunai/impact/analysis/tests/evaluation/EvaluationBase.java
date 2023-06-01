@@ -5,7 +5,7 @@ import java.util.function.BiPredicate;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.pcm.PCMActionSequence;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.PCMActionSequence;
 
 import dev.abunai.impact.analysis.tests.TestBase;
 
