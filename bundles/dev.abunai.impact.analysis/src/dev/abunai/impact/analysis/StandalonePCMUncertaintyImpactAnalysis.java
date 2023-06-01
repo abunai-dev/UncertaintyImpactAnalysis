@@ -16,7 +16,9 @@ import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.Abstra
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.AbstractActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.ActionSequence;
 import org.palladiosimulator.pcm.repository.Repository;
+import org.palladiosimulator.pcm.repository.RepositoryPackage;
 import org.palladiosimulator.pcm.system.System;
+import org.palladiosimulator.pcm.system.SystemPackage;
 
 import dev.abunai.impact.analysis.model.impact.UncertaintyImpact;
 import dev.abunai.impact.analysis.model.source.ActorUncertaintySource;
@@ -35,14 +37,14 @@ public class StandalonePCMUncertaintyImpactAnalysis extends AbstractStandalonePC
 	private PropagationHelper propagationHelper = null;
 	private List<UncertaintySource<?>> uncertaintySources = new ArrayList<>();
 	
-	public StandalonePCMUncertaintyImpactAnalysis(String modelProjectName, Class<? extends Plugin> pluginActivator, AnalysisData analysisData) {
-		super(analysisData,
-				Logger.getLogger(StandalonePCMUncertaintyImpactAnalysis.class),
-				modelProjectName, pluginActivator);
-		
+	public StandalonePCMUncertaintyImpactAnalysis(String modelProjectName, Class<? extends Plugin> pluginActivator,
+			AnalysisData analysisData) {
+		super(analysisData, Logger.getLogger(StandalonePCMUncertaintyImpactAnalysis.class), modelProjectName,
+				pluginActivator);
+
 		this.analysisData = analysisData;
-    }
-	
+	}
+
 	@Override
 	public boolean setupAnalysis() {
 		return true;
@@ -51,18 +53,40 @@ public class StandalonePCMUncertaintyImpactAnalysis extends AbstractStandalonePC
 	@Override
 	public boolean initializeAnalysis() {
 		boolean initSuccessful = super.initializeAnalysis();
-		
+
 		this.actionSequences = super.findAllSequences();
 		this.propagationHelper = new PropagationHelper(this.actionSequences, analysisData.getResourceLoader());
 		return initSuccessful;
 	}
-	
+
 	private Repository getRepositoryModel() {
-		return this.getSystemModel().getAssemblyContexts__ComposedStructure().get(0).getEncapsulatedComponent__AssemblyContext().getRepository__RepositoryComponent();
+		List<Repository> allRepositories = analysisData.getResourceLoader()
+				.lookupElementOfType(RepositoryPackage.eINSTANCE.getRepository())
+				.stream()
+				.filter(Repository.class::isInstance)
+				.map(Repository.class::cast)
+				.toList();
+		
+		if(allRepositories.size() == 1) {
+			return allRepositories.get(0);
+		} else {
+			throw new IllegalStateException("More than one repository model found in the loaded resources.");
+		}
 	}
-	
+
 	private System getSystemModel() {
-		return analysisData.getResourceLoader().getAllocation().getSystem_Allocation();
+		List<System> allSystems = analysisData.getResourceLoader()
+				.lookupElementOfType(SystemPackage.eINSTANCE.getSystem())
+				.stream()
+				.filter(System.class::isInstance)
+				.map(System.class::cast)
+				.toList();
+		
+		if(allSystems.size() == 1) {
+			return allSystems.get(0);
+		} else {
+			throw new IllegalStateException("More than one assembly model found in the loaded resources.");
+		}
 	}
 
 	public List<UncertaintyImpact<?>> propagate() {
@@ -109,8 +133,8 @@ public class StandalonePCMUncertaintyImpactAnalysis extends AbstractStandalonePC
 				impactSet.add(actionSequence);
 			}
 		}
-		
-		if(distinct) {
+
+		if (distinct) {
 			Set<ActionSequence> entriesToRemove = new HashSet<ActionSequence>();
 			for (ActionSequence actionSequence : impactSet) {
 				List<ActionSequence> similarDataFlows = impactSet.stream().filter(it -> getActionSequenceIndex(
@@ -141,7 +165,7 @@ public class StandalonePCMUncertaintyImpactAnalysis extends AbstractStandalonePC
 				return i;
 			}
 		}
-		
+
 		return -1;
 	}
 
