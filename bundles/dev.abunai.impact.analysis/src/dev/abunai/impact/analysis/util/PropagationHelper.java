@@ -26,6 +26,7 @@ import org.palladiosimulator.pcm.repository.Repository;
 import org.palladiosimulator.pcm.resourceenvironment.ResourceContainer;
 import org.palladiosimulator.pcm.resourceenvironment.ResourceEnvironment;
 import org.palladiosimulator.pcm.resourceenvironment.ResourceenvironmentPackage;
+import org.palladiosimulator.pcm.seff.AbstractAction;
 import org.palladiosimulator.pcm.seff.ResourceDemandingSEFF;
 import org.palladiosimulator.pcm.seff.StartAction;
 import org.palladiosimulator.pcm.system.System;
@@ -78,7 +79,7 @@ public class PropagationHelper {
 				.map(ResourceEnvironment.class::cast)
 				.findFirst();
 		
-		var resourceContainer = resourceEnvironment.get().getResourceContainer_ResourceEnvironment().stream()
+		var<? extends Entity> resourceContainer = resourceEnvironment.get().getResourceContainer_ResourceEnvironment().stream()
 		.filter(it -> it.getId().equals(id))
 		.findFirst();
 		
@@ -98,7 +99,7 @@ public class PropagationHelper {
 
 		for (ActionSequence sequence : actionSequences) {
 			@SuppressWarnings("unchecked")
-			var candidates = sequence.getElements().stream().map(AbstractPCMActionSequenceElement.class::cast)
+			var<SEFFActionSequenceElement> candidates = sequence.getElements().stream().map(AbstractPCMActionSequenceElement.class::cast)
 					.filter(it -> it instanceof SEFFActionSequenceElement)
 					.filter(it -> (it.getElement() instanceof StartAction))
 					.filter(it -> it.getContext().contains(component))
@@ -114,7 +115,7 @@ public class PropagationHelper {
 		List<AbstractPCMActionSequenceElement<?>> matches = new ArrayList<>();
 
 		for (ActionSequence sequence : actionSequences) {
-			var candidates = sequence.getElements().stream().map(AbstractPCMActionSequenceElement.class::cast)
+			var<AbstractPCMActionSequenceElement> candidates = sequence.getElements().stream().map(AbstractPCMActionSequenceElement.class::cast)
 					.filter(it -> it.getElement().equals(action)).map(it -> (AbstractPCMActionSequenceElement<?>) it)
 					.toList();
 
@@ -146,11 +147,11 @@ public class PropagationHelper {
 		List<CallingSEFFActionSequenceElement> matches = new ArrayList<>();
 
 		for (ActionSequence sequence : actionSequences) {
-			var externalCalls = sequence.getElements().stream()
+			var<CallingSEFFActionSequenceElement> externalCalls = sequence.getElements().stream()
 					.filter(CallingSEFFActionSequenceElement.class::isInstance)
 					.map(CallingSEFFActionSequenceElement.class::cast).toList();
 
-			var externalCallCandidates = externalCalls.stream().filter(it -> interfaze
+			var<CallingSEFFActionSequenceElement> externalCallCandidates = externalCalls.stream().filter(it -> interfaze
 					.getSignatures__OperationInterface().contains(it.getElement().getCalledService_ExternalService()))
 					.toList();
 			matches.addAll(externalCallCandidates);
@@ -234,7 +235,19 @@ public class PropagationHelper {
 					.map(it -> it.getAssemblyContext_AllocationContext())
 					.toList();
 			
-			return contextsDeployedOnResource.stream().map(this::findStartActionsOfAssemblyContext).flatMap(Collection::stream).toList();
+			List<SEFFActionSequenceElement<?>> matches = new ArrayList<>();
+
+			for (ActionSequence sequence : actionSequences) {
+				var candidates = sequence.getElements().stream()
+						.filter(SEFFActionSequenceElement.class::isInstance)
+						.map(it -> (SEFFActionSequenceElement<?>) it)
+						.filter(it -> it.getContext().stream().anyMatch(contextsDeployedOnResource::contains))
+						.toList();
+
+				matches.addAll(candidates);
+			}
+
+			return matches;
 			
 		} else {
 			throw new IllegalArgumentException("Actor must be an usage scenario or a resource container.");
