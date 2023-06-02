@@ -191,12 +191,12 @@ public class StandalonePCMUncertaintyImpactAnalysis extends AbstractStandalonePC
 	}
 
 	public void addActorUncertainty(String id) {
-		var annotation = this.propagationHelper.findEnumCharacteristicAnnotation(id);
+		var actor = this.propagationHelper.findResourceContainerOrUsageScenario(id);
 
-		if (annotation.isEmpty()) {
-			throw new IllegalArgumentException("Unable to find the characteristic annotation with the given ID.");
+		if (actor.isEmpty()) {
+			throw new IllegalArgumentException("Unable to find resource container or usage scenario with the given ID.");
 		} else {
-			this.uncertaintySources.add(new ActorUncertaintySource(annotation.get(), propagationHelper));
+			this.uncertaintySources.add(new ActorUncertaintySource(actor.get(), propagationHelper));
 		}
 	}
 

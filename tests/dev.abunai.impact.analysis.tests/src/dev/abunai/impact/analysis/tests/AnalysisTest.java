@@ -34,9 +34,9 @@ public class AnalysisTest extends TestBase {
 		assertEquals(1, result.size());
 	}
 
-	@Test @Deprecated
+	@Test
 	public void testActorUncertainty() {
-		analysis.addActorUncertainty("_d3OrYIThEeywmO_IpTxeAg"); // On-Premise Server
+		analysis.addActorUncertainty("_qvz80ITgEeywmO_IpTxeAg");
 		var result = analysis.propagate();
 		printResults(result, true, true, true, false);
 
