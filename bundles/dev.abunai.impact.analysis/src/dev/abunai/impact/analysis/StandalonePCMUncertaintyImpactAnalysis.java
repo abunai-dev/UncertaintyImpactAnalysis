@@ -36,7 +36,7 @@ public class StandalonePCMUncertaintyImpactAnalysis extends AbstractStandalonePC
 	private List<ActionSequence> actionSequences = null;
 	private PropagationHelper propagationHelper = null;
 	private List<UncertaintySource<?>> uncertaintySources = new ArrayList<>();
-	
+
 	public StandalonePCMUncertaintyImpactAnalysis(String modelProjectName, Class<? extends Plugin> pluginActivator,
 			AnalysisData analysisData) {
 		super(analysisData, Logger.getLogger(StandalonePCMUncertaintyImpactAnalysis.class), modelProjectName,
@@ -61,13 +61,10 @@ public class StandalonePCMUncertaintyImpactAnalysis extends AbstractStandalonePC
 
 	private Repository getRepositoryModel() {
 		List<Repository> allRepositories = analysisData.getResourceLoader()
-				.lookupElementOfType(RepositoryPackage.eINSTANCE.getRepository())
-				.stream()
-				.filter(Repository.class::isInstance)
-				.map(Repository.class::cast)
-				.toList();
-		
-		if(allRepositories.size() == 1) {
+				.lookupElementOfType(RepositoryPackage.eINSTANCE.getRepository()).stream()
+				.filter(Repository.class::isInstance).map(Repository.class::cast).toList();
+
+		if (allRepositories.size() == 1) {
 			return allRepositories.get(0);
 		} else {
 			throw new IllegalStateException("More than one repository model found in the loaded resources.");
@@ -76,13 +73,10 @@ public class StandalonePCMUncertaintyImpactAnalysis extends AbstractStandalonePC
 
 	private System getSystemModel() {
 		List<System> allSystems = analysisData.getResourceLoader()
-				.lookupElementOfType(SystemPackage.eINSTANCE.getSystem())
-				.stream()
-				.filter(System.class::isInstance)
-				.map(System.class::cast)
-				.toList();
-		
-		if(allSystems.size() == 1) {
+				.lookupElementOfType(SystemPackage.eINSTANCE.getSystem()).stream().filter(System.class::isInstance)
+				.map(System.class::cast).toList();
+
+		if (allSystems.size() == 1) {
 			return allSystems.get(0);
 		} else {
 			throw new IllegalStateException("More than one assembly model found in the loaded resources.");
@@ -194,7 +188,8 @@ public class StandalonePCMUncertaintyImpactAnalysis extends AbstractStandalonePC
 		var actor = this.propagationHelper.findResourceContainerOrUsageScenario(id);
 
 		if (actor.isEmpty()) {
-			throw new IllegalArgumentException("Unable to find resource container or usage scenario with the given ID.");
+			throw new IllegalArgumentException(
+					"Unable to find resource container or usage scenario with the given ID.");
 		} else {
 			this.uncertaintySources.add(new ActorUncertaintySource(actor.get(), propagationHelper));
 		}

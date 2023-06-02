@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Objects;
 
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.AbstractPCMActionSequenceElement;
-import org.palladiosimulator.dataflow.confidentiality.pcm.model.confidentiality.characteristics.EnumCharacteristic;
 import org.palladiosimulator.pcm.core.entity.Entity;
 
 import dev.abunai.impact.analysis.model.impact.ActorUncertaintyImpact;
@@ -29,7 +28,8 @@ public class ActorUncertaintySource extends UncertaintySource<Entity> {
 
 	@Override
 	public List<ActorUncertaintyImpact> propagate() {
-		List<? extends AbstractPCMActionSequenceElement<?>> processes = propagationHelper.findProcessesThatRepresentResourceContainerOrUsageScenario(this.actor);
+		List<? extends AbstractPCMActionSequenceElement<?>> processes = propagationHelper
+				.findProcessesThatRepresentResourceContainerOrUsageScenario(this.actor);
 		return processes.stream().map(it -> new ActorUncertaintyImpact(it, this, this.propagationHelper)).toList();
 	}
 

@@ -16,7 +16,6 @@ import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.A
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.ActionSequence;
 import org.palladiosimulator.dataflow.confidentiality.analysis.resource.ResourceLoader;
 import org.palladiosimulator.pcm.allocation.Allocation;
-import org.palladiosimulator.pcm.allocation.AllocationContext;
 import org.palladiosimulator.pcm.allocation.AllocationPackage;
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
 import org.palladiosimulator.pcm.core.composition.Connector;
@@ -26,11 +25,9 @@ import org.palladiosimulator.pcm.repository.Repository;
 import org.palladiosimulator.pcm.resourceenvironment.ResourceContainer;
 import org.palladiosimulator.pcm.resourceenvironment.ResourceEnvironment;
 import org.palladiosimulator.pcm.resourceenvironment.ResourceenvironmentPackage;
-import org.palladiosimulator.pcm.seff.AbstractAction;
 import org.palladiosimulator.pcm.seff.ResourceDemandingSEFF;
 import org.palladiosimulator.pcm.seff.StartAction;
 import org.palladiosimulator.pcm.system.System;
-import org.palladiosimulator.pcm.system.SystemPackage;
 import org.palladiosimulator.pcm.usagemodel.UsageScenario;
 import org.palladiosimulator.pcm.usagemodel.UsagemodelPackage;
 
@@ -55,7 +52,7 @@ public class PropagationHelper {
 			var candidates = sequence.getElements().stream().map(AbstractPCMActionSequenceElement.class::cast)
 					.filter(it -> EcoreUtil.getID(it.getElement()).equals(id)).toList();
 
-			if(candidates.size() > 0) {
+			if (candidates.size() > 0) {
 				return candidates.stream().map(AbstractPCMActionSequenceElement::getElement)
 						.filter(Entity.class::isInstance).map(Entity.class::cast).findFirst();
 			}
@@ -72,25 +69,21 @@ public class PropagationHelper {
 	public Optional<Connector> findConnector(String id, System system) {
 		return system.getConnectors__ComposedStructure().stream().filter(it -> it.getId().equals(id)).findFirst();
 	}
-	
+
 	public Optional<? extends Entity> findResourceContainerOrUsageScenario(String id) {
-		var resourceEnvironment = this.resourceLoader.lookupElementOfType(ResourceenvironmentPackage.eINSTANCE.getResourceEnvironment()).stream()
-				.filter(ResourceEnvironment.class::isInstance)
-				.map(ResourceEnvironment.class::cast)
-				.findFirst();
-		
-		var<? extends Entity> resourceContainer = resourceEnvironment.get().getResourceContainer_ResourceEnvironment().stream()
-		.filter(it -> it.getId().equals(id))
-		.findFirst();
-		
-		if(resourceContainer.isPresent()) {
+		var resourceEnvironment = this.resourceLoader
+				.lookupElementOfType(ResourceenvironmentPackage.eINSTANCE.getResourceEnvironment()).stream()
+				.filter(ResourceEnvironment.class::isInstance).map(ResourceEnvironment.class::cast).findFirst();
+
+		var resourceContainer = resourceEnvironment.get().getResourceContainer_ResourceEnvironment().stream()
+				.filter(it -> it.getId().equals(id)).findFirst();
+
+		if (resourceContainer.isPresent()) {
 			return resourceContainer;
 		} else {
 			return this.resourceLoader.lookupElementOfType(UsagemodelPackage.eINSTANCE.getUsageScenario()).stream()
-					.filter(UsageScenario.class::isInstance)
-					.map(UsageScenario.class::cast)
-					.filter(it -> it.getId().equals(id))
-					.findFirst();
+					.filter(UsageScenario.class::isInstance).map(UsageScenario.class::cast)
+					.filter(it -> it.getId().equals(id)).findFirst();
 		}
 	}
 
@@ -99,7 +92,7 @@ public class PropagationHelper {
 
 		for (ActionSequence sequence : actionSequences) {
 			@SuppressWarnings("unchecked")
-			var<SEFFActionSequenceElement> candidates = sequence.getElements().stream().map(AbstractPCMActionSequenceElement.class::cast)
+			var candidates = sequence.getElements().stream().map(AbstractPCMActionSequenceElement.class::cast)
 					.filter(it -> it instanceof SEFFActionSequenceElement)
 					.filter(it -> (it.getElement() instanceof StartAction))
 					.filter(it -> it.getContext().contains(component))
@@ -115,7 +108,7 @@ public class PropagationHelper {
 		List<AbstractPCMActionSequenceElement<?>> matches = new ArrayList<>();
 
 		for (ActionSequence sequence : actionSequences) {
-			var<AbstractPCMActionSequenceElement> candidates = sequence.getElements().stream().map(AbstractPCMActionSequenceElement.class::cast)
+			var candidates = sequence.getElements().stream().map(AbstractPCMActionSequenceElement.class::cast)
 					.filter(it -> it.getElement().equals(action)).map(it -> (AbstractPCMActionSequenceElement<?>) it)
 					.toList();
 
@@ -147,11 +140,11 @@ public class PropagationHelper {
 		List<CallingSEFFActionSequenceElement> matches = new ArrayList<>();
 
 		for (ActionSequence sequence : actionSequences) {
-			var<CallingSEFFActionSequenceElement> externalCalls = sequence.getElements().stream()
+			var externalCalls = sequence.getElements().stream()
 					.filter(CallingSEFFActionSequenceElement.class::isInstance)
 					.map(CallingSEFFActionSequenceElement.class::cast).toList();
 
-			var<CallingSEFFActionSequenceElement> externalCallCandidates = externalCalls.stream().filter(it -> interfaze
+			var externalCallCandidates = externalCalls.stream().filter(it -> interfaze
 					.getSignatures__OperationInterface().contains(it.getElement().getCalledService_ExternalService()))
 					.toList();
 			matches.addAll(externalCallCandidates);
@@ -204,51 +197,45 @@ public class PropagationHelper {
 	public List<? extends AbstractPCMActionSequenceElement<?>> findProcessesThatRepresentResourceContainerOrUsageScenario(
 			Entity actor) {
 
-		if(actor instanceof UsageScenario usageScenario) {
+		if (actor instanceof UsageScenario usageScenario) {
 			List<CallingUserActionSequenceElement> matches = new ArrayList<>();
 
-			for(ActionSequence sequence : actionSequences) {
-				var callingUserActions = sequence.getElements().stream()
-				.filter(CallingUserActionSequenceElement.class::isInstance)
-				.map(CallingUserActionSequenceElement.class::cast)
-				.toList();
-				
-				List<CallingUserActionSequenceElement> candidates = callingUserActions.stream()
-				.filter(it -> it.getElement().getScenarioBehaviour_AbstractUserAction().getUsageScenario_SenarioBehaviour().equals(usageScenario))
-				.toList();
-				
-				matches.addAll(candidates);
-			}
-			
-			return matches;
-			
-		} else if (actor instanceof ResourceContainer resourceContainer) {
-			
-			var allocationModel = resourceLoader.lookupElementOfType(AllocationPackage.eINSTANCE.getAllocation())
-					.stream()
-					.filter(Allocation.class::isInstance)
-					.map(Allocation.class::cast)
-					.findFirst();
-			
-			var contextsDeployedOnResource = allocationModel.get().getAllocationContexts_Allocation().stream()
-					.filter(it -> it.getResourceContainer_AllocationContext().equals(resourceContainer))
-					.map(it -> it.getAssemblyContext_AllocationContext())
-					.toList();
-			
-			List<SEFFActionSequenceElement<?>> matches = new ArrayList<>();
-
 			for (ActionSequence sequence : actionSequences) {
-				var candidates = sequence.getElements().stream()
-						.filter(SEFFActionSequenceElement.class::isInstance)
-						.map(it -> (SEFFActionSequenceElement<?>) it)
-						.filter(it -> it.getContext().stream().anyMatch(contextsDeployedOnResource::contains))
+				var callingUserActions = sequence.getElements().stream()
+						.filter(CallingUserActionSequenceElement.class::isInstance)
+						.map(CallingUserActionSequenceElement.class::cast).toList();
+
+				List<CallingUserActionSequenceElement> candidates = callingUserActions.stream()
+						.filter(it -> it.getElement().getScenarioBehaviour_AbstractUserAction()
+								.getUsageScenario_SenarioBehaviour().equals(usageScenario))
 						.toList();
 
 				matches.addAll(candidates);
 			}
 
 			return matches;
-			
+
+		} else if (actor instanceof ResourceContainer resourceContainer) {
+
+			var allocationModel = resourceLoader.lookupElementOfType(AllocationPackage.eINSTANCE.getAllocation())
+					.stream().filter(Allocation.class::isInstance).map(Allocation.class::cast).findFirst();
+
+			var contextsDeployedOnResource = allocationModel.get().getAllocationContexts_Allocation().stream()
+					.filter(it -> it.getResourceContainer_AllocationContext().equals(resourceContainer))
+					.map(it -> it.getAssemblyContext_AllocationContext()).toList();
+
+			List<SEFFActionSequenceElement<?>> matches = new ArrayList<>();
+
+			for (ActionSequence sequence : actionSequences) {
+				var candidates = sequence.getElements().stream().filter(SEFFActionSequenceElement.class::isInstance)
+						.map(it -> (SEFFActionSequenceElement<?>) it)
+						.filter(it -> it.getContext().stream().anyMatch(contextsDeployedOnResource::contains)).toList();
+
+				matches.addAll(candidates);
+			}
+
+			return matches;
+
 		} else {
 			throw new IllegalArgumentException("Actor must be an usage scenario or a resource container.");
 		}

@@ -5,7 +5,6 @@ import java.util.function.BiPredicate;
 
 public class EvaluationScenario2 extends EvaluationBase {
 
-
 	@Override
 	protected String getFolderName() {
 		return "CoronaWarnApp_UncertaintyScenario2";
@@ -45,5 +44,4 @@ public class EvaluationScenario2 extends EvaluationBase {
 		};
 	}
 
-	
 }

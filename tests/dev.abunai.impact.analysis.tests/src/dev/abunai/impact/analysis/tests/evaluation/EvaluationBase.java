@@ -16,7 +16,7 @@ public abstract class EvaluationBase extends TestBase {
 	abstract String getScenarioName();
 
 	abstract BiPredicate<List<String>, List<String>> getConstraint();
-	
+
 	@Override
 	protected String getBaseFolder() {
 		return "casestudies/CaseStudy-CoronaWarnApp";
@@ -56,9 +56,9 @@ public abstract class EvaluationBase extends TestBase {
 	@Test
 	public void printAllDataFlows() {
 		var actionSequences = analysis.findAllSequences();
-		
+
 		System.out.println("All data flows:");
-		
+
 		for (int i = 0; i < actionSequences.size(); i++) {
 			System.out.println(formatDataFlow(i, new PCMActionSequence(actionSequences.get(i)), true));
 		}

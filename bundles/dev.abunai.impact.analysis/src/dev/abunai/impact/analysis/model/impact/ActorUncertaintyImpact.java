@@ -9,7 +9,7 @@ import org.palladiosimulator.pcm.core.entity.Entity;
 import dev.abunai.impact.analysis.model.source.UncertaintySource;
 import dev.abunai.impact.analysis.util.PropagationHelper;
 
-public class ActorUncertaintyImpact extends UncertaintyImpact<Entity>{
+public class ActorUncertaintyImpact extends UncertaintyImpact<Entity> {
 
 	private final AbstractPCMActionSequenceElement<?> affectedElement;
 	private final UncertaintySource<Entity> origin;
@@ -22,7 +22,6 @@ public class ActorUncertaintyImpact extends UncertaintyImpact<Entity>{
 		this.propagationHelper = propagationHelper;
 	}
 
-	
 	@Override
 	public UncertaintySource<Entity> getOrigin() {
 		return this.origin;

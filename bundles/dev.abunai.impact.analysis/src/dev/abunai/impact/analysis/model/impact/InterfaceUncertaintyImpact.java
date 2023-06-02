@@ -21,7 +21,7 @@ public class InterfaceUncertaintyImpact extends UncertaintyImpact<OperationInter
 		this.origin = origin;
 		this.propagationHelper = propagationHelper;
 	}
-	
+
 	@Override
 	public UncertaintySource<OperationInterface> getOrigin() {
 		return this.origin;

@@ -27,23 +27,28 @@ public abstract class TestBase {
 	protected abstract String getFolderName();
 
 	protected abstract String getFilesName();
-	
+
 	protected String getBaseFolder() {
 		return "models";
 	}
-	
+
 	@BeforeEach
 	public void setup() {
-		final var usageModelPath = Paths.get(getBaseFolder(), getFolderName(), getFilesName() + ".usagemodel").toString();
-		final var allocationPath = Paths.get(getBaseFolder(), getFolderName(), getFilesName() + ".allocation").toString();
+		final var usageModelPath = Paths.get(getBaseFolder(), getFolderName(), getFilesName() + ".usagemodel")
+				.toString();
+		final var allocationPath = Paths.get(getBaseFolder(), getFolderName(), getFilesName() + ".allocation")
+				.toString();
 
 		// FIXME: Write proper builder instead
-		var resourceLoader = new PCMURIResourceLoader(PCMResourceUtils.createRelativePluginURI(usageModelPath, TEST_MODEL_PROJECT_NAME), 
+		var resourceLoader = new PCMURIResourceLoader(
+				PCMResourceUtils.createRelativePluginURI(usageModelPath, TEST_MODEL_PROJECT_NAME),
 				PCMResourceUtils.createRelativePluginURI(allocationPath, TEST_MODEL_PROJECT_NAME), Optional.empty());
-		
-		var analysisData = new AnalysisData(resourceLoader, new LegacyPCMNodeCharacteristicsCalculator(resourceLoader), new PCMDataCharacteristicsCalculatorFactory(resourceLoader));
-		
-		var analysis = new StandalonePCMUncertaintyImpactAnalysis(TEST_MODEL_PROJECT_NAME, Activator.class, analysisData);
+
+		var analysisData = new AnalysisData(resourceLoader, new LegacyPCMNodeCharacteristicsCalculator(resourceLoader),
+				new PCMDataCharacteristicsCalculatorFactory(resourceLoader));
+
+		var analysis = new StandalonePCMUncertaintyImpactAnalysis(TEST_MODEL_PROJECT_NAME, Activator.class,
+				analysisData);
 		analysis.initializeAnalysis();
 
 		this.analysis = analysis;

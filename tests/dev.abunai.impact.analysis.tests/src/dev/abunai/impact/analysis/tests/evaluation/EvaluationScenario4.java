@@ -5,7 +5,6 @@ import java.util.function.BiPredicate;
 
 public class EvaluationScenario4 extends EvaluationBase {
 
-
 	@Override
 	protected String getFolderName() {
 		return "CoronaWarnApp_UncertaintyScenario4";
@@ -32,17 +31,17 @@ public class EvaluationScenario4 extends EvaluationBase {
 	BiPredicate<List<String>, List<String>> getConstraint() {
 		return (List<String> dataLiterals, List<String> nodeLiterals) -> {
 			// S4_1
-			if(dataLiterals.contains("KeyIssue")) {
+			if (dataLiterals.contains("KeyIssue")) {
 				return true;
 			}
-			
+
 			// S4_2
-			if(dataLiterals.contains("RetrievedConfidentialDetails")) {
+			if (dataLiterals.contains("RetrievedConfidentialDetails")) {
 				return true;
 			}
-			
+
 			return false;
 		};
 	}
-	
+
 }
