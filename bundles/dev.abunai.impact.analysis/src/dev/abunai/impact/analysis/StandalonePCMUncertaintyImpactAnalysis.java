@@ -15,10 +15,6 @@ import org.palladiosimulator.dataflow.confidentiality.analysis.core.AbstractStan
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.AbstractPCMActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.AbstractActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.ActionSequence;
-import org.palladiosimulator.pcm.repository.Repository;
-import org.palladiosimulator.pcm.repository.RepositoryPackage;
-import org.palladiosimulator.pcm.system.System;
-import org.palladiosimulator.pcm.system.SystemPackage;
 
 import dev.abunai.impact.analysis.model.impact.UncertaintyImpact;
 import dev.abunai.impact.analysis.model.source.ActorUncertaintySource;
@@ -32,9 +28,10 @@ import dev.abunai.impact.analysis.util.PropagationHelper;
 public class StandalonePCMUncertaintyImpactAnalysis extends AbstractStandalonePCMDataFlowConfidentialityAnalysis {
 
 	private final AnalysisData analysisData;
+	private List<UncertaintySource<?>> uncertaintySources = new ArrayList<>();
+
 	private List<ActionSequence> actionSequences = null;
 	private PropagationHelper propagationHelper = null;
-	private List<UncertaintySource<?>> uncertaintySources = new ArrayList<>();
 
 	public StandalonePCMUncertaintyImpactAnalysis(String modelProjectName, Class<? extends Plugin> pluginActivator,
 			AnalysisData analysisData) {
@@ -51,34 +48,12 @@ public class StandalonePCMUncertaintyImpactAnalysis extends AbstractStandalonePC
 
 	@Override
 	public boolean initializeAnalysis() {
-		boolean initSuccessful = super.initializeAnalysis();
-
-		this.actionSequences = super.findAllSequences();
-		this.propagationHelper = new PropagationHelper(this.actionSequences, analysisData.getResourceLoader());
-		return initSuccessful;
-	}
-
-	private Repository getRepositoryModel() {
-		List<Repository> allRepositories = analysisData.getResourceLoader()
-				.lookupElementOfType(RepositoryPackage.eINSTANCE.getRepository()).stream()
-				.filter(Repository.class::isInstance).map(Repository.class::cast).toList();
-
-		if (allRepositories.size() == 1) {
-			return allRepositories.get(0);
+		if (super.initializeAnalysis()) {
+			this.actionSequences = super.findAllSequences();
+			this.propagationHelper = new PropagationHelper(this.actionSequences, analysisData.getResourceLoader());
+			return true;
 		} else {
-			throw new IllegalStateException("More than one repository model found in the loaded resources.");
-		}
-	}
-
-	private System getSystemModel() {
-		List<System> allSystems = analysisData.getResourceLoader()
-				.lookupElementOfType(SystemPackage.eINSTANCE.getSystem()).stream().filter(System.class::isInstance)
-				.map(System.class::cast).toList();
-
-		if (allSystems.size() == 1) {
-			return allSystems.get(0);
-		} else {
-			throw new IllegalStateException("More than one assembly model found in the loaded resources.");
+			return false;
 		}
 	}
 
@@ -195,7 +170,7 @@ public class StandalonePCMUncertaintyImpactAnalysis extends AbstractStandalonePC
 	}
 
 	public void addInterfaceUncertainty(String id) {
-		var interfaze = this.propagationHelper.findInterface(id, this.getRepositoryModel());
+		var interfaze = this.propagationHelper.findInterface(id);
 
 		if (interfaze.isEmpty()) {
 			throw new IllegalArgumentException("Unable to find the interface with the given ID.");
@@ -205,7 +180,7 @@ public class StandalonePCMUncertaintyImpactAnalysis extends AbstractStandalonePC
 	}
 
 	public void addConnectorUncertainty(String id) {
-		var connector = this.propagationHelper.findConnector(id, this.getSystemModel());
+		var connector = this.propagationHelper.findConnector(id);
 
 		if (connector.isEmpty()) {
 			throw new IllegalArgumentException("Unable to find the connector with the given ID.");

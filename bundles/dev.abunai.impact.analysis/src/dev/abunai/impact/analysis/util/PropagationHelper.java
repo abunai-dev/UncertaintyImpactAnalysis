@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.AbstractPCMActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.seff.CallingSEFFActionSequenceElement;
@@ -16,21 +18,22 @@ import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.A
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.ActionSequence;
 import org.palladiosimulator.dataflow.confidentiality.analysis.resource.ResourceLoader;
 import org.palladiosimulator.pcm.allocation.Allocation;
-import org.palladiosimulator.pcm.allocation.AllocationPackage;
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
 import org.palladiosimulator.pcm.core.composition.Connector;
 import org.palladiosimulator.pcm.core.entity.Entity;
+import org.palladiosimulator.pcm.core.entity.NamedElement;
 import org.palladiosimulator.pcm.repository.OperationInterface;
 import org.palladiosimulator.pcm.repository.Repository;
+import org.palladiosimulator.pcm.repository.RepositoryPackage;
 import org.palladiosimulator.pcm.resourceenvironment.ResourceContainer;
 import org.palladiosimulator.pcm.resourceenvironment.ResourceEnvironment;
 import org.palladiosimulator.pcm.resourceenvironment.ResourceenvironmentPackage;
 import org.palladiosimulator.pcm.seff.ResourceDemandingSEFF;
 import org.palladiosimulator.pcm.seff.StartAction;
 import org.palladiosimulator.pcm.system.System;
+import org.palladiosimulator.pcm.system.SystemPackage;
 import org.palladiosimulator.pcm.usagemodel.UsageModel;
 import org.palladiosimulator.pcm.usagemodel.UsageScenario;
-import org.palladiosimulator.pcm.usagemodel.UsagemodelPackage;
 
 public class PropagationHelper {
 
@@ -62,32 +65,26 @@ public class PropagationHelper {
 		return Optional.empty();
 	}
 
-	public Optional<OperationInterface> findInterface(String id, Repository repository) {
-		return repository.getInterfaces__Repository().stream().filter(it -> it.getId().equals(id))
+	public Optional<OperationInterface> findInterface(String id) {
+		return lookupRepositoryModel().getInterfaces__Repository().stream().filter(it -> it.getId().equals(id))
 				.filter(OperationInterface.class::isInstance).map(OperationInterface.class::cast).findFirst();
 	}
 
-	public Optional<Connector> findConnector(String id, System system) {
-		return system.getConnectors__ComposedStructure().stream().filter(it -> it.getId().equals(id)).findFirst();
+	public Optional<Connector> findConnector(String id) {
+		return lookupSystemModel().getConnectors__ComposedStructure().stream().filter(it -> it.getId().equals(id))
+				.findFirst();
 	}
 
 	public Optional<? extends Entity> findResourceContainerOrUsageScenario(String id) {
-		var resourceEnvironment = this.resourceLoader
-				.lookupElementOfType(ResourceenvironmentPackage.eINSTANCE.getResourceEnvironment()).stream()
-				.filter(ResourceEnvironment.class::isInstance).map(ResourceEnvironment.class::cast).findFirst();
-
-		var resourceContainer = resourceEnvironment.get().getResourceContainer_ResourceEnvironment().stream()
+		var resourceContainer = lookupResourceEnvironmentModel().getResourceContainer_ResourceEnvironment().stream()
 				.filter(it -> it.getId().equals(id)).findFirst();
 
 		if (resourceContainer.isPresent()) {
 			return resourceContainer;
 		} else {
-			
-			var usageModel = this.resourceLoader.lookupElementOfType(UsagemodelPackage.eINSTANCE.getUsageModel()).stream()
-					.filter(UsageModel.class::isInstance).map(UsageModel.class::cast).findFirst();
-			
-			return usageModel.get().getUsageScenario_UsageModel().stream()
-					.filter(it -> it.getId().equals(id)).findFirst();
+
+			return lookupUsageModel().getUsageScenario_UsageModel().stream().filter(it -> it.getId().equals(id))
+					.findFirst();
 		}
 	}
 
@@ -221,10 +218,9 @@ public class PropagationHelper {
 
 		} else if (actor instanceof ResourceContainer resourceContainer) {
 
-			var allocationModel = resourceLoader.lookupElementOfType(AllocationPackage.eINSTANCE.getAllocation())
-					.stream().filter(Allocation.class::isInstance).map(Allocation.class::cast).findFirst();
+			var allocationModel = lookupAllocationModel();
 
-			var contextsDeployedOnResource = allocationModel.get().getAllocationContexts_Allocation().stream()
+			var contextsDeployedOnResource = allocationModel.getAllocationContexts_Allocation().stream()
 					.filter(it -> it.getResourceContainer_AllocationContext().equals(resourceContainer))
 					.map(it -> it.getAssemblyContext_AllocationContext()).toList();
 
@@ -243,6 +239,42 @@ public class PropagationHelper {
 		} else {
 			throw new IllegalArgumentException("Actor must be an usage scenario or a resource container.");
 		}
+	}
+
+	private <T extends NamedElement> T lookupPalladioModel(EClass eclazz, Class<T> clazz) {
+		Objects.requireNonNull(eclazz);
+		Objects.requireNonNull(clazz);
+
+		List<T> allPalladioModelsOfGivenType = resourceLoader.lookupElementOfType(eclazz).stream()
+				.filter(clazz::isInstance).map(clazz::cast).toList();
+
+		if (allPalladioModelsOfGivenType.size() == 1) {
+			return allPalladioModelsOfGivenType.get(0);
+		} else {
+			throw new IllegalStateException(String.format(
+					"None or more than one model of type %s found in the loaded resources.", clazz.getSimpleName()));
+		}
+	}
+
+	private Repository lookupRepositoryModel() {
+		return lookupPalladioModel(RepositoryPackage.eINSTANCE.getRepository(), Repository.class);
+	}
+
+	private System lookupSystemModel() {
+		return lookupPalladioModel(SystemPackage.eINSTANCE.getSystem(), System.class);
+	}
+
+	private ResourceEnvironment lookupResourceEnvironmentModel() {
+		return lookupPalladioModel(ResourceenvironmentPackage.eINSTANCE.getResourceEnvironment(),
+				ResourceEnvironment.class);
+	}
+
+	private Allocation lookupAllocationModel() {
+		return resourceLoader.getAllocation();
+	}
+
+	private UsageModel lookupUsageModel() {
+		return resourceLoader.getUsageModel();
 	}
 
 }
