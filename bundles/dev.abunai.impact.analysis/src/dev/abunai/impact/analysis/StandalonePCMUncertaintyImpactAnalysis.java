@@ -29,7 +29,6 @@ import dev.abunai.impact.analysis.model.source.InterfaceUncertaintySource;
 import dev.abunai.impact.analysis.model.source.UncertaintySource;
 import dev.abunai.impact.analysis.util.PropagationHelper;
 
-// FIXME: Fix inheritance, use builder pattern
 public class StandalonePCMUncertaintyImpactAnalysis extends AbstractStandalonePCMDataFlowConfidentialityAnalysis {
 
 	private final AnalysisData analysisData;

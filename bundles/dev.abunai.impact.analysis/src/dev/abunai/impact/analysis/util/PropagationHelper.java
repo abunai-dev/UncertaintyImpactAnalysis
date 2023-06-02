@@ -28,6 +28,7 @@ import org.palladiosimulator.pcm.resourceenvironment.ResourceenvironmentPackage;
 import org.palladiosimulator.pcm.seff.ResourceDemandingSEFF;
 import org.palladiosimulator.pcm.seff.StartAction;
 import org.palladiosimulator.pcm.system.System;
+import org.palladiosimulator.pcm.usagemodel.UsageModel;
 import org.palladiosimulator.pcm.usagemodel.UsageScenario;
 import org.palladiosimulator.pcm.usagemodel.UsagemodelPackage;
 
@@ -81,8 +82,11 @@ public class PropagationHelper {
 		if (resourceContainer.isPresent()) {
 			return resourceContainer;
 		} else {
-			return this.resourceLoader.lookupElementOfType(UsagemodelPackage.eINSTANCE.getUsageScenario()).stream()
-					.filter(UsageScenario.class::isInstance).map(UsageScenario.class::cast)
+			
+			var usageModel = this.resourceLoader.lookupElementOfType(UsagemodelPackage.eINSTANCE.getUsageModel()).stream()
+					.filter(UsageModel.class::isInstance).map(UsageModel.class::cast).findFirst();
+			
+			return usageModel.get().getUsageScenario_UsageModel().stream()
 					.filter(it -> it.getId().equals(id)).findFirst();
 		}
 	}

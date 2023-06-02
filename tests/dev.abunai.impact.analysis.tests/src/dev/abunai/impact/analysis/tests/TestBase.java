@@ -2,19 +2,16 @@ package dev.abunai.impact.analysis.tests;
 
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.palladiosimulator.dataflow.confidentiality.analysis.builder.AnalysisData;
-import org.palladiosimulator.dataflow.confidentiality.analysis.characteristics.node.LegacyPCMNodeCharacteristicsCalculator;
-import org.palladiosimulator.dataflow.confidentiality.analysis.characteristics.variable.PCMDataCharacteristicsCalculatorFactory;
-import org.palladiosimulator.dataflow.confidentiality.analysis.resource.PCMURIResourceLoader;
-import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.ActionSequence;
+import org.palladiosimulator.dataflow.confidentiality.analysis.builder.DataFlowAnalysisBuilder;
+import org.palladiosimulator.dataflow.confidentiality.analysis.builder.pcm.PCMDataFlowConfidentialityAnalysisBuilder;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.AbstractPCMActionSequenceElement;
-import org.palladiosimulator.dataflow.confidentiality.analysis.utils.pcm.PCMResourceUtils;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.ActionSequence;
 
+import dev.abunai.impact.analysis.PCMUncertaintyImpactAnalysisBuilder;
 import dev.abunai.impact.analysis.StandalonePCMUncertaintyImpactAnalysis;
 import dev.abunai.impact.analysis.model.impact.UncertaintyImpact;
 import edu.kit.kastel.dsis.uncertainty.impactanalysis.testmodels.Activator;
@@ -38,19 +35,16 @@ public abstract class TestBase {
 				.toString();
 		final var allocationPath = Paths.get(getBaseFolder(), getFolderName(), getFilesName() + ".allocation")
 				.toString();
+		final var nodeCharacteristicsPath = Paths
+				.get(getBaseFolder(), getFolderName(), getFilesName() + ".nodecharacteristics").toString();
 
-		// FIXME: Write proper builder instead
-		var resourceLoader = new PCMURIResourceLoader(
-				PCMResourceUtils.createRelativePluginURI(usageModelPath, TEST_MODEL_PROJECT_NAME),
-				PCMResourceUtils.createRelativePluginURI(allocationPath, TEST_MODEL_PROJECT_NAME), Optional.empty());
+		var analysis = new DataFlowAnalysisBuilder().standalone().modelProjectName(TEST_MODEL_PROJECT_NAME)
+				.useBuilder(new PCMDataFlowConfidentialityAnalysisBuilder()).usePluginActivator(Activator.class)
+				.useUsageModel(usageModelPath).useAllocationModel(allocationPath)
+				.useNodeCharacteristicsModel(nodeCharacteristicsPath)
+				.useBuilder(new PCMUncertaintyImpactAnalysisBuilder()).build();
 
-		var analysisData = new AnalysisData(resourceLoader, new LegacyPCMNodeCharacteristicsCalculator(resourceLoader),
-				new PCMDataCharacteristicsCalculatorFactory(resourceLoader));
-
-		var analysis = new StandalonePCMUncertaintyImpactAnalysis(TEST_MODEL_PROJECT_NAME, Activator.class,
-				analysisData);
 		analysis.initializeAnalysis();
-
 		this.analysis = analysis;
 	}
 

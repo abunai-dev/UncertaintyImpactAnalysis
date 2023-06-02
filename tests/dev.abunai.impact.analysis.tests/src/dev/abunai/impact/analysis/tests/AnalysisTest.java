@@ -35,12 +35,21 @@ public class AnalysisTest extends TestBase {
 	}
 
 	@Test
-	public void testActorUncertainty() {
+	public void testResourceContainerActorUncertainty() {
 		analysis.addActorUncertainty("_qvz80ITgEeywmO_IpTxeAg");
 		var result = analysis.propagate();
 		printResults(result, true, true, true, false);
 
 		assertEquals(9, result.size());
+	}
+
+	@Test
+	public void testUsageScenarioActorUncertainty() {
+		analysis.addActorUncertainty("_LPnI8CHdEd6lJo4DCALHMw");
+		var result = analysis.propagate();
+		printResults(result, true, true, true, false);
+
+		assertEquals(4, result.size());
 	}
 
 	@Test
