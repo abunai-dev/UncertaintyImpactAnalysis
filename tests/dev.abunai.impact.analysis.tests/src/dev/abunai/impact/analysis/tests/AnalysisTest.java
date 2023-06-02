@@ -36,7 +36,7 @@ public class AnalysisTest extends TestBase {
 
 	@Test @Deprecated
 	public void testActorUncertainty() {
-		analysis.addActorUncertainty("_d3OrYIThEeywmO_IpTxeAg");
+		analysis.addActorUncertainty("_d3OrYIThEeywmO_IpTxeAg"); // On-Premise Server
 		var result = analysis.propagate();
 		printResults(result, true, true, true, false);
 
