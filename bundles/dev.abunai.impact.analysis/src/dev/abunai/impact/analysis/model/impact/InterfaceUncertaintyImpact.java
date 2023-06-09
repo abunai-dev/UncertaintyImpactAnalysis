@@ -1,10 +1,9 @@
 package dev.abunai.impact.analysis.model.impact;
 
 import java.util.List;
-import java.util.Optional;
 
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.ActionSequence;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.pcm.AbstractPCMActionSequenceElement;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.AbstractPCMActionSequenceElement;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.ActionSequence;
 import org.palladiosimulator.pcm.repository.OperationInterface;
 
 import dev.abunai.impact.analysis.model.source.UncertaintySource;
@@ -22,7 +21,7 @@ public class InterfaceUncertaintyImpact extends UncertaintyImpact<OperationInter
 		this.origin = origin;
 		this.propagationHelper = propagationHelper;
 	}
-	
+
 	@Override
 	public UncertaintySource<OperationInterface> getOrigin() {
 		return this.origin;

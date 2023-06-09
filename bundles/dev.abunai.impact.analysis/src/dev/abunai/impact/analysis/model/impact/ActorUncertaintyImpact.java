@@ -1,31 +1,29 @@
 package dev.abunai.impact.analysis.model.impact;
 
 import java.util.List;
-import java.util.Optional;
 
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.ActionSequence;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.pcm.AbstractPCMActionSequenceElement;
-import org.palladiosimulator.dataflow.confidentiality.pcm.model.confidentiality.characteristics.EnumCharacteristic;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.AbstractPCMActionSequenceElement;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.ActionSequence;
+import org.palladiosimulator.pcm.core.entity.Entity;
 
 import dev.abunai.impact.analysis.model.source.UncertaintySource;
 import dev.abunai.impact.analysis.util.PropagationHelper;
 
-public class ActorUncertaintyImpact extends UncertaintyImpact<EnumCharacteristic>{
+public class ActorUncertaintyImpact extends UncertaintyImpact<Entity> {
 
 	private final AbstractPCMActionSequenceElement<?> affectedElement;
-	private final UncertaintySource<EnumCharacteristic> origin;
+	private final UncertaintySource<Entity> origin;
 	private final PropagationHelper propagationHelper;
 
-	public ActorUncertaintyImpact(AbstractPCMActionSequenceElement<?> affectedElement, UncertaintySource<EnumCharacteristic> origin,
+	public ActorUncertaintyImpact(AbstractPCMActionSequenceElement<?> affectedElement, UncertaintySource<Entity> origin,
 			PropagationHelper propagationHelper) {
 		this.affectedElement = affectedElement;
 		this.origin = origin;
 		this.propagationHelper = propagationHelper;
 	}
 
-	
 	@Override
-	public UncertaintySource<EnumCharacteristic> getOrigin() {
+	public UncertaintySource<Entity> getOrigin() {
 		return this.origin;
 	}
 

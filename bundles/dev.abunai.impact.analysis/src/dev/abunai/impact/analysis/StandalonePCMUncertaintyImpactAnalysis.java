@@ -1,27 +1,20 @@
 package dev.abunai.impact.analysis;
 
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Plugin;
-import org.eclipse.emf.common.util.URI;
-import org.palladiosimulator.dataflow.confidentiality.analysis.PCMAnalysisUtils;
-import org.palladiosimulator.dataflow.confidentiality.analysis.StandalonePCMDataFlowConfidentialtyAnalysis;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.AbstractActionSequenceElement;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.ActionSequence;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.pcm.AbstractPCMActionSequenceElement;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.pcm.PCMActionSequence;
-import org.palladiosimulator.pcm.repository.Repository;
-import org.palladiosimulator.pcm.system.System;
+import org.palladiosimulator.dataflow.confidentiality.analysis.builder.AnalysisData;
+import org.palladiosimulator.dataflow.confidentiality.analysis.core.AbstractStandalonePCMDataFlowConfidentialityAnalysis;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.AbstractPCMActionSequenceElement;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.AbstractActionSequenceElement;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.ActionSequence;
 
 import dev.abunai.impact.analysis.model.impact.UncertaintyImpact;
 import dev.abunai.impact.analysis.model.source.ActorUncertaintySource;
@@ -32,51 +25,36 @@ import dev.abunai.impact.analysis.model.source.InterfaceUncertaintySource;
 import dev.abunai.impact.analysis.model.source.UncertaintySource;
 import dev.abunai.impact.analysis.util.PropagationHelper;
 
-public class StandalonePCMUncertaintyImpactAnalysis extends StandalonePCMDataFlowConfidentialtyAnalysis {
+public class StandalonePCMUncertaintyImpactAnalysis extends AbstractStandalonePCMDataFlowConfidentialityAnalysis {
 
-	private final URI repositoryModelURI;
-	private Repository repositoryModel;
-
-	private final URI systemModleURI;
-	private System systemModel;
-
-	private final String modelProjectName;
+	private final AnalysisData analysisData;
+	private List<UncertaintySource<?>> uncertaintySources = new ArrayList<>();
 
 	private List<ActionSequence> actionSequences = null;
 	private PropagationHelper propagationHelper = null;
-	private List<UncertaintySource<?>> uncertaintySources = new ArrayList<>();
 
-	public StandalonePCMUncertaintyImpactAnalysis(String modelProjectName,
-			Class<? extends Plugin> modelProjectActivator, String relativeUsageModelPath,
-			String relativeAllocationModelPath, String relativeRepositoryModelPath, String relativeSystemModelPath) {
+	public StandalonePCMUncertaintyImpactAnalysis(String modelProjectName, Class<? extends Plugin> pluginActivator,
+			AnalysisData analysisData) {
+		super(analysisData, Logger.getLogger(StandalonePCMUncertaintyImpactAnalysis.class), modelProjectName,
+				pluginActivator);
 
-		super(modelProjectName, modelProjectActivator, relativeUsageModelPath, relativeAllocationModelPath);
-		this.modelProjectName = modelProjectName;
-
-		this.repositoryModelURI = createRelativePluginURI(relativeRepositoryModelPath);
-		this.systemModleURI = createRelativePluginURI(relativeSystemModelPath);
-	}
-
-	private URI createRelativePluginURI(String relativePath) {
-		String path = Paths.get(this.modelProjectName, relativePath).toString();
-		return URI.createPlatformPluginURI(path, false);
+		this.analysisData = analysisData;
 	}
 
 	@Override
-	public boolean initalizeAnalysis() {
-		boolean initSuccessful = super.initalizeAnalysis();
+	public boolean setupAnalysis() {
+		return true;
+	}
 
-		try {
-			this.repositoryModel = (Repository) PCMAnalysisUtils.loadModelContent(repositoryModelURI);
-			this.systemModel = (System) PCMAnalysisUtils.loadModelContent(systemModleURI);
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
+	@Override
+	public boolean initializeAnalysis() {
+		if (super.initializeAnalysis()) {
+			this.actionSequences = super.findAllSequences();
+			this.propagationHelper = new PropagationHelper(this.actionSequences, analysisData.getResourceLoader());
+			return true;
+		} else {
 			return false;
 		}
-
-		this.actionSequences = super.findAllSequences();
-		this.propagationHelper = new PropagationHelper(this.actionSequences);
-		return initSuccessful;
 	}
 
 	public List<UncertaintyImpact<?>> propagate() {
@@ -123,8 +101,8 @@ public class StandalonePCMUncertaintyImpactAnalysis extends StandalonePCMDataFlo
 				impactSet.add(actionSequence);
 			}
 		}
-		
-		if(distinct) {
+
+		if (distinct) {
 			Set<ActionSequence> entriesToRemove = new HashSet<ActionSequence>();
 			for (ActionSequence actionSequence : impactSet) {
 				List<ActionSequence> similarDataFlows = impactSet.stream().filter(it -> getActionSequenceIndex(
@@ -155,7 +133,7 @@ public class StandalonePCMUncertaintyImpactAnalysis extends StandalonePCMDataFlo
 				return i;
 			}
 		}
-		
+
 		return -1;
 	}
 
@@ -181,17 +159,18 @@ public class StandalonePCMUncertaintyImpactAnalysis extends StandalonePCMDataFlo
 	}
 
 	public void addActorUncertainty(String id) {
-		var annotation = this.propagationHelper.findEnumCharacteristicAnnotation(id);
+		var actor = this.propagationHelper.findResourceContainerOrUsageScenario(id);
 
-		if (annotation.isEmpty()) {
-			throw new IllegalArgumentException("Unable to find the characteristic annotation with the given ID.");
+		if (actor.isEmpty()) {
+			throw new IllegalArgumentException(
+					"Unable to find resource container or usage scenario with the given ID.");
 		} else {
-			this.uncertaintySources.add(new ActorUncertaintySource(annotation.get(), propagationHelper));
+			this.uncertaintySources.add(new ActorUncertaintySource(actor.get(), propagationHelper));
 		}
 	}
 
 	public void addInterfaceUncertainty(String id) {
-		var interfaze = this.propagationHelper.findInterface(id, this.repositoryModel);
+		var interfaze = this.propagationHelper.findInterface(id);
 
 		if (interfaze.isEmpty()) {
 			throw new IllegalArgumentException("Unable to find the interface with the given ID.");
@@ -201,7 +180,7 @@ public class StandalonePCMUncertaintyImpactAnalysis extends StandalonePCMDataFlo
 	}
 
 	public void addConnectorUncertainty(String id) {
-		var connector = this.propagationHelper.findConnector(id, this.systemModel);
+		var connector = this.propagationHelper.findConnector(id);
 
 		if (connector.isEmpty()) {
 			throw new IllegalArgumentException("Unable to find the connector with the given ID.");

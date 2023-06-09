@@ -3,32 +3,33 @@ package dev.abunai.impact.analysis.model.source;
 import java.util.List;
 import java.util.Objects;
 
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.pcm.AbstractPCMActionSequenceElement;
-import org.palladiosimulator.dataflow.confidentiality.pcm.model.confidentiality.characteristics.EnumCharacteristic;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.AbstractPCMActionSequenceElement;
+import org.palladiosimulator.pcm.core.entity.Entity;
 
 import dev.abunai.impact.analysis.model.impact.ActorUncertaintyImpact;
 import dev.abunai.impact.analysis.util.PropagationHelper;
 
-public class ActorUncertaintySource extends UncertaintySource<EnumCharacteristic> {
+public class ActorUncertaintySource extends UncertaintySource<Entity> {
 
-	private final EnumCharacteristic characteristicAnnotation;
+	private final Entity actor;
 	private final PropagationHelper propagationHelper;
 
-	public ActorUncertaintySource(EnumCharacteristic characteristicAnnotation, PropagationHelper propagationHelper) {
-		Objects.requireNonNull(characteristicAnnotation);
+	public ActorUncertaintySource(Entity actor, PropagationHelper propagationHelper) {
+		Objects.requireNonNull(actor);
 		Objects.requireNonNull(propagationHelper);
-		this.characteristicAnnotation = characteristicAnnotation;
+		this.actor = actor;
 		this.propagationHelper = propagationHelper;
 	}
 
 	@Override
-	public EnumCharacteristic getArchitecturalElement() {
-		return this.characteristicAnnotation;
+	public Entity getArchitecturalElement() {
+		return this.actor;
 	}
 
 	@Override
 	public List<ActorUncertaintyImpact> propagate() {
-		List<AbstractPCMActionSequenceElement<?>> processes = propagationHelper.findProcessesWithAnnotation(this.characteristicAnnotation);
+		List<? extends AbstractPCMActionSequenceElement<?>> processes = propagationHelper
+				.findProcessesThatRepresentResourceContainerOrUsageScenario(this.actor);
 		return processes.stream().map(it -> new ActorUncertaintyImpact(it, this, this.propagationHelper)).toList();
 	}
 
@@ -36,12 +37,5 @@ public class ActorUncertaintySource extends UncertaintySource<EnumCharacteristic
 	public String getUncertaintyType() {
 		return "Actor";
 	}
-	
-	@Override
-	public String toString() {
-		return String.format("%s Uncertainty annotated to %s \"%s\" (%s).", this.getUncertaintyType(),
-				this.getArchitecturalElement().getClass().getSimpleName().replace("Impl", ""),
-				this.getArchitecturalElement().getType().getName(), this.getArchitecturalElement().getId());
-	};
 
 }

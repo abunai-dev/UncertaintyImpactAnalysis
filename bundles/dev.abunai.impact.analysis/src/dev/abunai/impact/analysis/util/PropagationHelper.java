@@ -4,35 +4,45 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.AbstractActionSequenceElement;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.ActionSequence;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.pcm.AbstractPCMActionSequenceElement;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.pcm.CallingSEFFActionSequenceElement;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.pcm.CallingUserActionSequenceElement;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.pcm.SEFFActionSequenceElement;
-import org.palladiosimulator.dataflow.confidentiality.pcm.model.confidentiality.characteristics.EnumCharacteristic;
-import org.palladiosimulator.dataflow.confidentiality.pcm.model.confidentiality.repository.OperationalDataStoreComponent;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.AbstractPCMActionSequenceElement;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.seff.CallingSEFFActionSequenceElement;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.seff.SEFFActionSequenceElement;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.user.CallingUserActionSequenceElement;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.AbstractActionSequenceElement;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.ActionSequence;
+import org.palladiosimulator.dataflow.confidentiality.analysis.resource.ResourceLoader;
+import org.palladiosimulator.pcm.allocation.Allocation;
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
 import org.palladiosimulator.pcm.core.composition.Connector;
 import org.palladiosimulator.pcm.core.entity.Entity;
+import org.palladiosimulator.pcm.core.entity.NamedElement;
 import org.palladiosimulator.pcm.repository.OperationInterface;
 import org.palladiosimulator.pcm.repository.Repository;
-import org.palladiosimulator.pcm.seff.AbstractAction;
+import org.palladiosimulator.pcm.repository.RepositoryPackage;
+import org.palladiosimulator.pcm.resourceenvironment.ResourceContainer;
+import org.palladiosimulator.pcm.resourceenvironment.ResourceEnvironment;
+import org.palladiosimulator.pcm.resourceenvironment.ResourceenvironmentPackage;
 import org.palladiosimulator.pcm.seff.ResourceDemandingSEFF;
 import org.palladiosimulator.pcm.seff.StartAction;
 import org.palladiosimulator.pcm.system.System;
-import org.palladiosimulator.pcm.usagemodel.AbstractUserAction;
+import org.palladiosimulator.pcm.system.SystemPackage;
+import org.palladiosimulator.pcm.usagemodel.UsageModel;
+import org.palladiosimulator.pcm.usagemodel.UsageScenario;
 
 public class PropagationHelper {
 
 	private List<ActionSequence> actionSequences;
+	private final ResourceLoader resourceLoader;
 
-	public PropagationHelper(List<ActionSequence> actionSequences) {
+	public PropagationHelper(List<ActionSequence> actionSequences, ResourceLoader resourceLoader) {
 		this.actionSequences = actionSequences;
+		this.resourceLoader = resourceLoader;
 	}
 
 	public Optional<AssemblyContext> findAssemblyContext(String id) {
@@ -46,7 +56,7 @@ public class PropagationHelper {
 			var candidates = sequence.getElements().stream().map(AbstractPCMActionSequenceElement.class::cast)
 					.filter(it -> EcoreUtil.getID(it.getElement()).equals(id)).toList();
 
-			if(candidates.size() > 0) {
+			if (candidates.size() > 0) {
 				return candidates.stream().map(AbstractPCMActionSequenceElement::getElement)
 						.filter(Entity.class::isInstance).map(Entity.class::cast).findFirst();
 			}
@@ -55,34 +65,27 @@ public class PropagationHelper {
 		return Optional.empty();
 	}
 
-	public Optional<EnumCharacteristic> findEnumCharacteristicAnnotation(String id) {
-		for (ActionSequence sequence : actionSequences) {
-			var elements = sequence.getElements().stream().map(AbstractPCMActionSequenceElement.class::cast).toList();
-
-			for (AbstractPCMActionSequenceElement<?> node : elements) {
-				var architectureElement = node.getElement();
-
-				if (architectureElement instanceof AbstractUserAction || architectureElement instanceof AbstractAction
-						|| architectureElement instanceof OperationalDataStoreComponent) {
-
-					var calculator = new TracingPCMNodeCharacteristicsCalculator((Entity) architectureElement, id);
-					if (calculator.isAnnotatedWithNodeCharacteristic(node.getContext())) {
-						return calculator.getNodeCharacteristics(node.getContext()).stream().findFirst();
-					}
-				}
-			}
-		}
-
-		return Optional.empty();
-	}
-
-	public Optional<OperationInterface> findInterface(String id, Repository repository) {
-		return repository.getInterfaces__Repository().stream().filter(it -> it.getId().equals(id))
+	public Optional<OperationInterface> findInterface(String id) {
+		return lookupRepositoryModel().getInterfaces__Repository().stream().filter(it -> it.getId().equals(id))
 				.filter(OperationInterface.class::isInstance).map(OperationInterface.class::cast).findFirst();
 	}
 
-	public Optional<Connector> findConnector(String id, System system) {
-		return system.getConnectors__ComposedStructure().stream().filter(it -> it.getId().equals(id)).findFirst();
+	public Optional<Connector> findConnector(String id) {
+		return lookupSystemModel().getConnectors__ComposedStructure().stream().filter(it -> it.getId().equals(id))
+				.findFirst();
+	}
+
+	public Optional<? extends Entity> findResourceContainerOrUsageScenario(String id) {
+		var resourceContainer = lookupResourceEnvironmentModel().getResourceContainer_ResourceEnvironment().stream()
+				.filter(it -> it.getId().equals(id)).findFirst();
+
+		if (resourceContainer.isPresent()) {
+			return resourceContainer;
+		} else {
+
+			return lookupUsageModel().getUsageScenario_UsageModel().stream().filter(it -> it.getId().equals(id))
+					.findFirst();
+		}
 	}
 
 	public List<SEFFActionSequenceElement<StartAction>> findStartActionsOfAssemblyContext(AssemblyContext component) {
@@ -111,27 +114,6 @@ public class PropagationHelper {
 					.toList();
 
 			matches.addAll(candidates);
-		}
-
-		return matches;
-	}
-
-	public List<AbstractPCMActionSequenceElement<?>> findProcessesWithAnnotation(EnumCharacteristic annotation) {
-		List<AbstractPCMActionSequenceElement<?>> matches = new ArrayList<>();
-
-		for (ActionSequence sequence : actionSequences) {
-			for (AbstractActionSequenceElement<?> node : sequence.getElements()) {
-				var pcmNode = (AbstractPCMActionSequenceElement<?>) node;
-
-				if (pcmNode.getElement() instanceof Entity) {
-					var calculator = new TracingPCMNodeCharacteristicsCalculator((Entity) pcmNode.getElement(),
-							annotation.getId());
-
-					if (calculator.isAnnotatedWithNodeCharacteristic(pcmNode.getContext())) {
-						matches.add(pcmNode);
-					}
-				}
-			}
 		}
 
 		return matches;
@@ -211,6 +193,88 @@ public class PropagationHelper {
 		}
 
 		return allContexts;
+	}
+
+	public List<? extends AbstractPCMActionSequenceElement<?>> findProcessesThatRepresentResourceContainerOrUsageScenario(
+			Entity actor) {
+
+		if (actor instanceof UsageScenario usageScenario) {
+			List<CallingUserActionSequenceElement> matches = new ArrayList<>();
+
+			for (ActionSequence sequence : actionSequences) {
+				var callingUserActions = sequence.getElements().stream()
+						.filter(CallingUserActionSequenceElement.class::isInstance)
+						.map(CallingUserActionSequenceElement.class::cast).toList();
+
+				List<CallingUserActionSequenceElement> candidates = callingUserActions.stream()
+						.filter(it -> it.getElement().getScenarioBehaviour_AbstractUserAction()
+								.getUsageScenario_SenarioBehaviour().equals(usageScenario))
+						.toList();
+
+				matches.addAll(candidates);
+			}
+
+			return matches;
+
+		} else if (actor instanceof ResourceContainer resourceContainer) {
+
+			var allocationModel = lookupAllocationModel();
+
+			var contextsDeployedOnResource = allocationModel.getAllocationContexts_Allocation().stream()
+					.filter(it -> it.getResourceContainer_AllocationContext().equals(resourceContainer))
+					.map(it -> it.getAssemblyContext_AllocationContext()).toList();
+
+			List<SEFFActionSequenceElement<?>> matches = new ArrayList<>();
+
+			for (ActionSequence sequence : actionSequences) {
+				var candidates = sequence.getElements().stream().filter(SEFFActionSequenceElement.class::isInstance)
+						.map(it -> (SEFFActionSequenceElement<?>) it)
+						.filter(it -> it.getContext().stream().anyMatch(contextsDeployedOnResource::contains)).toList();
+
+				matches.addAll(candidates);
+			}
+
+			return matches;
+
+		} else {
+			throw new IllegalArgumentException("Actor must be an usage scenario or a resource container.");
+		}
+	}
+
+	private <T extends NamedElement> T lookupPCMModel(EClass eclazz, Class<T> clazz) {
+		Objects.requireNonNull(eclazz);
+		Objects.requireNonNull(clazz);
+
+		List<T> allPCMModelsOfGivenType = resourceLoader.lookupElementOfType(eclazz).stream()
+				.filter(clazz::isInstance).map(clazz::cast).toList();
+
+		if (allPCMModelsOfGivenType.size() == 1) {
+			return allPCMModelsOfGivenType.get(0);
+		} else {
+			throw new IllegalStateException(String.format(
+					"None or more than one model of type %s found in the loaded resources.", clazz.getSimpleName()));
+		}
+	}
+
+	private Repository lookupRepositoryModel() {
+		return lookupPCMModel(RepositoryPackage.eINSTANCE.getRepository(), Repository.class);
+	}
+
+	private System lookupSystemModel() {
+		return lookupPCMModel(SystemPackage.eINSTANCE.getSystem(), System.class);
+	}
+
+	private ResourceEnvironment lookupResourceEnvironmentModel() {
+		return lookupPCMModel(ResourceenvironmentPackage.eINSTANCE.getResourceEnvironment(),
+				ResourceEnvironment.class);
+	}
+
+	private Allocation lookupAllocationModel() {
+		return resourceLoader.getAllocation();
+	}
+
+	private UsageModel lookupUsageModel() {
+		return resourceLoader.getUsageModel();
 	}
 
 }

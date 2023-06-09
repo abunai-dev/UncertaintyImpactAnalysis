@@ -24,7 +24,7 @@ public class EvaluationScenario1 extends EvaluationBase {
 	void addUncertaintySources() {
 		// Scenario 1: "One component still uncertain, the others not"
 		analysis.addConnectorUncertainty("_w-qoYLNzEe2o46d27a6tVQ"); // S1_1
-		analysis.addActorUncertainty("_1ePwELOJEe2o46d27a6tVQ"); // S1_2
+		analysis.addActorUncertainty("_E9SLkLN3Ee2o46d27a6tVQ"); // S1_2
 	}
 
 	@Override

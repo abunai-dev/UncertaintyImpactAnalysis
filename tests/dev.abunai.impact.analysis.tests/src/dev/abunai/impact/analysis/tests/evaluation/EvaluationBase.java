@@ -5,7 +5,7 @@ import java.util.function.BiPredicate;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.pcm.PCMActionSequence;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.PCMActionSequence;
 
 import dev.abunai.impact.analysis.tests.TestBase;
 
@@ -16,7 +16,7 @@ public abstract class EvaluationBase extends TestBase {
 	abstract String getScenarioName();
 
 	abstract BiPredicate<List<String>, List<String>> getConstraint();
-	
+
 	@Override
 	protected String getBaseFolder() {
 		return "casestudies/CaseStudy-CoronaWarnApp";
@@ -56,9 +56,9 @@ public abstract class EvaluationBase extends TestBase {
 	@Test
 	public void printAllDataFlows() {
 		var actionSequences = analysis.findAllSequences();
-		
+
 		System.out.println("All data flows:");
-		
+
 		for (int i = 0; i < actionSequences.size(); i++) {
 			System.out.println(formatDataFlow(i, new PCMActionSequence(actionSequences.get(i)), true));
 		}

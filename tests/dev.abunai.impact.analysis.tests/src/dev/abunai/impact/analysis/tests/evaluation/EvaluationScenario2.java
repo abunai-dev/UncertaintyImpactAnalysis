@@ -5,7 +5,6 @@ import java.util.function.BiPredicate;
 
 public class EvaluationScenario2 extends EvaluationBase {
 
-
 	@Override
 	protected String getFolderName() {
 		return "CoronaWarnApp_UncertaintyScenario2";
@@ -24,7 +23,7 @@ public class EvaluationScenario2 extends EvaluationBase {
 	@Override
 	void addUncertaintySources() {
 		// Scenario 2: "Environmental uncertainty in the deployment and system context"
-		analysis.addActorUncertainty("_N1yckMP6Ee2NifGpaUwYsQ"); // S2_1
+		analysis.addActorUncertainty("_wqni4MP5Ee2NifGpaUwYsQ"); // S2_1
 		analysis.addBehaviorUncertainty("_YIPkQLm8Ee2dIMSi7oNVYQ"); // S2_2
 	}
 
@@ -45,5 +44,4 @@ public class EvaluationScenario2 extends EvaluationBase {
 		};
 	}
 
-	
 }
