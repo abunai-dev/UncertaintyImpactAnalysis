@@ -75,17 +75,14 @@ public class PropagationHelper {
 				.findFirst();
 	}
 
-	public Optional<? extends Entity> findResourceContainerOrUsageScenario(String id) {
-		var resourceContainer = lookupResourceEnvironmentModel().getResourceContainer_ResourceEnvironment().stream()
+	public Optional<ResourceContainer> findResourceContainer(String id) {
+		return lookupResourceEnvironmentModel().getResourceContainer_ResourceEnvironment().stream()
 				.filter(it -> it.getId().equals(id)).findFirst();
+	}
 
-		if (resourceContainer.isPresent()) {
-			return resourceContainer;
-		} else {
-
-			return lookupUsageModel().getUsageScenario_UsageModel().stream().filter(it -> it.getId().equals(id))
-					.findFirst();
-		}
+	public Optional<UsageScenario> findUsageScenario(String id) {
+		return lookupUsageModel().getUsageScenario_UsageModel().stream().filter(it -> it.getId().equals(id))
+				.findFirst();
 	}
 
 	public List<SEFFActionSequenceElement<StartAction>> findStartActionsOfAssemblyContext(AssemblyContext component) {
@@ -245,8 +242,8 @@ public class PropagationHelper {
 		Objects.requireNonNull(eclazz);
 		Objects.requireNonNull(clazz);
 
-		List<T> allPCMModelsOfGivenType = resourceLoader.lookupElementOfType(eclazz).stream()
-				.filter(clazz::isInstance).map(clazz::cast).toList();
+		List<T> allPCMModelsOfGivenType = resourceLoader.lookupElementOfType(eclazz).stream().filter(clazz::isInstance)
+				.map(clazz::cast).toList();
 
 		if (allPCMModelsOfGivenType.size() == 1) {
 			return allPCMModelsOfGivenType.get(0);
@@ -265,8 +262,7 @@ public class PropagationHelper {
 	}
 
 	private ResourceEnvironment lookupResourceEnvironmentModel() {
-		return lookupPCMModel(ResourceenvironmentPackage.eINSTANCE.getResourceEnvironment(),
-				ResourceEnvironment.class);
+		return lookupPCMModel(ResourceenvironmentPackage.eINSTANCE.getResourceEnvironment(), ResourceEnvironment.class);
 	}
 
 	private Allocation lookupAllocationModel() {

@@ -25,15 +25,14 @@ public class BehaviorUncertaintySource<T extends Entity> extends UncertaintySour
 	}
 
 	public static BehaviorUncertaintySource<?> of(Entity action, PropagationHelper propagationHelper) {
-		if (action instanceof EntryLevelSystemCall) {
-			return new BehaviorUncertaintySource<EntryLevelSystemCall>((EntryLevelSystemCall) action,
-					propagationHelper);
-		} else if (action instanceof ExternalCallAction) {
-			return new BehaviorUncertaintySource<ExternalCallAction>((ExternalCallAction) action, propagationHelper);
-		} else if (action instanceof SetVariableAction) {
-			return new BehaviorUncertaintySource<SetVariableAction>((SetVariableAction) action, propagationHelper);
+		if (action instanceof EntryLevelSystemCall call) {
+			return new BehaviorUncertaintySource<EntryLevelSystemCall>(call, propagationHelper);
+		} else if (action instanceof ExternalCallAction call) {
+			return new BehaviorUncertaintySource<ExternalCallAction>(call, propagationHelper);
+		} else if (action instanceof SetVariableAction variableAction) {
+			return new BehaviorUncertaintySource<SetVariableAction>(variableAction, propagationHelper);
 		} else {
-			throw new IllegalStateException("Unrecognized action type.");
+			throw new IllegalStateException("Unsupported action type.");
 		}
 	}
 

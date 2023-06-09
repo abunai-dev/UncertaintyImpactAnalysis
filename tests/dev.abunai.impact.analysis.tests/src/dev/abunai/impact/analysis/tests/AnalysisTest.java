@@ -18,7 +18,7 @@ public class AnalysisTest extends TestBase {
 
 	@Test
 	public void testComponentUncertainty() {
-		analysis.addComponentUncertainty("_4YTEYITjEeywmO_IpTxeAg");
+		analysis.addComponentUncertaintyInAssemblyContext("_4YTEYITjEeywmO_IpTxeAg");
 		var result = analysis.propagate();
 		printResults(result, true, true, true, false);
 
@@ -27,7 +27,7 @@ public class AnalysisTest extends TestBase {
 
 	@Test
 	public void testBehaviorUncertainty() {
-		analysis.addBehaviorUncertainty("_tMGKUITmEeywmO_IpTxeAg");
+		analysis.addBehaviorUncertaintyInSetVariableAction("_tMGKUITmEeywmO_IpTxeAg");
 		var result = analysis.propagate();
 		printResults(result, true, true, true, false);
 
@@ -36,7 +36,7 @@ public class AnalysisTest extends TestBase {
 
 	@Test
 	public void testResourceContainerActorUncertainty() {
-		analysis.addActorUncertainty("_qvz80ITgEeywmO_IpTxeAg");
+		analysis.addActorUncertaintyInResourceContainer("_qvz80ITgEeywmO_IpTxeAg");
 		var result = analysis.propagate();
 		printResults(result, true, true, true, false);
 
@@ -45,7 +45,7 @@ public class AnalysisTest extends TestBase {
 
 	@Test
 	public void testUsageScenarioActorUncertainty() {
-		analysis.addActorUncertainty("_LPnI8CHdEd6lJo4DCALHMw");
+		analysis.addActorUncertaintyInUsageScenario("_LPnI8CHdEd6lJo4DCALHMw");
 		var result = analysis.propagate();
 		printResults(result, true, true, true, false);
 
@@ -54,7 +54,7 @@ public class AnalysisTest extends TestBase {
 
 	@Test
 	public void testInterfaceUncertaintyInTheCenter() {
-		analysis.addInterfaceUncertainty("_XGAZwITiEeywmO_IpTxeAg");
+		analysis.addInterfaceUncertaintyInInterface("_XGAZwITiEeywmO_IpTxeAg");
 		var result = analysis.propagate();
 		printResults(result, true, true, true, false);
 
@@ -63,7 +63,7 @@ public class AnalysisTest extends TestBase {
 
 	@Test
 	public void testInterfaceUncertaintyAtTheEdge() {
-		analysis.addInterfaceUncertainty("_UhSk0ITjEeywmO_IpTxeAg");
+		analysis.addInterfaceUncertaintyInInterface("_UhSk0ITjEeywmO_IpTxeAg");
 		var result = analysis.propagate();
 		printResults(result, true, true, true, false);
 
@@ -72,7 +72,7 @@ public class AnalysisTest extends TestBase {
 
 	@Test
 	public void testConnectorUncertaintyInTheCenter() {
-		analysis.addConnectorUncertainty("_BYWIkITkEeywmO_IpTxeAg");
+		analysis.addConnectorUncertaintyInConnector("_BYWIkITkEeywmO_IpTxeAg");
 		var result = analysis.propagate();
 		printResults(result, true, true, true, false);
 
@@ -81,7 +81,7 @@ public class AnalysisTest extends TestBase {
 
 	@Test
 	public void testConnectorUncertaintyAtTheEdge() {
-		analysis.addConnectorUncertainty("_E9MIUITkEeywmO_IpTxeAg");
+		analysis.addConnectorUncertaintyInConnector("_E9MIUITkEeywmO_IpTxeAg");
 		var result = analysis.propagate();
 		printResults(result, true, true, true, false);
 

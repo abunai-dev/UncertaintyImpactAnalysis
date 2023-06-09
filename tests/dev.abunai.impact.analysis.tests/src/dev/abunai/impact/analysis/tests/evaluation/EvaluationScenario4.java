@@ -23,8 +23,8 @@ public class EvaluationScenario4 extends EvaluationBase {
 	@Override
 	void addUncertaintySources() {
 		// Scenario 4: "Critical points in the system with wide impact"
-		analysis.addComponentUncertainty("_v1LV8LNhEe2o46d27a6tVQ"); // S4_1
-		analysis.addInterfaceUncertainty("_FC4gkLHzEe2fRLFFhL_FWA"); // S4_2
+		analysis.addComponentUncertaintyInAssemblyContext("_v1LV8LNhEe2o46d27a6tVQ"); // S4_1
+		analysis.addInterfaceUncertaintyInInterface("_FC4gkLHzEe2fRLFFhL_FWA"); // S4_2
 	}
 
 	@Override

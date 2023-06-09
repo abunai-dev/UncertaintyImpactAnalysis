@@ -137,7 +137,7 @@ public class StandalonePCMUncertaintyImpactAnalysis extends AbstractStandalonePC
 		return -1;
 	}
 
-	public void addComponentUncertainty(String id) {
+	public void addComponentUncertaintyInAssemblyContext(String id) {
 		var component = this.propagationHelper.findAssemblyContext(id);
 
 		if (component.isEmpty()) {
@@ -148,7 +148,27 @@ public class StandalonePCMUncertaintyImpactAnalysis extends AbstractStandalonePC
 
 	}
 
-	public void addBehaviorUncertainty(String id) {
+	public void addBehaviorUncertaintyInEntryLevelSystemCall(String id) {
+		// TODO: Verify type
+		this.addBehaviorUncertainty(id);
+	}
+
+	public void addBehaviorUncertaintyInExternalCallAction(String id) {
+		// TODO: Verify type
+		this.addBehaviorUncertainty(id);
+	}
+
+	public void addBehaviorUncertaintyInSetVariableAction(String id) {
+		// TODO: Verify type
+		this.addBehaviorUncertainty(id);
+	}
+
+	public void addBehaviorUncertaintyInBranch(String id) {
+		// TODO: Implement
+		throw new IllegalStateException("Currently unsupported.");
+	}
+
+	private void addBehaviorUncertainty(String id) {
 		var action = this.propagationHelper.findAction(id);
 
 		if (action.isEmpty()) {
@@ -158,18 +178,33 @@ public class StandalonePCMUncertaintyImpactAnalysis extends AbstractStandalonePC
 		}
 	}
 
-	public void addActorUncertainty(String id) {
-		var actor = this.propagationHelper.findResourceContainerOrUsageScenario(id);
+	public void addActorUncertaintyInResourceContainer(String id) {
+		var actor = this.propagationHelper.findResourceContainer(id);
 
 		if (actor.isEmpty()) {
-			throw new IllegalArgumentException(
-					"Unable to find resource container or usage scenario with the given ID.");
+			throw new IllegalArgumentException("Unable to find resource container with the given ID.");
 		} else {
-			this.uncertaintySources.add(new ActorUncertaintySource(actor.get(), propagationHelper));
+			this.uncertaintySources.add(ActorUncertaintySource.of(actor.get(), propagationHelper));
 		}
 	}
 
-	public void addInterfaceUncertainty(String id) {
+	public void addActorUncertaintyInUsageScenario(String id) {
+		var actor = this.propagationHelper.findUsageScenario(id);
+
+		if (actor.isEmpty()) {
+			throw new IllegalArgumentException("Unable to find usage scenario with the given ID.");
+		} else {
+			this.uncertaintySources.add(ActorUncertaintySource.of(actor.get(), propagationHelper));
+		}
+	}
+
+	public void addInterfaceUncertaintyInSignature(String id) {
+		// TODO: Implement
+		throw new IllegalStateException("Currently unsupported.");
+	}
+
+	@Deprecated
+	public void addInterfaceUncertaintyInInterface(String id) {
 		var interfaze = this.propagationHelper.findInterface(id);
 
 		if (interfaze.isEmpty()) {
@@ -179,7 +214,7 @@ public class StandalonePCMUncertaintyImpactAnalysis extends AbstractStandalonePC
 		}
 	}
 
-	public void addConnectorUncertainty(String id) {
+	public void addConnectorUncertaintyInConnector(String id) {
 		var connector = this.propagationHelper.findConnector(id);
 
 		if (connector.isEmpty()) {

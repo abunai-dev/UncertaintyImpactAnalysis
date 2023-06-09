@@ -23,8 +23,8 @@ public class EvaluationScenario2 extends EvaluationBase {
 	@Override
 	void addUncertaintySources() {
 		// Scenario 2: "Environmental uncertainty in the deployment and system context"
-		analysis.addActorUncertainty("_wqni4MP5Ee2NifGpaUwYsQ"); // S2_1
-		analysis.addBehaviorUncertainty("_YIPkQLm8Ee2dIMSi7oNVYQ"); // S2_2
+		analysis.addActorUncertaintyInResourceContainer("_wqni4MP5Ee2NifGpaUwYsQ"); // S2_1
+		analysis.addBehaviorUncertaintyInExternalCallAction("_YIPkQLm8Ee2dIMSi7oNVYQ"); // S2_2
 	}
 
 	@Override
