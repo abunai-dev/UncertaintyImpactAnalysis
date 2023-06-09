@@ -17,6 +17,7 @@ import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.user.C
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.AbstractActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.ActionSequence;
 import org.palladiosimulator.dataflow.confidentiality.analysis.resource.ResourceLoader;
+import org.palladiosimulator.dataflow.confidentiality.analysis.utils.pcm.PCMQueryUtils;
 import org.palladiosimulator.pcm.allocation.Allocation;
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
 import org.palladiosimulator.pcm.core.composition.Connector;
@@ -28,6 +29,7 @@ import org.palladiosimulator.pcm.repository.RepositoryPackage;
 import org.palladiosimulator.pcm.resourceenvironment.ResourceContainer;
 import org.palladiosimulator.pcm.resourceenvironment.ResourceEnvironment;
 import org.palladiosimulator.pcm.resourceenvironment.ResourceenvironmentPackage;
+import org.palladiosimulator.pcm.seff.BranchAction;
 import org.palladiosimulator.pcm.seff.ResourceDemandingSEFF;
 import org.palladiosimulator.pcm.seff.StartAction;
 import org.palladiosimulator.pcm.system.System;
@@ -271,6 +273,27 @@ public class PropagationHelper {
 
 	private UsageModel lookupUsageModel() {
 		return resourceLoader.getUsageModel();
+	}
+
+	public List<StartAction> findStartActionsOfBranchAction(String id) {
+		List<StartAction> matches = new ArrayList<>();
+
+		for (ActionSequence sequence : actionSequences) {
+			var startActionElements = sequence.getElements().stream().map(AbstractPCMActionSequenceElement.class::cast)
+					.filter(it -> it instanceof SEFFActionSequenceElement)
+					.filter(it -> it.getElement() instanceof StartAction).toList();
+
+			for (var sequenceElement : startActionElements) {
+				Optional<BranchAction> branchAction = PCMQueryUtils.findParentOfType(sequenceElement.getElement(),
+						BranchAction.class, false);
+
+				if (branchAction.isPresent() && branchAction.get().getId().equals(id)) {
+					matches.add((StartAction) sequenceElement.getElement());
+				}
+			}
+		}
+
+		return matches;
 	}
 
 }

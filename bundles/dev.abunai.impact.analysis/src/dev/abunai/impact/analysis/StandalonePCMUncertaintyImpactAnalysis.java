@@ -19,6 +19,7 @@ import org.palladiosimulator.pcm.core.entity.Entity;
 import org.palladiosimulator.pcm.seff.BranchAction;
 import org.palladiosimulator.pcm.seff.ExternalCallAction;
 import org.palladiosimulator.pcm.seff.SetVariableAction;
+import org.palladiosimulator.pcm.seff.StartAction;
 import org.palladiosimulator.pcm.usagemodel.EntryLevelSystemCall;
 
 import dev.abunai.impact.analysis.model.impact.UncertaintyImpact;
@@ -166,8 +167,16 @@ public class StandalonePCMUncertaintyImpactAnalysis extends AbstractStandalonePC
 	}
 
 	public void addBehaviorUncertaintyInBranch(String id) {
-		// TODO: Not yet supported
-		addBehaviorUncertainty(id, BranchAction.class);
+		// Special case: Map BranchAction to all contained StartActions first
+		var startActions = this.propagationHelper.findStartActionsOfBranchAction(id);
+		
+		if(startActions.isEmpty()) {
+			throw new IllegalArgumentException("Unable to find start actions of the branch action with the given id.");
+		}
+		
+		for(var action : startActions) {
+			addBehaviorUncertainty(action.getId(), StartAction.class);
+		}
 	}
 
 	private void addBehaviorUncertainty(String id, Class<? extends Entity> targetType) {

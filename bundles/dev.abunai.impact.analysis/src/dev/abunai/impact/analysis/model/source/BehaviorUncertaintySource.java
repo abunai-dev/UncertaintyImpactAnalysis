@@ -5,8 +5,10 @@ import java.util.Objects;
 
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.AbstractPCMActionSequenceElement;
 import org.palladiosimulator.pcm.core.entity.Entity;
+import org.palladiosimulator.pcm.seff.BranchAction;
 import org.palladiosimulator.pcm.seff.ExternalCallAction;
 import org.palladiosimulator.pcm.seff.SetVariableAction;
+import org.palladiosimulator.pcm.seff.StartAction;
 import org.palladiosimulator.pcm.usagemodel.EntryLevelSystemCall;
 
 import dev.abunai.impact.analysis.model.impact.BehaviorUncertaintyImpact;
@@ -31,6 +33,8 @@ public class BehaviorUncertaintySource<T extends Entity> extends UncertaintySour
 			return new BehaviorUncertaintySource<ExternalCallAction>(call, propagationHelper);
 		} else if (action instanceof SetVariableAction variableAction) {
 			return new BehaviorUncertaintySource<SetVariableAction>(variableAction, propagationHelper);
+		} else if (action instanceof StartAction branchStartAction) {
+			return new BehaviorUncertaintySource<StartAction>(branchStartAction, propagationHelper);
 		} else {
 			throw new IllegalStateException("Unsupported action type.");
 		}
