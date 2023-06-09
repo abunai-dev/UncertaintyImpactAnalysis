@@ -15,6 +15,11 @@ import org.palladiosimulator.dataflow.confidentiality.analysis.core.AbstractStan
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.AbstractPCMActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.AbstractActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.ActionSequence;
+import org.palladiosimulator.pcm.core.entity.Entity;
+import org.palladiosimulator.pcm.seff.BranchAction;
+import org.palladiosimulator.pcm.seff.ExternalCallAction;
+import org.palladiosimulator.pcm.seff.SetVariableAction;
+import org.palladiosimulator.pcm.usagemodel.EntryLevelSystemCall;
 
 import dev.abunai.impact.analysis.model.impact.UncertaintyImpact;
 import dev.abunai.impact.analysis.model.source.ActorUncertaintySource;
@@ -149,32 +154,30 @@ public class StandalonePCMUncertaintyImpactAnalysis extends AbstractStandalonePC
 	}
 
 	public void addBehaviorUncertaintyInEntryLevelSystemCall(String id) {
-		// TODO: Verify type
-		this.addBehaviorUncertainty(id);
+		addBehaviorUncertainty(id, EntryLevelSystemCall.class);
 	}
 
 	public void addBehaviorUncertaintyInExternalCallAction(String id) {
-		// TODO: Verify type
-		this.addBehaviorUncertainty(id);
+		addBehaviorUncertainty(id, ExternalCallAction.class);
 	}
 
 	public void addBehaviorUncertaintyInSetVariableAction(String id) {
-		// TODO: Verify type
-		this.addBehaviorUncertainty(id);
+		addBehaviorUncertainty(id, SetVariableAction.class);
 	}
 
 	public void addBehaviorUncertaintyInBranch(String id) {
-		// TODO: Implement
-		throw new IllegalStateException("Currently unsupported.");
+		// TODO: Not yet supported
+		addBehaviorUncertainty(id, BranchAction.class);
 	}
 
-	private void addBehaviorUncertainty(String id) {
+	private void addBehaviorUncertainty(String id, Class<? extends Entity> targetType) {
 		var action = this.propagationHelper.findAction(id);
 
-		if (action.isEmpty()) {
-			throw new IllegalArgumentException("Unable to find an action with the given ID.");
+		if (action.isPresent() && targetType.isInstance(action.get())) {
+			this.uncertaintySources.add(BehaviorUncertaintySource.of(targetType.cast(action.get()), propagationHelper));
 		} else {
-			this.uncertaintySources.add(BehaviorUncertaintySource.of(action.get(), propagationHelper));
+			throw new IllegalArgumentException(
+					String.format("Unable to find %s with the given id.", targetType.getSimpleName()));
 		}
 	}
 
@@ -199,7 +202,7 @@ public class StandalonePCMUncertaintyImpactAnalysis extends AbstractStandalonePC
 	}
 
 	public void addInterfaceUncertaintyInSignature(String id) {
-		// TODO: Implement
+		// TODO: Implement and replace
 		throw new IllegalStateException("Currently unsupported.");
 	}
 
