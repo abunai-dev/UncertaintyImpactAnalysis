@@ -241,15 +241,15 @@ public class PropagationHelper {
 		}
 	}
 
-	private <T extends NamedElement> T lookupPalladioModel(EClass eclazz, Class<T> clazz) {
+	private <T extends NamedElement> T lookupPCMModel(EClass eclazz, Class<T> clazz) {
 		Objects.requireNonNull(eclazz);
 		Objects.requireNonNull(clazz);
 
-		List<T> allPalladioModelsOfGivenType = resourceLoader.lookupElementOfType(eclazz).stream()
+		List<T> allPCMModelsOfGivenType = resourceLoader.lookupElementOfType(eclazz).stream()
 				.filter(clazz::isInstance).map(clazz::cast).toList();
 
-		if (allPalladioModelsOfGivenType.size() == 1) {
-			return allPalladioModelsOfGivenType.get(0);
+		if (allPCMModelsOfGivenType.size() == 1) {
+			return allPCMModelsOfGivenType.get(0);
 		} else {
 			throw new IllegalStateException(String.format(
 					"None or more than one model of type %s found in the loaded resources.", clazz.getSimpleName()));
@@ -257,15 +257,15 @@ public class PropagationHelper {
 	}
 
 	private Repository lookupRepositoryModel() {
-		return lookupPalladioModel(RepositoryPackage.eINSTANCE.getRepository(), Repository.class);
+		return lookupPCMModel(RepositoryPackage.eINSTANCE.getRepository(), Repository.class);
 	}
 
 	private System lookupSystemModel() {
-		return lookupPalladioModel(SystemPackage.eINSTANCE.getSystem(), System.class);
+		return lookupPCMModel(SystemPackage.eINSTANCE.getSystem(), System.class);
 	}
 
 	private ResourceEnvironment lookupResourceEnvironmentModel() {
-		return lookupPalladioModel(ResourceenvironmentPackage.eINSTANCE.getResourceEnvironment(),
+		return lookupPCMModel(ResourceenvironmentPackage.eINSTANCE.getResourceEnvironment(),
 				ResourceEnvironment.class);
 	}
 
