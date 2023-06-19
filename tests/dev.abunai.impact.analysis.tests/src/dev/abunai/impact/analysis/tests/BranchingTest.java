@@ -15,32 +15,32 @@ public class BranchingTest extends TestBase {
 	protected String getFilesName() {
 		return "default";
 	}
-	
+
 	@Test
 	public void testEntryLevelSystemCallBeforeBranch() {
 		analysis.addBehaviorUncertaintyInEntryLevelSystemCall("_hq6RAITkEeywmO_IpTxeAg");
 		var result = analysis.propagate();
 		printResults(result, true, true, true, false);
 
-		assertEquals(4, result.size());
+		assertAnalysisResults(4, 3, 2);
 	}
-	
+
 	@Test
 	public void testBranch() {
 		analysis.addBehaviorUncertaintyInBranch("_tmNjQNv1EeyYrpd_1AtxSw");
 		var result = analysis.propagate();
 		printResults(result, true, true, true, false);
 
-		assertEquals(2, result.size());
+		assertAnalysisResults(2, 2, 2);
 	}
-	
+
 	@Test
 	public void testExternalCallInBranch() {
 		analysis.addBehaviorUncertaintyInExternalCallAction("_QqAdMNv2EeyYrpd_1AtxSw");
 		var result = analysis.propagate();
 		printResults(result, true, true, true, false);
 
-		assertEquals(2, result.size());
+		assertAnalysisResults(2, 1, 1);
 	}
 
 }

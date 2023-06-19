@@ -1,5 +1,7 @@
 package dev.abunai.impact.analysis.tests;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
@@ -93,6 +95,12 @@ public abstract class TestBase {
 	protected String formatDataFlow(int index, ActionSequence sequence, boolean newLineAfterEachEntry) {
 		return String.format("%d: %s", index, sequence.getElements().stream().map(it -> it.toString())
 				.collect(Collectors.joining(newLineAfterEachEntry ? "\n" : ", ")));
+	}
+
+	protected void assertAnalysisResults(int resultSize, int numberOfDataFlowSections, int impactSetSize) {
+		assertEquals(resultSize, analysis.propagate().size());
+		assertEquals(numberOfDataFlowSections, analysis.getImpactSet(false).size());
+		assertEquals(impactSetSize, analysis.getImpactSet(true).size());
 	}
 
 }

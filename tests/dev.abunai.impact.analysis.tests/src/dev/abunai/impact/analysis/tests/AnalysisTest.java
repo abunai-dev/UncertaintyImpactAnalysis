@@ -1,7 +1,5 @@
 package dev.abunai.impact.analysis.tests;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import org.junit.jupiter.api.Test;
 
 public class AnalysisTest extends TestBase {
@@ -22,7 +20,7 @@ public class AnalysisTest extends TestBase {
 		var result = analysis.propagate();
 		printResults(result, true, true, true, false);
 
-		assertEquals(2, result.size());
+		assertAnalysisResults(2, 2, 1);
 	}
 
 	@Test
@@ -31,7 +29,7 @@ public class AnalysisTest extends TestBase {
 		var result = analysis.propagate();
 		printResults(result, true, true, true, false);
 
-		assertEquals(1, result.size());
+		assertAnalysisResults(1, 1, 1);
 	}
 
 	@Test
@@ -40,7 +38,7 @@ public class AnalysisTest extends TestBase {
 		var result = analysis.propagate();
 		printResults(result, true, true, true, false);
 
-		assertEquals(9, result.size());
+		assertAnalysisResults(9, 6, 1);
 	}
 
 	@Test
@@ -49,7 +47,7 @@ public class AnalysisTest extends TestBase {
 		var result = analysis.propagate();
 		printResults(result, true, true, true, false);
 
-		assertEquals(4, result.size());
+		assertAnalysisResults(4, 4, 1);
 	}
 
 	@Test
@@ -58,7 +56,7 @@ public class AnalysisTest extends TestBase {
 		var result = analysis.propagate();
 		printResults(result, true, true, true, false);
 
-		assertEquals(9, result.size());
+		assertAnalysisResults(9, 6, 1);
 	}
 
 	@Test
@@ -67,7 +65,7 @@ public class AnalysisTest extends TestBase {
 		var result = analysis.propagate();
 		printResults(result, true, true, true, false);
 
-		assertEquals(6, result.size());
+		assertAnalysisResults(6, 6, 1);
 	}
 
 	@Test
@@ -77,7 +75,7 @@ public class AnalysisTest extends TestBase {
 		var result = analysis.propagate();
 		printResults(result, true, true, true, false);
 
-		assertEquals(6, result.size());
+		assertAnalysisResults(6, 6, 1);
 	}
 
 	@Test
@@ -86,7 +84,7 @@ public class AnalysisTest extends TestBase {
 		var result = analysis.propagate();
 		printResults(result, true, true, true, false);
 
-		assertEquals(3, result.size());
+		assertAnalysisResults(3, 3, 1);
 	}
 
 	@Test
@@ -95,7 +93,7 @@ public class AnalysisTest extends TestBase {
 		var result = analysis.propagate();
 		printResults(result, true, true, true, false);
 
-		assertEquals(9, result.size());
+		assertAnalysisResults(9, 6, 1);
 	}
 
 	@Test
@@ -104,6 +102,6 @@ public class AnalysisTest extends TestBase {
 		var result = analysis.propagate();
 		printResults(result, true, true, true, false);
 
-		assertEquals(6, result.size());
+		assertAnalysisResults(6, 6, 1);
 	}
 }
