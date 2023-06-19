@@ -6,33 +6,33 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.AbstractPCMActionSequenceElement;
-import org.palladiosimulator.pcm.repository.OperationInterface;
+import org.palladiosimulator.pcm.repository.OperationSignature;
 
 import dev.abunai.impact.analysis.model.impact.InterfaceUncertaintyImpact;
 import dev.abunai.impact.analysis.util.PropagationHelper;
 
-public class InterfaceUncertaintySource extends UncertaintySource<OperationInterface> {
+public class InterfaceUncertaintySource extends UncertaintySource<OperationSignature> {
 
-	private final OperationInterface interfaze;
+	private final OperationSignature signature;
 	private final PropagationHelper propagationHelper;
 
-	public InterfaceUncertaintySource(OperationInterface interfaze, PropagationHelper propagationHelper) {
-		Objects.requireNonNull(interfaze);
+	public InterfaceUncertaintySource(OperationSignature signature, PropagationHelper propagationHelper) {
+		Objects.requireNonNull(signature);
 		Objects.requireNonNull(propagationHelper);
-		this.interfaze = interfaze;
+		this.signature = signature;
 		this.propagationHelper = propagationHelper;
 	}
 
 	@Override
-	public OperationInterface getArchitecturalElement() {
-		return this.interfaze;
+	public OperationSignature getArchitecturalElement() {
+		return this.signature;
 	}
 
 	@Override
 	public List<InterfaceUncertaintyImpact> propagate() {
-		var startNodes = propagationHelper.findStartActionsOfSEFFsThatImplement(this.interfaze);
-		var systemCallNodes = propagationHelper.findEntryLevelSystemCallsViaInterface(this.interfaze);
-		var externalCallNodes = propagationHelper.findExternalCallsViaInterface(this.interfaze);
+		var startNodes = propagationHelper.findStartActionsOfSEFFsThatImplement(this.signature);
+		var systemCallNodes = propagationHelper.findEntryLevelSystemCallsViaSignature(this.signature);
+		var externalCallNodes = propagationHelper.findExternalCallsViaSignature(this.signature);
 
 		List<? extends AbstractPCMActionSequenceElement<?>> allNodes = Stream
 				.of(startNodes, systemCallNodes, externalCallNodes).flatMap(Collection::stream).toList();

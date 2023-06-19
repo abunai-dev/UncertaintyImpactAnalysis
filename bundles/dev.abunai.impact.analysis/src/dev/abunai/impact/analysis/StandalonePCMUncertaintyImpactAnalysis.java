@@ -16,7 +16,6 @@ import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.Abstra
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.AbstractActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.ActionSequence;
 import org.palladiosimulator.pcm.core.entity.Entity;
-import org.palladiosimulator.pcm.seff.BranchAction;
 import org.palladiosimulator.pcm.seff.ExternalCallAction;
 import org.palladiosimulator.pcm.seff.SetVariableAction;
 import org.palladiosimulator.pcm.seff.StartAction;
@@ -169,12 +168,12 @@ public class StandalonePCMUncertaintyImpactAnalysis extends AbstractStandalonePC
 	public void addBehaviorUncertaintyInBranch(String id) {
 		// Special case: Map BranchAction to all contained StartActions first
 		var startActions = this.propagationHelper.findStartActionsOfBranchAction(id);
-		
-		if(startActions.isEmpty()) {
+
+		if (startActions.isEmpty()) {
 			throw new IllegalArgumentException("Unable to find start actions of the branch action with the given id.");
 		}
-		
-		for(var action : startActions) {
+
+		for (var action : startActions) {
 			addBehaviorUncertainty(action.getId(), StartAction.class);
 		}
 	}
@@ -211,18 +210,24 @@ public class StandalonePCMUncertaintyImpactAnalysis extends AbstractStandalonePC
 	}
 
 	public void addInterfaceUncertaintyInSignature(String id) {
-		// TODO: Implement and replace
-		throw new IllegalStateException("Currently unsupported.");
+		var signature = this.propagationHelper.findSignature(id);
+
+		if (signature.isEmpty()) {
+			throw new IllegalArgumentException("Unable to find the signature with the given ID.");
+		} else {
+			this.uncertaintySources.add(new InterfaceUncertaintySource(signature.get(), propagationHelper));
+		}
 	}
 
-	@Deprecated
 	public void addInterfaceUncertaintyInInterface(String id) {
 		var interfaze = this.propagationHelper.findInterface(id);
 
 		if (interfaze.isEmpty()) {
 			throw new IllegalArgumentException("Unable to find the interface with the given ID.");
 		} else {
-			this.uncertaintySources.add(new InterfaceUncertaintySource(interfaze.get(), propagationHelper));
+			for (var signature : interfaze.get().getSignatures__OperationInterface()) {
+				this.addInterfaceUncertaintyInSignature(signature.getId());
+			}
 		}
 	}
 

@@ -24,6 +24,7 @@ import org.palladiosimulator.pcm.core.composition.Connector;
 import org.palladiosimulator.pcm.core.entity.Entity;
 import org.palladiosimulator.pcm.core.entity.NamedElement;
 import org.palladiosimulator.pcm.repository.OperationInterface;
+import org.palladiosimulator.pcm.repository.OperationSignature;
 import org.palladiosimulator.pcm.repository.Repository;
 import org.palladiosimulator.pcm.repository.RepositoryPackage;
 import org.palladiosimulator.pcm.resourceenvironment.ResourceContainer;
@@ -70,6 +71,13 @@ public class PropagationHelper {
 	public Optional<OperationInterface> findInterface(String id) {
 		return lookupRepositoryModel().getInterfaces__Repository().stream().filter(it -> it.getId().equals(id))
 				.filter(OperationInterface.class::isInstance).map(OperationInterface.class::cast).findFirst();
+	}
+
+	public Optional<OperationSignature> findSignature(String id) {
+		return lookupRepositoryModel().getInterfaces__Repository().stream().filter(OperationInterface.class::isInstance)
+				.map(OperationInterface.class::cast).map(it -> it.getSignatures__OperationInterface())
+				.flatMap(Collection::stream).filter(it -> it.getId().equals(id)).findFirst();
+
 	}
 
 	public Optional<Connector> findConnector(String id) {
@@ -136,6 +144,13 @@ public class PropagationHelper {
 		return matches;
 	}
 
+	public List<CallingUserActionSequenceElement> findEntryLevelSystemCallsViaSignature(OperationSignature signature) {
+		var candidates = findEntryLevelSystemCallsViaInterface(signature.getInterface__OperationSignature());
+
+		return candidates.stream()
+				.filter(it -> it.getElement().getOperationSignature__EntryLevelSystemCall().equals(signature)).toList();
+	}
+
 	public List<CallingSEFFActionSequenceElement> findExternalCallsViaInterface(OperationInterface interfaze) {
 		List<CallingSEFFActionSequenceElement> matches = new ArrayList<>();
 
@@ -151,6 +166,13 @@ public class PropagationHelper {
 		}
 
 		return matches;
+	}
+
+	public List<CallingSEFFActionSequenceElement> findExternalCallsViaSignature(OperationSignature signature) {
+		var candidates = this.findExternalCallsViaInterface(signature.getInterface__OperationSignature());
+
+		return candidates.stream().filter(it -> it.getElement().getCalledService_ExternalService().equals(signature))
+				.toList();
 	}
 
 	public List<SEFFActionSequenceElement<StartAction>> findStartActionsOfSEFFsThatImplement(
@@ -169,6 +191,24 @@ public class PropagationHelper {
 					if (interfaze.getSignatures__OperationInterface().contains(seff.getDescribedService__SEFF())) {
 						matches.add(action);
 					}
+				}
+			}
+		}
+
+		return matches;
+	}
+
+	public List<SEFFActionSequenceElement<StartAction>> findStartActionsOfSEFFsThatImplement(
+			OperationSignature signature) {
+		var actionsThatImplementInterface = this
+				.findStartActionsOfSEFFsThatImplement(signature.getInterface__OperationSignature());
+
+		List<SEFFActionSequenceElement<StartAction>> matches = new ArrayList<>();
+
+		for (SEFFActionSequenceElement<StartAction> action : actionsThatImplementInterface) {
+			if (action.getElement().eContainer() instanceof ResourceDemandingSEFF seff) {
+				if (signature.equals(seff.getDescribedService__SEFF())) {
+					matches.add(action);
 				}
 			}
 		}

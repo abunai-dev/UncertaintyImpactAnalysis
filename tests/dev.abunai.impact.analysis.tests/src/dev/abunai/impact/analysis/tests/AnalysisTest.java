@@ -71,6 +71,25 @@ public class AnalysisTest extends TestBase {
 	}
 
 	@Test
+	public void testInterfaceUncertaintyInAllSignatures() {
+		analysis.addInterfaceUncertaintyInSignature("_W8bxkITjEeywmO_IpTxeAg");
+		analysis.addInterfaceUncertaintyInSignature("_YWtP0ITmEeywmO_IpTxeAg");
+		var result = analysis.propagate();
+		printResults(result, true, true, true, false);
+
+		assertEquals(6, result.size());
+	}
+
+	@Test
+	public void testInterfaceUncertaintyInASubsetOfSignatures() {
+		analysis.addInterfaceUncertaintyInSignature("_YWtP0ITmEeywmO_IpTxeAg");
+		var result = analysis.propagate();
+		printResults(result, true, true, true, false);
+
+		assertEquals(3, result.size());
+	}
+
+	@Test
 	public void testConnectorUncertaintyInTheCenter() {
 		analysis.addConnectorUncertaintyInConnector("_BYWIkITkEeywmO_IpTxeAg");
 		var result = analysis.propagate();
