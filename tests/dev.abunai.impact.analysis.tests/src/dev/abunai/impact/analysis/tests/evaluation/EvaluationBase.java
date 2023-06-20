@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.PCMActionSequence;
 
+import dev.abunai.impact.analysis.model.UncertaintyImpactCollection;
 import dev.abunai.impact.analysis.tests.TestBase;
 
 public abstract class EvaluationBase extends TestBase {
@@ -28,7 +29,7 @@ public abstract class EvaluationBase extends TestBase {
 
 		// Do uncertainty impact analysis
 		var result = analysis.propagate();
-		printResultsWithTitle(result, getScenarioName(), true);
+		result.printResultsWithTitle(getScenarioName(), true);
 
 		// Do confidentiality analysis
 		var actionSequences = analysis.findAllSequences();
@@ -47,7 +48,8 @@ public abstract class EvaluationBase extends TestBase {
 			});
 
 			if (!violations.isEmpty()) {
-				System.out.println(formatDataFlow(i, new PCMActionSequence(violations), true));
+				System.out.println(
+						UncertaintyImpactCollection.formatDataFlow(i, new PCMActionSequence(violations), true));
 			}
 		}
 	}
@@ -60,7 +62,8 @@ public abstract class EvaluationBase extends TestBase {
 		System.out.println("All data flows:");
 
 		for (int i = 0; i < actionSequences.size(); i++) {
-			System.out.println(formatDataFlow(i, new PCMActionSequence(actionSequences.get(i)), true));
+			System.out.println(
+					UncertaintyImpactCollection.formatDataFlow(i, new PCMActionSequence(actionSequences.get(i)), true));
 		}
 	}
 }

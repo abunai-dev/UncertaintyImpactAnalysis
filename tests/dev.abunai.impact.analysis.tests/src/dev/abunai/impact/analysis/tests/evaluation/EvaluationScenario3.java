@@ -23,8 +23,8 @@ public class EvaluationScenario3 extends EvaluationBase {
 	@Override
 	void addUncertaintySources() {
 		// Scenario 3: "Focus on behavior, as critical regarding confidentiality"
-		analysis.addBehaviorUncertaintyInSetVariableAction("_gK7oULm8Ee2dIMSi7oNVYQ"); // S3_1
-		analysis.addBehaviorUncertaintyInExternalCallAction("_kSKnoLm1Ee2dIMSi7oNVYQ"); // S3_2
+		analysis.getUncertaintySources().addBehaviorUncertaintyInSetVariableAction("_gK7oULm8Ee2dIMSi7oNVYQ"); // S3_1
+		analysis.getUncertaintySources().addBehaviorUncertaintyInExternalCallAction("_kSKnoLm1Ee2dIMSi7oNVYQ"); // S3_2
 	}
 
 	@Override
