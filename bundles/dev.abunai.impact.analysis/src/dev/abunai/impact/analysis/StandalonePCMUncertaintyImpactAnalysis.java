@@ -37,7 +37,7 @@ public class StandalonePCMUncertaintyImpactAnalysis extends AbstractStandalonePC
 	public boolean initializeAnalysis() {
 		if (super.initializeAnalysis()) {
 			this.actionSequences = super.findAllSequences();
-			this.propagationHelper = new PropagationHelper(this.actionSequences, analysisData.getResourceLoader());
+			this.propagationHelper = new PropagationHelper(this.actionSequences, analysisData.getResourceProvider());
 			this.uncertaintySourceCollection = new UncertaintySourceCollection(this.actionSequences, propagationHelper);
 			return true;
 		} else {

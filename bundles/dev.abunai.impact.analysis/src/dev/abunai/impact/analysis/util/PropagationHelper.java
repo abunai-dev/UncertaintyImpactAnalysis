@@ -16,7 +16,7 @@ import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.seff.S
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.user.CallingUserActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.AbstractActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.ActionSequence;
-import org.palladiosimulator.dataflow.confidentiality.analysis.resource.ResourceLoader;
+import org.palladiosimulator.dataflow.confidentiality.analysis.resource.ResourceProvider;
 import org.palladiosimulator.dataflow.confidentiality.analysis.utils.pcm.PCMQueryUtils;
 import org.palladiosimulator.pcm.allocation.Allocation;
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
@@ -41,11 +41,11 @@ import org.palladiosimulator.pcm.usagemodel.UsageScenario;
 public class PropagationHelper {
 
 	private List<ActionSequence> actionSequences;
-	private final ResourceLoader resourceLoader;
+	private final ResourceProvider resourceProvider;
 
-	public PropagationHelper(List<ActionSequence> actionSequences, ResourceLoader resourceLoader) {
+	public PropagationHelper(List<ActionSequence> actionSequences, ResourceProvider resourceProvider) {
 		this.actionSequences = actionSequences;
-		this.resourceLoader = resourceLoader;
+		this.resourceProvider = resourceProvider;
 	}
 
 	public Optional<AssemblyContext> findAssemblyContext(String id) {
@@ -284,7 +284,7 @@ public class PropagationHelper {
 		Objects.requireNonNull(eclazz);
 		Objects.requireNonNull(clazz);
 
-		List<T> allPCMModelsOfGivenType = resourceLoader.lookupElementOfType(eclazz).stream().filter(clazz::isInstance)
+		List<T> allPCMModelsOfGivenType = resourceProvider.lookupElementOfType(eclazz).stream().filter(clazz::isInstance)
 				.map(clazz::cast).toList();
 
 		if (allPCMModelsOfGivenType.size() == 1) {
@@ -308,11 +308,11 @@ public class PropagationHelper {
 	}
 
 	private Allocation lookupAllocationModel() {
-		return resourceLoader.getAllocation();
+		return resourceProvider.getAllocation();
 	}
 
 	private UsageModel lookupUsageModel() {
-		return resourceLoader.getUsageModel();
+		return resourceProvider.getUsageModel();
 	}
 
 	public List<StartAction> findStartActionsOfBranchAction(String id) {
