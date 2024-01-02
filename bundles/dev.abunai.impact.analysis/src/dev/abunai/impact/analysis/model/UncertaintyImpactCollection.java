@@ -47,8 +47,10 @@ public class UncertaintyImpactCollection {
 				var ownNodes = actionSequence.getElements().stream().map(AbstractPCMActionSequenceElement.class::cast)
 						.toList();
 
-				var otherPCMElements = otherNodes.stream().map(AbstractPCMActionSequenceElement.class::cast).map(AbstractPCMActionSequenceElement::getElement).toList();
-				var ownPCMElements = ownNodes.stream().map(AbstractPCMActionSequenceElement.class::cast).map(AbstractPCMActionSequenceElement::getElement).toList();
+				var otherPCMElements = otherNodes.stream().map(AbstractPCMActionSequenceElement.class::cast)
+						.map(AbstractPCMActionSequenceElement::getElement).toList();
+				var ownPCMElements = ownNodes.stream().map(AbstractPCMActionSequenceElement.class::cast)
+						.map(AbstractPCMActionSequenceElement::getElement).toList();
 
 				return otherPCMElements.equals(ownPCMElements);
 			})) {
@@ -118,15 +120,15 @@ public class UncertaintyImpactCollection {
 			allAffectedElements.forEach(System.out::println);
 
 			System.out.printf("\n\nImpacted data flow sections (%d):\n", impactSet.size());
-			impactSet.stream().map(
-					it -> formatDataFlow(this.getActionSequenceIndex(it.getElements()), it, newLineAfterEachEntry))
+			impactSet.stream()
+					.map(it -> formatDataFlow(this.getActionSequenceIndex(it.getElements()), it, newLineAfterEachEntry))
 					.forEach(System.out::println);
 		}
 
 		if (printFinalImpactSet) {
 			System.out.printf("\n\nDistinct Impact set (%d):\n", distinctImpactSet.size());
-			distinctImpactSet.stream().map(
-					it -> formatDataFlow(this.getActionSequenceIndex(it.getElements()), it, newLineAfterEachEntry))
+			distinctImpactSet.stream()
+					.map(it -> formatDataFlow(this.getActionSequenceIndex(it.getElements()), it, newLineAfterEachEntry))
 					.forEach(System.out::println);
 		}
 
@@ -134,8 +136,12 @@ public class UncertaintyImpactCollection {
 	}
 
 	public static String formatDataFlow(int index, ActionSequence sequence, boolean newLineAfterEachEntry) {
-		return String.format("%d: %s", index, sequence.getElements().stream().map(it -> it.toString())
-				.collect(Collectors.joining(newLineAfterEachEntry ? "\n" : ", ")));
+		try {
+			return String.format("%d: %s", index, sequence.getElements().stream().map(it -> it.toString())
+					.collect(Collectors.joining(newLineAfterEachEntry ? "\n" : ", ")));
+		} catch (NullPointerException e) {
+			return "[Exception while formatting]";
+		}
 	}
 
 }
