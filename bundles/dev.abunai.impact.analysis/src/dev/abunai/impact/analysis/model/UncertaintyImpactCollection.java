@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.AbstractPCMActionSequenceElement;
-import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.AbstractActionSequenceElement;
-import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.ActionSequence;
+import org.dataflowanalysis.analysis.core.AbstractActionSequenceElement;
+import org.dataflowanalysis.analysis.core.ActionSequence;
+import org.dataflowanalysis.analysis.core.pcm.AbstractPCMActionSequenceElement;
 
 import dev.abunai.impact.analysis.model.impact.UncertaintyImpact;
 
@@ -28,7 +28,7 @@ public class UncertaintyImpactCollection {
 		return this.uncertaintyImpacts;
 	}
 
-	public List<AbstractPCMActionSequenceElement<?>> getAllAffectedElementsAfterPropagation() {
+	public List<AbstractActionSequenceElement<?>> getAllAffectedElementsAfterPropagation() {
 		return uncertaintyImpacts.stream().map(it -> it.getAffectedElement()).collect(Collectors.toList());
 	}
 
@@ -47,8 +47,8 @@ public class UncertaintyImpactCollection {
 				var ownNodes = actionSequence.getElements().stream().map(AbstractPCMActionSequenceElement.class::cast)
 						.toList();
 
-				var otherPCMElements = otherNodes.stream().map(AbstractPCMActionSequenceElement::getElement).toList();
-				var ownPCMElements = ownNodes.stream().map(AbstractPCMActionSequenceElement::getElement).toList();
+				var otherPCMElements = otherNodes.stream().map(AbstractPCMActionSequenceElement.class::cast).map(AbstractPCMActionSequenceElement::getElement).toList();
+				var ownPCMElements = ownNodes.stream().map(AbstractPCMActionSequenceElement.class::cast).map(AbstractPCMActionSequenceElement::getElement).toList();
 
 				return otherPCMElements.equals(ownPCMElements);
 			})) {
@@ -83,7 +83,7 @@ public class UncertaintyImpactCollection {
 	public int getActionSequenceIndex(List<AbstractActionSequenceElement<?>> entries) {
 		for (int i = 0; i < this.actionSequences.size(); i++) {
 			var elements = this.actionSequences.get(i).getElements().stream()
-					.map(AbstractPCMActionSequenceElement.class::cast).toList();
+					.map(AbstractActionSequenceElement.class::cast).toList();
 
 			if (Collections.indexOfSubList(elements, entries) != -1) {
 				return i;
@@ -109,7 +109,7 @@ public class UncertaintyImpactCollection {
 			this.getUncertaintyImpacts().forEach(System.out::println);
 		}
 
-		List<AbstractPCMActionSequenceElement<?>> allAffectedElements = this.getAllAffectedElementsAfterPropagation();
+		List<AbstractActionSequenceElement<?>> allAffectedElements = this.getAllAffectedElementsAfterPropagation();
 		Set<ActionSequence> impactSet = this.getImpactSet(false);
 		Set<ActionSequence> distinctImpactSet = this.getImpactSet(true);
 

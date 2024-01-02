@@ -4,9 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.nio.file.Paths;
 
+import org.dataflowanalysis.analysis.builder.DataFlowAnalysisBuilder;
+import org.dataflowanalysis.analysis.builder.pcm.PCMDataFlowConfidentialityAnalysisBuilder;
 import org.junit.jupiter.api.BeforeEach;
-import org.palladiosimulator.dataflow.confidentiality.analysis.builder.DataFlowAnalysisBuilder;
-import org.palladiosimulator.dataflow.confidentiality.analysis.builder.pcm.PCMDataFlowConfidentialityAnalysisBuilder;
+
 
 import dev.abunai.impact.analysis.PCMUncertaintyImpactAnalysisBuilder;
 import dev.abunai.impact.analysis.StandalonePCMUncertaintyImpactAnalysis;

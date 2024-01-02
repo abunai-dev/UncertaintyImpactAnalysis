@@ -1,7 +1,7 @@
 package dev.abunai.impact.analysis;
 
-import org.palladiosimulator.dataflow.confidentiality.analysis.builder.AbstractDataFlowAnalysisBuilder;
-import org.palladiosimulator.dataflow.confidentiality.analysis.builder.pcm.PCMAnalysisBuilderData;
+import org.dataflowanalysis.analysis.builder.AbstractDataFlowAnalysisBuilder;
+import org.dataflowanalysis.analysis.builder.pcm.PCMAnalysisBuilderData;
 
 public class PCMUncertaintyImpactAnalysisBuilder extends
 		AbstractDataFlowAnalysisBuilder<StandalonePCMUncertaintyImpactAnalysis, PCMUncertaintyImpactAnalysisBuilderData, PCMAnalysisBuilderData> {
@@ -12,7 +12,6 @@ public class PCMUncertaintyImpactAnalysisBuilder extends
 
 	@Override
 	public void copyBuilderData(PCMAnalysisBuilderData builderData) {
-		super.builderData.setLegacy(builderData.isLegacy());
 		super.builderData.setModelProjectName(builderData.getModelProjectName());
 		super.builderData.setPluginActivator(builderData.getPluginActivator());
 		super.builderData.setRelativeAllocationModelPath(builderData.getRelativeAllocationModelPath());
@@ -31,8 +30,8 @@ public class PCMUncertaintyImpactAnalysisBuilder extends
 	public StandalonePCMUncertaintyImpactAnalysis build() {
 		this.validateBuilderData();
 
-		return new StandalonePCMUncertaintyImpactAnalysis(this.builderData.getModelProjectName(),
-				builderData.getPluginActivator(), builderData.createAnalysisData());
+		return new StandalonePCMUncertaintyImpactAnalysis(builderData.createAnalysisData(),
+				this.builderData.getModelProjectName(), builderData.getPluginActivator());
 	}
 
 }

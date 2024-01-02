@@ -3,9 +3,10 @@ package dev.abunai.impact.analysis.tests.evaluation;
 import java.util.List;
 import java.util.function.BiPredicate;
 
+import org.dataflowanalysis.analysis.core.pcm.PCMActionSequence;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.PCMActionSequence;
+
 
 import dev.abunai.impact.analysis.model.UncertaintyImpactCollection;
 import dev.abunai.impact.analysis.tests.TestBase;
@@ -40,9 +41,9 @@ public abstract class EvaluationBase extends TestBase {
 			var violations = analysis.queryDataFlow(evaluatedSequences.get(i), it -> {
 
 				List<String> dataLiterals = it.getAllDataFlowVariables().stream().map(e -> e.getAllCharacteristics())
-						.flatMap(List::stream).map(e -> e.characteristicLiteral().getName()).toList();
+						.flatMap(List::stream).map(e -> e.getValueName()).toList();
 				List<String> nodeLiterals = it.getAllNodeCharacteristics().stream()
-						.map(e -> e.characteristicLiteral().getName()).toList();
+						.map(e -> e.getValueName()).toList();
 
 				return getConstraint().test(dataLiterals, nodeLiterals);
 			});

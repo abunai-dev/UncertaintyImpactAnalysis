@@ -3,7 +3,7 @@ package dev.abunai.impact.analysis.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.ActionSequence;
+import org.dataflowanalysis.analysis.core.ActionSequence;
 import org.palladiosimulator.pcm.core.entity.Entity;
 import org.palladiosimulator.pcm.seff.ExternalCallAction;
 import org.palladiosimulator.pcm.seff.SetVariableAction;

@@ -2,8 +2,8 @@ package dev.abunai.impact.analysis.model.impact;
 
 import java.util.List;
 
-import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.seff.SEFFActionSequenceElement;
-import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.ActionSequence;
+import org.dataflowanalysis.analysis.core.ActionSequence;
+import org.dataflowanalysis.analysis.core.pcm.seff.SEFFActionSequenceElement;
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
 import org.palladiosimulator.pcm.seff.StartAction;
 

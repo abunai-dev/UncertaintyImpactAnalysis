@@ -3,11 +3,11 @@ package dev.abunai.impact.analysis.model.impact;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.dataflowanalysis.analysis.core.AbstractActionSequenceElement;
+import org.dataflowanalysis.analysis.core.ActionSequence;
+import org.dataflowanalysis.analysis.core.pcm.AbstractPCMActionSequenceElement;
+import org.dataflowanalysis.analysis.core.pcm.PCMActionSequence;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.AbstractPCMActionSequenceElement;
-import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.PCMActionSequence;
-import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.AbstractActionSequenceElement;
-import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.ActionSequence;
 import org.palladiosimulator.pcm.core.entity.Entity;
 
 import dev.abunai.impact.analysis.model.source.UncertaintySource;

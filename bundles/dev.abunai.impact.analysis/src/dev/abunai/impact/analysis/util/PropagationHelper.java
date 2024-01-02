@@ -8,16 +8,11 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.dataflowanalysis.analysis.core.ActionSequence;
+import org.dataflowanalysis.analysis.resource.ResourceProvider;
+import org.dataflowanalysis.analysis.utils.pcm.PCMQueryUtils;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.AbstractPCMActionSequenceElement;
-import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.seff.CallingSEFFActionSequenceElement;
-import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.seff.SEFFActionSequenceElement;
-import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.user.CallingUserActionSequenceElement;
-import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.AbstractActionSequenceElement;
-import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.ActionSequence;
-import org.palladiosimulator.dataflow.confidentiality.analysis.resource.ResourceProvider;
-import org.palladiosimulator.dataflow.confidentiality.analysis.utils.pcm.PCMQueryUtils;
 import org.palladiosimulator.pcm.allocation.Allocation;
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
 import org.palladiosimulator.pcm.core.composition.Connector;
@@ -37,6 +32,11 @@ import org.palladiosimulator.pcm.system.System;
 import org.palladiosimulator.pcm.system.SystemPackage;
 import org.palladiosimulator.pcm.usagemodel.UsageModel;
 import org.palladiosimulator.pcm.usagemodel.UsageScenario;
+import org.dataflowanalysis.analysis.core.AbstractActionSequenceElement;
+import org.dataflowanalysis.analysis.core.pcm.AbstractPCMActionSequenceElement;
+import org.dataflowanalysis.analysis.core.pcm.seff.CallingSEFFActionSequenceElement;
+import org.dataflowanalysis.analysis.core.pcm.seff.SEFFActionSequenceElement;
+import org.dataflowanalysis.analysis.core.pcm.user.CallingUserActionSequenceElement;
 
 public class PropagationHelper {
 

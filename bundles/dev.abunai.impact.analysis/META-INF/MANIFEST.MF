@@ -9,7 +9,7 @@ Export-Package: dev.abunai.impact.analysis,
  dev.abunai.impact.analysis.util
 Bundle-Activator: dev.abunai.impact.analysis.Activator
 Require-Bundle: org.eclipse.core.runtime,
- org.palladiosimulator.dataflow.confidentiality.analysis;bundle-version="1.0.0";visibility:=reexport
+ org.dataflowanalysis.analysis;bundle-version="1.0.0";visibility:=reexport
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: edu.kit.kastel.dsis.uncertainty.impactanalysis
 Bundle-ActivationPolicy: lazy
