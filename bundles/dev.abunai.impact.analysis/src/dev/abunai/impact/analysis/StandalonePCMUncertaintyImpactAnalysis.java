@@ -22,6 +22,7 @@ public class StandalonePCMUncertaintyImpactAnalysis extends StandalonePCMDataFlo
 
 	public StandalonePCMUncertaintyImpactAnalysis(AnalysisData analysisData, String modelProjectName, Optional<Class<? extends Plugin>> modelProjectActivator) {
 		super(analysisData, modelProjectName, modelProjectActivator);
+		this.analysisData = analysisData;
 	}
 
 	@Override

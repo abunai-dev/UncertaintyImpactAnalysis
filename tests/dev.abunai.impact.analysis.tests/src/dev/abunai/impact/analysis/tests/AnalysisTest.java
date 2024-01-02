@@ -32,7 +32,7 @@ public class AnalysisTest extends TestBase {
 	public void testResourceContainerActorUncertainty() {
 		analysis.getUncertaintySources().addActorUncertaintyInResourceContainer("_qvz80ITgEeywmO_IpTxeAg");
 		analysis.propagate().printResults(true, true, true, false);
-		assertAnalysisResults(9, 6, 1);
+		assertAnalysisResults(11, 8, 1);
 	}
 
 	@Test
