@@ -3,9 +3,10 @@
 The **Uncertainty Impact Analysis** calculates impact sets of uncertainty sources.
 This is achieved by internally extracting all data flows and propagating uncertainty through [Palladio](https://www.palladio-simulator.com/) software architecture models and along those data flows.
 
-More information can be found in this publication: S. Hahner, R. Heinrich, and R. Reussner, "Architecture based Uncertainty Impact Analysis to ensure Confidentiality", in *18th Symposium on Software Engineering for Adaptive and Self-Managing Systems (SEAMS)*, IEEE/ACM, 2023, accepted, to appear.
+More information can be found in this publication: S. Hahner, R. Heinrich, and R. Reussner, "Architecture-Based Uncertainty Impact Analysis to Ensure Confidentiality", in *18th Symposium on Software Engineering for Adaptive and Self-Managing Systems (SEAMS)*, IEEE/ACM, 2023, doi: [10.1109/SEAMS59076.2023.00026](https://doi.org/10.1109/SEAMS59076.2023.00026)
 
-> *Warning:* Please be aware that this implementation only represents an early prototype. Brace yourself for bad internal quality and code smells :)
+> [!WARNING]
+> Please be aware that this implementation only represents an early prototype. Brace yourself for bad internal quality and code smells :)
 
 ## Installation
 
