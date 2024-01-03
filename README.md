@@ -13,7 +13,7 @@ More information can be found in this publication: S. Hahner, R. Heinrich, and R
 1. Download the [data flow analysis](https://github.com/DataFlowAnalysis) product from [product.dataflowanalysis.org](https://updatesite.palladio-simulator.com/DataFlowAnalysis/product/nightly/) or `Version 2023` from [demo.dataflowanalysis.org](https://demo.dataflowanalysis.org/).
 2. Extract all files from the archive, launch the `eclipse.exe` and choose a folder as workspace (or just take the default one).
 3. Clone the confidentiality analysis repository from [GitHub](https://github.com/DataFlowAnalysis/DataFlowAnalysis) into this workspace.
-4. Make sure to checkout a matching version of the analysis repository. The currently latest tested version is [`98ad188`](https://github.com/DataFlowAnalysis/DataFlowAnalysis/commit/98ad188887e4e72b341af2219dec09d0f4f017de).
+4. Make sure to checkout a matching version of the analysis repository. The currently latest tested version is [`cb792f0`](https://github.com/DataFlowAnalysis/DataFlowAnalysis/commit/cb792f097aad4fb03d021d1b18ef31c306ab80d6).
 5. Clone this repository into the same workspace.
 6. Import all projects of the data flow analysis and also all projects from the `bundles` and `tests` folders from this repository using *File->Import->General->Existing Projects into Workspace*. This should import **6** projects in total.
 7. Execute the tests cases located in `dev.abunai.impact.analysis.tests` to make sure everything is working correctly.
