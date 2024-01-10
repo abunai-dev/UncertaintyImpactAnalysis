@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 import org.dataflowanalysis.analysis.core.AbstractActionSequenceElement;
 import org.dataflowanalysis.analysis.core.ActionSequence;
-import org.dataflowanalysis.analysis.core.pcm.AbstractPCMActionSequenceElement;
+import org.dataflowanalysis.analysis.pcm.core.AbstractPCMActionSequenceElement;
 
 import dev.abunai.impact.analysis.model.impact.UncertaintyImpact;
 

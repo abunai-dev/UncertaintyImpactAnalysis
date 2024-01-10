@@ -3,7 +3,7 @@ package dev.abunai.impact.analysis.model.source;
 import java.util.List;
 import java.util.Objects;
 
-import org.dataflowanalysis.analysis.core.pcm.AbstractPCMActionSequenceElement;
+import org.dataflowanalysis.analysis.pcm.core.AbstractPCMActionSequenceElement;
 import org.palladiosimulator.pcm.core.entity.Entity;
 import org.palladiosimulator.pcm.seff.ExternalCallAction;
 import org.palladiosimulator.pcm.seff.SetVariableAction;

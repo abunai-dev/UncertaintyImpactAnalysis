@@ -9,8 +9,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.dataflowanalysis.analysis.core.ActionSequence;
-import org.dataflowanalysis.analysis.resource.ResourceProvider;
-import org.dataflowanalysis.analysis.utils.pcm.PCMQueryUtils;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.palladiosimulator.pcm.allocation.Allocation;
@@ -33,17 +31,19 @@ import org.palladiosimulator.pcm.system.SystemPackage;
 import org.palladiosimulator.pcm.usagemodel.UsageModel;
 import org.palladiosimulator.pcm.usagemodel.UsageScenario;
 import org.dataflowanalysis.analysis.core.AbstractActionSequenceElement;
-import org.dataflowanalysis.analysis.core.pcm.AbstractPCMActionSequenceElement;
-import org.dataflowanalysis.analysis.core.pcm.seff.CallingSEFFActionSequenceElement;
-import org.dataflowanalysis.analysis.core.pcm.seff.SEFFActionSequenceElement;
-import org.dataflowanalysis.analysis.core.pcm.user.CallingUserActionSequenceElement;
+import org.dataflowanalysis.analysis.pcm.core.AbstractPCMActionSequenceElement;
+import org.dataflowanalysis.analysis.pcm.core.seff.CallingSEFFActionSequenceElement;
+import org.dataflowanalysis.analysis.pcm.core.seff.SEFFActionSequenceElement;
+import org.dataflowanalysis.analysis.pcm.core.user.CallingUserActionSequenceElement;
+import org.dataflowanalysis.analysis.pcm.resource.PCMResourceProvider;
+import org.dataflowanalysis.analysis.pcm.utils.PCMQueryUtils;
 
 public class PropagationHelper {
 
 	private List<ActionSequence> actionSequences;
-	private final ResourceProvider resourceProvider;
+	private final PCMResourceProvider resourceProvider;
 
-	public PropagationHelper(List<ActionSequence> actionSequences, ResourceProvider resourceProvider) {
+	public PropagationHelper(List<ActionSequence> actionSequences, PCMResourceProvider resourceProvider) {
 		this.actionSequences = actionSequences;
 		this.resourceProvider = resourceProvider;
 	}
@@ -284,7 +284,7 @@ public class PropagationHelper {
 		Objects.requireNonNull(eclazz);
 		Objects.requireNonNull(clazz);
 
-		List<T> allPCMModelsOfGivenType = resourceProvider.lookupElementOfType(eclazz).stream().filter(clazz::isInstance)
+		List<T> allPCMModelsOfGivenType = resourceProvider.lookupToplevelElement(eclazz).stream().filter(clazz::isInstance)
 				.map(clazz::cast).toList();
 
 		if (allPCMModelsOfGivenType.size() == 1) {

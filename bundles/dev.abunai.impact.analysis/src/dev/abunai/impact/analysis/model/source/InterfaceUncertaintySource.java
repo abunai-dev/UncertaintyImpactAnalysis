@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import org.dataflowanalysis.analysis.core.pcm.AbstractPCMActionSequenceElement;
+import org.dataflowanalysis.analysis.pcm.core.AbstractPCMActionSequenceElement;
 import org.palladiosimulator.pcm.repository.OperationSignature;
 
 import dev.abunai.impact.analysis.model.impact.InterfaceUncertaintyImpact;

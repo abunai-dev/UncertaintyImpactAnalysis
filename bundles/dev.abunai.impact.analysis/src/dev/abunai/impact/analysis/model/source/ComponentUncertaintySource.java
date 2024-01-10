@@ -3,7 +3,7 @@ package dev.abunai.impact.analysis.model.source;
 import java.util.List;
 import java.util.Objects;
 
-import org.dataflowanalysis.analysis.core.pcm.seff.SEFFActionSequenceElement;
+import org.dataflowanalysis.analysis.pcm.core.seff.SEFFActionSequenceElement;
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
 import org.palladiosimulator.pcm.seff.StartAction;
 

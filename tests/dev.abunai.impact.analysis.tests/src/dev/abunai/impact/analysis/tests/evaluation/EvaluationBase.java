@@ -3,7 +3,7 @@ package dev.abunai.impact.analysis.tests.evaluation;
 import java.util.List;
 import java.util.function.BiPredicate;
 
-import org.dataflowanalysis.analysis.core.pcm.PCMActionSequence;
+import org.dataflowanalysis.analysis.pcm.core.PCMActionSequence;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 

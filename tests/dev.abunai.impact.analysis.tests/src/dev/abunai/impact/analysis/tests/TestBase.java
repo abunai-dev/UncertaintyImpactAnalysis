@@ -4,20 +4,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.nio.file.Paths;
 
-import org.dataflowanalysis.analysis.builder.DataFlowAnalysisBuilder;
-import org.dataflowanalysis.analysis.builder.pcm.PCMDataFlowConfidentialityAnalysisBuilder;
 import org.junit.jupiter.api.BeforeEach;
 
-
 import dev.abunai.impact.analysis.PCMUncertaintyImpactAnalysisBuilder;
-import dev.abunai.impact.analysis.StandalonePCMUncertaintyImpactAnalysis;
+import dev.abunai.impact.analysis.PCMUncertaintyImpactAnalysis;
 import dev.abunai.impact.analysis.model.UncertaintyImpactCollection;
 import edu.kit.kastel.dsis.uncertainty.impactanalysis.testmodels.Activator;
 
 public abstract class TestBase {
 
 	public static final String TEST_MODEL_PROJECT_NAME = "dev.abunai.impact.analysis.testmodels";
-	protected StandalonePCMUncertaintyImpactAnalysis analysis = null;
+	protected PCMUncertaintyImpactAnalysis analysis = null;
 
 	protected abstract String getFolderName();
 
@@ -36,13 +33,13 @@ public abstract class TestBase {
 		final var nodeCharacteristicsPath = Paths
 				.get(getBaseFolder(), getFolderName(), getFilesName() + ".nodecharacteristics").toString();
 
-		var analysis = new DataFlowAnalysisBuilder().standalone().modelProjectName(TEST_MODEL_PROJECT_NAME)
-				.useBuilder(new PCMDataFlowConfidentialityAnalysisBuilder()).usePluginActivator(Activator.class)
-				.useUsageModel(usageModelPath).useAllocationModel(allocationPath)
-				.useNodeCharacteristicsModel(nodeCharacteristicsPath)
-				.useBuilder(new PCMUncertaintyImpactAnalysisBuilder()).build();
+		var builder = new PCMUncertaintyImpactAnalysisBuilder().standalone().modelProjectName(TEST_MODEL_PROJECT_NAME)
+				.usePluginActivator(Activator.class).useUsageModel(usageModelPath).useAllocationModel(allocationPath)
+				.useNodeCharacteristicsModel(nodeCharacteristicsPath);
 
+		var analysis = ((PCMUncertaintyImpactAnalysisBuilder) builder).build();
 		analysis.initializeAnalysis();
+		
 		this.analysis = analysis;
 	}
 

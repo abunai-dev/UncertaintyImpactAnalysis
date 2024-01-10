@@ -4,23 +4,23 @@ import java.util.List;
 import java.util.Optional;
 
 import org.eclipse.core.runtime.Plugin;
-
-import org.dataflowanalysis.analysis.StandalonePCMDataFlowConfidentialityAnalysis;
-import org.dataflowanalysis.analysis.builder.AnalysisData;
+import org.dataflowanalysis.analysis.AnalysisData;
 import org.dataflowanalysis.analysis.core.ActionSequence;
+import org.dataflowanalysis.analysis.pcm.PCMDataFlowConfidentialityAnalysis;
+import org.dataflowanalysis.analysis.pcm.resource.PCMResourceProvider;
 
 import dev.abunai.impact.analysis.model.UncertaintyImpactCollection;
 import dev.abunai.impact.analysis.model.UncertaintySourceCollection;
 import dev.abunai.impact.analysis.util.PropagationHelper;
 
-public class StandalonePCMUncertaintyImpactAnalysis extends StandalonePCMDataFlowConfidentialityAnalysis {
+public class PCMUncertaintyImpactAnalysis extends PCMDataFlowConfidentialityAnalysis {
 
 	private List<ActionSequence> actionSequences = null;
 	private PropagationHelper propagationHelper = null;
 	private UncertaintySourceCollection uncertaintySourceCollection = null;
 	private AnalysisData analysisData;
 
-	public StandalonePCMUncertaintyImpactAnalysis(AnalysisData analysisData, String modelProjectName, Optional<Class<? extends Plugin>> modelProjectActivator) {
+	public PCMUncertaintyImpactAnalysis(AnalysisData analysisData, String modelProjectName, Optional<Class<? extends Plugin>> modelProjectActivator) {
 		super(analysisData, modelProjectName, modelProjectActivator);
 		this.analysisData = analysisData;
 	}
@@ -29,7 +29,7 @@ public class StandalonePCMUncertaintyImpactAnalysis extends StandalonePCMDataFlo
 	public boolean initializeAnalysis() {
 		if (super.initializeAnalysis()) {
 			this.actionSequences = super.findAllSequences();
-			this.propagationHelper = new PropagationHelper(this.actionSequences, analysisData.getResourceProvider());
+			this.propagationHelper = new PropagationHelper(this.actionSequences, (PCMResourceProvider) analysisData.getResourceProvider());
 			this.uncertaintySourceCollection = new UncertaintySourceCollection(this.actionSequences, propagationHelper);
 			return true;
 		} else {

@@ -3,7 +3,7 @@ package dev.abunai.impact.analysis.model.impact;
 import java.util.List;
 
 import org.dataflowanalysis.analysis.core.ActionSequence;
-import org.dataflowanalysis.analysis.core.pcm.AbstractPCMActionSequenceElement;
+import org.dataflowanalysis.analysis.pcm.core.AbstractPCMActionSequenceElement;
 import org.palladiosimulator.pcm.core.entity.Entity;
 
 import dev.abunai.impact.analysis.model.source.UncertaintySource;

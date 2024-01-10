@@ -5,8 +5,8 @@ import java.util.stream.Collectors;
 
 import org.dataflowanalysis.analysis.core.AbstractActionSequenceElement;
 import org.dataflowanalysis.analysis.core.ActionSequence;
-import org.dataflowanalysis.analysis.core.pcm.AbstractPCMActionSequenceElement;
-import org.dataflowanalysis.analysis.core.pcm.PCMActionSequence;
+import org.dataflowanalysis.analysis.pcm.core.AbstractPCMActionSequenceElement;
+import org.dataflowanalysis.analysis.pcm.core.PCMActionSequence;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.palladiosimulator.pcm.core.entity.Entity;
 
