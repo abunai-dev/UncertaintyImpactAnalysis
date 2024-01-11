@@ -7,7 +7,6 @@ Export-Package: dev.abunai.impact.analysis,
  dev.abunai.impact.analysis.model,
  dev.abunai.impact.analysis.model.impact,
  dev.abunai.impact.analysis.util
-Bundle-Activator: dev.abunai.impact.analysis.Activator
 Require-Bundle: org.eclipse.core.runtime,
  org.dataflowanalysis.analysis;bundle-version="1.0.0";visibility:=reexport,
  org.dataflowanalysis.analysis.pcm;bundle-version="1.0.0";visibility:=reexport

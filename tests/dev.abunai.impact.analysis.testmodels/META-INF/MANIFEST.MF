@@ -3,8 +3,8 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Testmodels
 Bundle-SymbolicName: edu.kit.kastel.dsis.uncertainty.impactanalysis.testmodels
 Bundle-Version: 1.0.0.qualifier
-Export-Package: edu.kit.kastel.dsis.uncertainty.impactanalysis.testmodels
-Bundle-Activator: edu.kit.kastel.dsis.uncertainty.impactanalysis.testmodels.Activator
+Export-Package: dev.abunai.impact.analysis.testmodels
+Bundle-Activator: dev.abunai.impact.analysis.testmodels.Activator
 Bundle-Vendor: Uncertainty Impact Analysis Test Models
 Require-Bundle: org.eclipse.core.runtime
 Bundle-RequiredExecutionEnvironment: JavaSE-17

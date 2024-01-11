@@ -1,4 +1,4 @@
-package edu.kit.kastel.dsis.uncertainty.impactanalysis.testmodels;
+package dev.abunai.impact.analysis.testmodels;
 
 import org.eclipse.core.runtime.Plugin;
 

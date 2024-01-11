@@ -9,7 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import dev.abunai.impact.analysis.PCMUncertaintyImpactAnalysisBuilder;
 import dev.abunai.impact.analysis.PCMUncertaintyImpactAnalysis;
 import dev.abunai.impact.analysis.model.UncertaintyImpactCollection;
-import edu.kit.kastel.dsis.uncertainty.impactanalysis.testmodels.Activator;
+import dev.abunai.impact.analysis.testmodels.Activator;
 
 public abstract class TestBase {
 
