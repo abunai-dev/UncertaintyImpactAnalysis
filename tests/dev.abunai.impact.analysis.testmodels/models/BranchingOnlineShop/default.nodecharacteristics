@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <nodecharacteristics:Assignments xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:DataDictionaryCharacterized="http://dataflowanalysis.org/pcm/extension/dictionary/characterized/1.0" xmlns:nodecharacteristics="http://dataflowanalysis.org/pcm/extension/nodecharacteristics/0.1.0">
-  <assignee xsi:type="nodecharacteristics:RessourceAssignee" id="_Qh8vMLB7Ee6PGKdWgLSwQQ">
+  <assignee xsi:type="nodecharacteristics:ResourceAssignee" id="_Qh8vMLB7Ee6PGKdWgLSwQQ">
     <characteristics id="_jhkk8AbUEe6DLIGEtpHBXw">
       <type xsi:type="DataDictionaryCharacterized:EnumCharacteristicType" href="dic.pddc#_AQnL0IThEeywmO_IpTxeAg-characteristicTypes@1"/>
       <values href="dic.pddc#_AQnL0IThEeywmO_IpTxeAg-characteristicEnumerations@1.literals@1"/>
     </characteristics>
     <resourcecontainer href="default.resourceenvironment#_upfkIITgEeywmO_IpTxeAg"/>
   </assignee>
-  <assignee xsi:type="nodecharacteristics:RessourceAssignee" id="_8BEvULB-Ee6TRb5PGryaNg">
+  <assignee xsi:type="nodecharacteristics:ResourceAssignee" id="_8BEvULB-Ee6TRb5PGryaNg">
     <characteristics id="_l0tsQAbUEe6DLIGEtpHBXw">
       <type xsi:type="DataDictionaryCharacterized:EnumCharacteristicType" href="dic.pddc#_AQnL0IThEeywmO_IpTxeAg-characteristicTypes@1"/>
       <values href="dic.pddc#_AQnL0IThEeywmO_IpTxeAg-characteristicEnumerations@1.literals@0"/>

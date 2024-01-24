@@ -4,8 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.eclipse.core.runtime.Plugin;
-import org.dataflowanalysis.analysis.AnalysisData;
 import org.dataflowanalysis.analysis.core.ActionSequence;
+import org.dataflowanalysis.analysis.core.DataCharacteristicsCalculatorFactory;
+import org.dataflowanalysis.analysis.core.NodeCharacteristicsCalculator;
 import org.dataflowanalysis.analysis.pcm.PCMDataFlowConfidentialityAnalysis;
 import org.dataflowanalysis.analysis.pcm.resource.PCMResourceProvider;
 
@@ -18,18 +19,20 @@ public class PCMUncertaintyImpactAnalysis extends PCMDataFlowConfidentialityAnal
 	private List<ActionSequence> actionSequences = null;
 	private PropagationHelper propagationHelper = null;
 	private UncertaintySourceCollection uncertaintySourceCollection = null;
-	private AnalysisData analysisData;
 
-	public PCMUncertaintyImpactAnalysis(AnalysisData analysisData, String modelProjectName, Optional<Class<? extends Plugin>> modelProjectActivator) {
-		super(analysisData, modelProjectName, modelProjectActivator);
-		this.analysisData = analysisData;
+	public PCMUncertaintyImpactAnalysis(NodeCharacteristicsCalculator nodeCharacteristicsCalculator,
+			DataCharacteristicsCalculatorFactory dataCharacteristicsCalculatorFactory,
+			PCMResourceProvider resourceProvider, String modelProjectName,
+			Optional<Class<? extends Plugin>> modelProjectActivator) {
+		super(nodeCharacteristicsCalculator, dataCharacteristicsCalculatorFactory, resourceProvider, modelProjectName,
+				modelProjectActivator);
 	}
 
 	@Override
 	public boolean initializeAnalysis() {
 		if (super.initializeAnalysis()) {
 			this.actionSequences = super.findAllSequences();
-			this.propagationHelper = new PropagationHelper(this.actionSequences, (PCMResourceProvider) analysisData.getResourceProvider());
+			this.propagationHelper = new PropagationHelper(this.actionSequences, this.resourceProvider);
 			this.uncertaintySourceCollection = new UncertaintySourceCollection(this.actionSequences, propagationHelper);
 			return true;
 		} else {
