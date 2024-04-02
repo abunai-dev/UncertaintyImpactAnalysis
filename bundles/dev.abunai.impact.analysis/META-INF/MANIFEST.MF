@@ -4,6 +4,7 @@ Bundle-Name: Uncertainty Impact Analysis
 Bundle-SymbolicName: edu.kit.kastel.dsis.uncertainty.impactanalysis
 Bundle-Version: 1.0.0.qualifier
 Export-Package: dev.abunai.impact.analysis,
+ dev.abunai.impact.analysis.interactive,
  dev.abunai.impact.analysis.model,
  dev.abunai.impact.analysis.model.impact,
  dev.abunai.impact.analysis.util
