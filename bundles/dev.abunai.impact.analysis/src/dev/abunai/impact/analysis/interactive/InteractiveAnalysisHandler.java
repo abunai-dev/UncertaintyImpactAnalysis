@@ -3,10 +3,19 @@ package dev.abunai.impact.analysis.interactive;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
+import java.io.IOException;
+import java.net.URL;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 public class InteractiveAnalysisHandler {
 	
-	public void handle() {
+	private static final String JSON_URL = "https://arc3n.abunai.dev/data.json";
+	
+	public void handle() throws IOException {
 		System.out.println("Enter an id to check for:");
 		int id = getIntFromInput();
 		List<JsonUncertainty> uncertainties = getAllUncertainties();
@@ -34,8 +43,12 @@ public class InteractiveAnalysisHandler {
 	}
 	
 	
-	private List<JsonUncertainty> getAllUncertainties() {
-		throw new UnsupportedOperationException("Not yet implemented");
+	private List<JsonUncertainty> getAllUncertainties() throws IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		URL url = new URL(JSON_URL);
+		JsonNode node = mapper.readTree(url);
+		ObjectReader reader = mapper.readerFor(new TypeReference<List<JsonUncertainty>>() {});
+		return reader.readValue(node);
 	}
 	
 	private Object selectElement(List<Object> allElements) {
