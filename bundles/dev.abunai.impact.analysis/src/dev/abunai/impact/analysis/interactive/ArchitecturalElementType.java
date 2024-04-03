@@ -17,13 +17,9 @@ enum ArchitecturalElementType {
 		this.jsonName = jsonName;
 	}
 	
-	public String getJsonName() {
-		return jsonName;
-	}
-	
 	public static ArchitecturalElementType getFromName(String jsonName) {
 		for (ArchitecturalElementType element : ArchitecturalElementType.values()) {
-			if (element.jsonName == jsonName) {
+			if (element.jsonName.equals(jsonName)) {
 				return element;
 			}
 		}

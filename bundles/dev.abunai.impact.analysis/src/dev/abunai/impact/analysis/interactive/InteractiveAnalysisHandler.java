@@ -3,17 +3,31 @@ package dev.abunai.impact.analysis.interactive;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
+
+import org.eclipse.emf.ecore.EObject;
+
 import java.io.IOException;
 import java.net.URL;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
+
+import dev.abunai.impact.analysis.PCMUncertaintyImpactAnalysis;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 
 public class InteractiveAnalysisHandler {
 	
-	private static final String JSON_URL = "https://arc3n.abunai.dev/data.json";
+	private final String JSON_URL = "https://arc3n.abunai.dev/data.json";
+	
+	private final ElementLookup elementLookup;
+	private final PCMUncertaintyImpactAnalysis analysis;
+	
+	public InteractiveAnalysisHandler(PCMUncertaintyImpactAnalysis analysis) {
+		elementLookup = new ElementLookup(analysis);
+		this.analysis = analysis;
+	}
 	
 	public void handle() throws IOException {
 		System.out.println("Enter an id to check for:");
@@ -24,8 +38,8 @@ public class InteractiveAnalysisHandler {
 			String notFoundText = String.format("No uncertainty with id %i found.", id);
 			throw new IllegalArgumentException(notFoundText);
 		}
-		List<Object> allElements = getAllElements(ArchitecturalElementType.getFromName(uncertainty.architecturalElementType()));
-		Object elementToAnalize = selectElement(allElements);
+		List<EObject> allElements = elementLookup.getElementsOfType(ArchitecturalElementType.getFromName(uncertainty.classes().architecturalElementType()));
+		EObject elementToAnalize = selectElement(allElements);
 	}
 	
 	private int getIntFromInput() {
@@ -38,10 +52,6 @@ public class InteractiveAnalysisHandler {
 		return input;
 	}
 	
-	private List<Object> getAllElements(ArchitecturalElementType element) {
-		throw new UnsupportedOperationException("Not yet implemented");
-	}
-	
 	
 	private List<JsonUncertainty> getAllUncertainties() throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
@@ -51,7 +61,7 @@ public class InteractiveAnalysisHandler {
 		return reader.readValue(node);
 	}
 	
-	private Object selectElement(List<Object> allElements) {
+	private EObject selectElement(List<EObject> allElements) {
 		System.out.println("Select one of these element, by giving its line number:");
 		for (int i = 0; i < allElements.size(); i++) {
 			System.out.println(String.format("%d) %s", i + 1, allElements.get(i)));
