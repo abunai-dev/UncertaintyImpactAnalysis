@@ -11,7 +11,6 @@ import dev.abunai.impact.analysis.PCMUncertaintyImpactAnalysis;
 class ComponentEntityLookup extends EntityLookup {
 
 	private final List<AssemblyContext> assemblyContexts;
-	PCMUncertaintyImpactAnalysis analysis;
 	
 	public ComponentEntityLookup(PCMUncertaintyImpactAnalysis analysis) {
 		super(analysis);
