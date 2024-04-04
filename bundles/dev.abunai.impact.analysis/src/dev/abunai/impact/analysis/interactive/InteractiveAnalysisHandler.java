@@ -30,29 +30,37 @@ public class InteractiveAnalysisHandler {
 	}
 	
 	public void handle() throws IOException {
-		System.out.println("Enter an id to check for:");
+		System.out.println("Enter an id of an uncertainty to check for:");
 		int id = getIntFromInput();
 		List<JsonUncertainty> uncertainties = getAllUncertainties();
 		JsonUncertainty uncertainty = uncertainties.stream().filter(u -> u.id() == id).findFirst().orElse(null);
 		if (uncertainty == null) {
-			String notFoundText = String.format("No uncertainty with id %i found.", id);
+			String notFoundText = String.format("No uncertainty with id %d found.", id);
 			throw new IllegalArgumentException(notFoundText);
 		}
+		
 		ArchitecturalElementType type = ArchitecturalElementType.getFromName(uncertainty.classes().architecturalElementType());
 		EntityLookup entityLookup = generateEntityLookUp(type);
+		System.out.println(""); // Spacer
 		selectElement(entityLookup);
 		scanner.close();
+		System.out.println(""); // Spacer
+		
+		analysis.propagate().printResults(true, true, true, false);
 	}
 	
 	private int getIntFromInput() {
-		int input = -1;
+		String input = "";
 		try {
-			input = scanner.nextInt();
-		} catch (InputMismatchException e) {
+			input = scanner.nextLine();
+			if (input.startsWith("#")) {
+				input = input.substring(1);
+			}
+			return Integer.parseInt(input);
+		} catch (InputMismatchException | NumberFormatException e) {
 			scanner.close();
 			throw new IllegalArgumentException(String.format("%s is not a valid number.", input));
 		}
-		return input;
 	}
 	
 	
@@ -76,7 +84,7 @@ public class InteractiveAnalysisHandler {
 		if (index < 1 || index > allEntities.size()) {
 			throw new IllegalArgumentException(String.format("Number %d is out of range.", index));
 		}
-		entityLookup.addToAnalysis(index);
+		entityLookup.addToAnalysis(index - 1);
 	}
 	
 	private EntityLookup generateEntityLookUp(ArchitecturalElementType type) {
