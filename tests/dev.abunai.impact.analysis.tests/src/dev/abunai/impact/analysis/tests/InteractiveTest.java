@@ -11,6 +11,7 @@ public class InteractiveTest extends TestBase {
 	@Test
 	public void doStuff() throws IOException {
 		new InteractiveAnalysisHandler(analysis).handle();
+		analysis.propagate().printResults(true, true, true, false);
 	}
 
 	@Override
