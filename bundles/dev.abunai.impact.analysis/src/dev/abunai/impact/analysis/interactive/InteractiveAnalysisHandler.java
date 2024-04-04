@@ -4,7 +4,7 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
-import org.eclipse.emf.ecore.EObject;
+import org.palladiosimulator.pcm.core.entity.Entity;
 
 import java.io.IOException;
 import java.net.URL;
@@ -21,12 +21,12 @@ public class InteractiveAnalysisHandler {
 	
 	private final String JSON_URL = "https://arc3n.abunai.dev/data.json";
 	
-	private final ElementLookup elementLookup;
 	private final PCMUncertaintyImpactAnalysis analysis;
+	private final Scanner scanner;
 	
 	public InteractiveAnalysisHandler(PCMUncertaintyImpactAnalysis analysis) {
-		elementLookup = new ElementLookup(analysis);
 		this.analysis = analysis;
+		scanner = new Scanner(System.in);
 	}
 	
 	public void handle() throws IOException {
@@ -38,15 +38,18 @@ public class InteractiveAnalysisHandler {
 			String notFoundText = String.format("No uncertainty with id %i found.", id);
 			throw new IllegalArgumentException(notFoundText);
 		}
-		List<EObject> allElements = elementLookup.getElementsOfType(ArchitecturalElementType.getFromName(uncertainty.classes().architecturalElementType()));
-		EObject elementToAnalize = selectElement(allElements);
+		ArchitecturalElementType type = ArchitecturalElementType.getFromName(uncertainty.classes().architecturalElementType());
+		EntityLookup entityLookup = generateEntityLookUp(type);
+		selectElement(entityLookup);
+		scanner.close();
 	}
 	
 	private int getIntFromInput() {
 		int input = -1;
-		try (Scanner scanner = new Scanner(System.in)) {
+		try {
 			input = scanner.nextInt();
 		} catch (InputMismatchException e) {
+			scanner.close();
 			throw new IllegalArgumentException(String.format("%s is not a valid number.", input));
 		}
 		return input;
@@ -61,16 +64,29 @@ public class InteractiveAnalysisHandler {
 		return reader.readValue(node);
 	}
 	
-	private EObject selectElement(List<EObject> allElements) {
-		System.out.println("Select one of these element, by giving its line number:");
-		for (int i = 0; i < allElements.size(); i++) {
-			System.out.println(String.format("%d) %s", i + 1, allElements.get(i)));
+	private void selectElement(EntityLookup entityLookup) {
+		System.out.println("Select one of these element.");
+		List<Entity> allEntities = entityLookup.getEntities();
+		for (int i = 0; i < allEntities.size(); i++) {
+			Entity element = allEntities.get(i);
+			System.out.println(String.format("%d) %s (%s)", i + 1, element.getEntityName(), element.getId()));
 		}
+		System.out.println("Enter line number:");
 		int index = getIntFromInput();
-		if (index < 1 || index > allElements.size()) {
+		if (index < 1 || index > allEntities.size()) {
 			throw new IllegalArgumentException(String.format("Number %d is out of range.", index));
 		}
-		return allElements.get(index);
+		entityLookup.addToAnalysis(index);
 	}
 	
+	private EntityLookup generateEntityLookUp(ArchitecturalElementType type) {
+		switch(type) {
+			case COMPONENT: return new ComponentEntityLookup(analysis);
+			case CONNECTOR: return new ConnectorEntityLookup(analysis);
+			case INTERFACE: return new InterfaceEntityLookup(analysis);
+			case BEHAVIOR_DESCRIPTION: return new BehaviorEntityLookup(analysis);
+			case EXTERNAL_RESOURCE: return new ExternalEntityLookup(analysis);
+		}
+		return null;
+	}
 }
