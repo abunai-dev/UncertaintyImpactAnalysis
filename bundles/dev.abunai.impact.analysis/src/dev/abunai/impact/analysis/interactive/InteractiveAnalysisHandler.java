@@ -42,7 +42,10 @@ public class InteractiveAnalysisHandler {
 		ArchitecturalElementType type = ArchitecturalElementType.getFromName(uncertainty.classes().architecturalElementType());
 		EntityLookup entityLookup = generateEntityLookUp(type);
 		System.out.println(""); // Spacer
-		selectElement(entityLookup);
+		if(!selectElement(entityLookup)) {
+			scanner.close();
+			return;
+		}
 		scanner.close();
 		System.out.println(""); // Spacer
 		
@@ -72,9 +75,13 @@ public class InteractiveAnalysisHandler {
 		return reader.readValue(node);
 	}
 	
-	private void selectElement(EntityLookup entityLookup) {
-		System.out.println("Select one of these element.");
+	private boolean selectElement(EntityLookup entityLookup) {
 		List<Entity> allEntities = entityLookup.getEntities();
+		if (allEntities.isEmpty()) {
+			System.out.println("No uncertainties with that type found.");
+			return false;
+		}
+		System.out.println("Select one of these element.");
 		for (int i = 0; i < allEntities.size(); i++) {
 			Entity element = allEntities.get(i);
 			System.out.println(String.format("%d) %s (%s)", i + 1, element.getEntityName(), element.getId()));
@@ -85,6 +92,7 @@ public class InteractiveAnalysisHandler {
 			throw new IllegalArgumentException(String.format("Number %d is out of range.", index));
 		}
 		entityLookup.addToAnalysis(index - 1);
+		return true;
 	}
 	
 	private EntityLookup generateEntityLookUp(ArchitecturalElementType type) {
