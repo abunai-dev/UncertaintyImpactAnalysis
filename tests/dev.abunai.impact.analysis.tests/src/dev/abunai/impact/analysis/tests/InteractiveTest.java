@@ -9,7 +9,7 @@ import dev.abunai.impact.analysis.interactive.InteractiveAnalysisHandler;
 public class InteractiveTest extends TestBase {
 
 	@Test
-	public void doStuff() throws IOException {
+	public void executeInteractiveAnalysis() throws IOException {
 		new InteractiveAnalysisHandler(analysis).handle();
 	}
 
