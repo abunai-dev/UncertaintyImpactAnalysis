@@ -49,7 +49,9 @@ public class InteractiveAnalysisHandler {
 		scanner.close();
 		System.out.println(""); // Spacer
 		
+		
 		analysis.propagate().printResults(true, true, true, false);
+		
 	}
 	
 	private int getIntFromInput() {
@@ -91,7 +93,14 @@ public class InteractiveAnalysisHandler {
 		if (index < 1 || index > allEntities.size()) {
 			throw new IllegalArgumentException(String.format("Number %d is out of range.", index));
 		}
-		entityLookup.addToAnalysis(index - 1);
+		try {
+			entityLookup.addToAnalysis(index - 1);
+		} catch (IllegalArgumentException e) {
+			System.out.println(""); // Spacer
+			System.out.println("The selected entity is not part of any dataflow.");
+			System.out.println("No uncertainty with this entity found.");
+			return false;
+		}
 		return true;
 	}
 	
