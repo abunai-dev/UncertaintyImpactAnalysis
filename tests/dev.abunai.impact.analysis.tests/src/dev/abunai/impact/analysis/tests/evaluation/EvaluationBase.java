@@ -55,7 +55,7 @@ public abstract class EvaluationBase extends TestBase {
 		}
 	}
 
-	@Disabled
+	//@Disabled
 	@Test
 	public void printAllDataFlows() {
 		var actionSequences = analysis.findAllSequences();
