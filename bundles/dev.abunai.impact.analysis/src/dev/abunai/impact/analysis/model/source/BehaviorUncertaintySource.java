@@ -3,7 +3,7 @@ package dev.abunai.impact.analysis.model.source;
 import java.util.List;
 import java.util.Objects;
 
-import org.dataflowanalysis.analysis.pcm.core.AbstractPCMActionSequenceElement;
+import org.dataflowanalysis.analysis.pcm.core.AbstractPCMVertex;
 import org.palladiosimulator.pcm.core.entity.Entity;
 import org.palladiosimulator.pcm.seff.ExternalCallAction;
 import org.palladiosimulator.pcm.seff.SetVariableAction;
@@ -46,7 +46,7 @@ public class BehaviorUncertaintySource<T extends Entity> extends UncertaintySour
 
 	@Override
 	public List<BehaviorUncertaintyImpact<T>> propagate() {
-		List<AbstractPCMActionSequenceElement<?>> processes = this.propagationHelper.findProccessesWithAction(action);
+		List<AbstractPCMVertex<?>> processes = this.propagationHelper.findProccessesWithAction(action);
 		return processes.stream().map(it -> new BehaviorUncertaintyImpact<>(it, this, this.propagationHelper)).toList();
 	}
 

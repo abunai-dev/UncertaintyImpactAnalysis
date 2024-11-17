@@ -3,7 +3,8 @@ package dev.abunai.impact.analysis.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.dataflowanalysis.analysis.core.ActionSequence;
+import org.dataflowanalysis.analysis.pcm.core.PCMFlowGraphCollection;
+import org.dataflowanalysis.analysis.pcm.core.PCMTransposeFlowGraph;
 import org.palladiosimulator.pcm.core.entity.Entity;
 import org.palladiosimulator.pcm.seff.ExternalCallAction;
 import org.palladiosimulator.pcm.seff.SetVariableAction;
@@ -23,9 +24,9 @@ public class UncertaintySourceCollection {
 
 	private final List<UncertaintySource<?>> uncertaintySources;
 	private final PropagationHelper propagationHelper;
-	private final List<ActionSequence> actionSequences;
+	private final PCMFlowGraphCollection actionSequences;
 
-	public UncertaintySourceCollection(List<ActionSequence> actionSequences, PropagationHelper propagationHelper) {
+	public UncertaintySourceCollection(PCMFlowGraphCollection actionSequences, PropagationHelper propagationHelper) {
 		this.uncertaintySources = new ArrayList<>();
 		this.propagationHelper = propagationHelper;
 		this.actionSequences = actionSequences;
@@ -37,9 +38,7 @@ public class UncertaintySourceCollection {
 		for (UncertaintySource<?> source : this.uncertaintySources) {
 			var localImpacts = source.propagate();
 
-			for (var impact : localImpacts) {
-				allImpacts.add(impact);
-			}
+            allImpacts.addAll(localImpacts);
 		}
 
 		return new UncertaintyImpactCollection(actionSequences, allImpacts);

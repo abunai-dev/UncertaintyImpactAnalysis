@@ -7,18 +7,20 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.dataflowanalysis.analysis.core.AbstractActionSequenceElement;
-import org.dataflowanalysis.analysis.core.ActionSequence;
-import org.dataflowanalysis.analysis.pcm.core.AbstractPCMActionSequenceElement;
+import org.dataflowanalysis.analysis.core.AbstractVertex;
 
 import dev.abunai.impact.analysis.model.impact.UncertaintyImpact;
+import org.dataflowanalysis.analysis.pcm.core.AbstractPCMVertex;
+import org.dataflowanalysis.analysis.pcm.core.CallReturnBehavior;
+import org.dataflowanalysis.analysis.pcm.core.PCMFlowGraphCollection;
+import org.dataflowanalysis.analysis.pcm.core.PCMTransposeFlowGraph;
 
 public class UncertaintyImpactCollection {
 
 	private final List<UncertaintyImpact<?>> uncertaintyImpacts;
-	private final List<ActionSequence> actionSequences;
+	private final PCMFlowGraphCollection actionSequences;
 
-	public UncertaintyImpactCollection(List<ActionSequence> actionSequences,
+	public UncertaintyImpactCollection(PCMFlowGraphCollection actionSequences,
 			List<UncertaintyImpact<?>> uncertaintyImpacts) {
 		this.actionSequences = actionSequences;
 		this.uncertaintyImpacts = uncertaintyImpacts;
@@ -28,31 +30,38 @@ public class UncertaintyImpactCollection {
 		return this.uncertaintyImpacts;
 	}
 
-	public List<AbstractActionSequenceElement<?>> getAllAffectedElementsAfterPropagation() {
+	public List<AbstractVertex<?>> getAllAffectedElementsAfterPropagation() {
 		return uncertaintyImpacts.stream().map(it -> it.getAffectedElement()).collect(Collectors.toList());
 	}
 
-	public List<ActionSequence> getAllAffectedDataFlowSectionsAfterPropagation() {
+	public List<PCMTransposeFlowGraph> getAllAffectedDataFlowSectionsAfterPropagation() {
 		return uncertaintyImpacts.stream().map(it -> it.getAffectedDataFlowSections()).flatMap(Collection::stream)
 				.toList();
 	}
 
-	public Set<ActionSequence> getImpactSet(boolean distinct) {
-		List<ActionSequence> allAffectedSequences = this.getAllAffectedDataFlowSectionsAfterPropagation();
+	public Set<PCMTransposeFlowGraph> getImpactSet(boolean distinct) {
+		List<PCMTransposeFlowGraph> allAffectedSequences = this.getAllAffectedDataFlowSectionsAfterPropagation();
 
-		Set<ActionSequence> impactSet = new HashSet<ActionSequence>();
-		for (ActionSequence actionSequence : allAffectedSequences) {
+		Set<PCMTransposeFlowGraph> impactSet = new HashSet<>();
+		for (PCMTransposeFlowGraph actionSequence : allAffectedSequences) {
+			// TODO: There is a bug here in the original code
+			// TODO: The code find semi-distinct ones (e.g. filters away returns, calls and starting elements remained
 			if (impactSet.stream().anyMatch(it -> {
-				var otherNodes = it.getElements().stream().map(AbstractPCMActionSequenceElement.class::cast).toList();
-				var ownNodes = actionSequence.getElements().stream().map(AbstractPCMActionSequenceElement.class::cast)
+				var otherNodes = it.getVertices().stream()
+						.map(vertex -> (AbstractPCMVertex<?>) vertex)
+						.toList();
+				var ownNodes = actionSequence.getVertices().stream()
+						.map(AbstractPCMVertex.class::cast)
 						.toList();
 
-				var otherPCMElements = otherNodes.stream().map(AbstractPCMActionSequenceElement.class::cast)
-						.map(AbstractPCMActionSequenceElement::getElement).toList();
-				var ownPCMElements = ownNodes.stream().map(AbstractPCMActionSequenceElement.class::cast)
-						.map(AbstractPCMActionSequenceElement::getElement).toList();
+				var otherPCMElements = otherNodes.stream()
+						.map(AbstractPCMVertex::getReferencedElement)
+						.toList();
+				var ownPCMElements = ownNodes.stream()
+						.map(AbstractPCMVertex::getReferencedElement)
+						.toList();
 
-				return otherPCMElements.equals(ownPCMElements);
+				return otherPCMElements.equals(ownPCMElements); //otherPCMElements.containsAll(ownPCMElements) && ownPCMElements.containsAll(otherPCMElements); //&& actionSequence.getVertices().size() < it.getVertices().size();
 			})) {
 				continue;
 			} else {
@@ -61,15 +70,15 @@ public class UncertaintyImpactCollection {
 		}
 
 		if (distinct) {
-			Set<ActionSequence> entriesToRemove = new HashSet<ActionSequence>();
-			for (ActionSequence actionSequence : impactSet) {
-				List<ActionSequence> similarDataFlows = impactSet.stream().filter(it -> getActionSequenceIndex(
-						it.getElements()) == getActionSequenceIndex(actionSequence.getElements())).toList();
+			Set<PCMTransposeFlowGraph> entriesToRemove = new HashSet<>();
+			for (PCMTransposeFlowGraph actionSequence : impactSet) {
+				List<PCMTransposeFlowGraph> similarDataFlows = impactSet.stream().filter(it -> getActionSequenceIndex(
+						it.getVertices()) == getActionSequenceIndex(actionSequence.getVertices())).toList();
 
-				for (ActionSequence similarDataFlow : similarDataFlows) {
+				for (PCMTransposeFlowGraph similarDataFlow : similarDataFlows) {
 					if (similarDataFlow.equals(actionSequence)) {
 						continue;
-					} else if (actionSequence.getElements().size() >= similarDataFlow.getElements().size()) {
+					} else if (actionSequence.getVertices().size() >= similarDataFlow.getVertices().size()) {
 						entriesToRemove.add(similarDataFlow);
 					} else {
 						entriesToRemove.add(actionSequence);
@@ -82,12 +91,18 @@ public class UncertaintyImpactCollection {
 		return impactSet;
 	}
 
-	public int getActionSequenceIndex(List<AbstractActionSequenceElement<?>> entries) {
-		for (int i = 0; i < this.actionSequences.size(); i++) {
-			var elements = this.actionSequences.get(i).getElements().stream()
-					.map(AbstractActionSequenceElement.class::cast).toList();
+	// TODO: This is broken
+	public int getActionSequenceIndex(List<? extends AbstractVertex<?>> entries) {
+		for (int i = 0; i < this.actionSequences.getTransposeFlowGraphs().size(); i++) {
+			var elements = this.actionSequences.getTransposeFlowGraphs().get(i).getVertices().stream()
+					.map(it -> (AbstractPCMVertex<?>) it).toList();
 
-			if (Collections.indexOfSubList(elements, entries) != -1) {
+			boolean matches = entries.stream()
+					.allMatch(vertex -> elements.stream()
+							.map(it -> (AbstractPCMVertex<?>) it)
+							.anyMatch(it -> it.isEquivalentInContext(vertex)));
+
+			if (matches) {
 				return i;
 			}
 		}
@@ -111,9 +126,9 @@ public class UncertaintyImpactCollection {
 			this.getUncertaintyImpacts().forEach(System.out::println);
 		}
 
-		List<AbstractActionSequenceElement<?>> allAffectedElements = this.getAllAffectedElementsAfterPropagation();
-		Set<ActionSequence> impactSet = this.getImpactSet(false);
-		Set<ActionSequence> distinctImpactSet = this.getImpactSet(true);
+		List<AbstractVertex<?>> allAffectedElements = this.getAllAffectedElementsAfterPropagation();
+		Set<PCMTransposeFlowGraph> impactSet = this.getImpactSet(false);
+		Set<PCMTransposeFlowGraph> distinctImpactSet = this.getImpactSet(true);
 
 		if (printOverview) {
 			System.out.printf("\n\nAll affected elements (%d):\n", allAffectedElements.size());
@@ -121,27 +136,35 @@ public class UncertaintyImpactCollection {
 
 			System.out.printf("\n\nImpacted data flow sections (%d):\n", impactSet.size());
 			impactSet.stream()
-					.map(it -> formatDataFlow(this.getActionSequenceIndex(it.getElements()), it, newLineAfterEachEntry))
+					.map(it -> formatDataFlow(this.getActionSequenceIndex(it.getVertices()), it, newLineAfterEachEntry))
 					.forEach(System.out::println);
 		}
 
 		if (printFinalImpactSet) {
 			System.out.printf("\n\nDistinct Impact set (%d):\n", distinctImpactSet.size());
 			distinctImpactSet.stream()
-					.map(it -> formatDataFlow(this.getActionSequenceIndex(it.getElements()), it, newLineAfterEachEntry))
+					.map(it -> formatDataFlow(this.getActionSequenceIndex(it.getVertices()), it, newLineAfterEachEntry))
 					.forEach(System.out::println);
 		}
 
 		System.out.println("\n\n");
 	}
 
-	public static String formatDataFlow(int index, ActionSequence sequence, boolean newLineAfterEachEntry) {
+	public static String formatDataFlow(int index, PCMTransposeFlowGraph sequence, boolean newLineAfterEachEntry) {
 		try {
-			return String.format("%d: %s", index, sequence.getElements().stream().map(it -> it.toString())
+			return String.format("%d: %s", index, sequence.getVertices().stream().map(AbstractVertex::toString)
 					.collect(Collectors.joining(newLineAfterEachEntry ? "\n" : ", ")));
 		} catch (NullPointerException e) {
 			return "[Exception while formatting]";
 		}
 	}
 
+	public static String formatDataFlow(int index, List<? extends AbstractVertex<?>> elements, boolean newLineAfterEachEntry) {
+		try {
+			return String.format("%d: %s", index, elements.stream().map(AbstractVertex::toString)
+					.collect(Collectors.joining(newLineAfterEachEntry ? "\n" : ", ")));
+		} catch (NullPointerException e) {
+			return "[Exception while formatting]";
+		}
+	}
 }

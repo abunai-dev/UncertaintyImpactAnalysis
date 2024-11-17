@@ -3,7 +3,7 @@ package dev.abunai.impact.analysis.model.source;
 import java.util.List;
 import java.util.Objects;
 
-import org.dataflowanalysis.analysis.pcm.core.seff.SEFFActionSequenceElement;
+import org.dataflowanalysis.analysis.pcm.core.seff.SEFFPCMVertex;
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
 import org.palladiosimulator.pcm.seff.StartAction;
 
@@ -29,7 +29,7 @@ public class ComponentUncertaintySource extends UncertaintySource<AssemblyContex
 
 	@Override
 	public List<ComponentUncertaintyImpact> propagate() {
-		List<SEFFActionSequenceElement<StartAction>> startActions = this.propagationHelper
+		List<SEFFPCMVertex<StartAction>> startActions = this.propagationHelper
 				.findStartActionsOfAssemblyContext(this.component);
 		return startActions.stream().map(it -> new ComponentUncertaintyImpact(it, this, propagationHelper)).toList();
 	}

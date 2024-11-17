@@ -45,7 +45,7 @@ public class AnalysisTest extends TestBase {
 	@Test
 	public void testInterfaceUncertaintyInTheCenter() {
 		analysis.getUncertaintySources().addInterfaceUncertaintyInInterface("_XGAZwITiEeywmO_IpTxeAg");
-		analysis.propagate().printResults(true, true, true, false);
+		analysis.propagate().printResults(true, true, true, true);
 		assertAnalysisResults(9, 6, 1);
 	}
 
