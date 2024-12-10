@@ -22,5 +22,16 @@ public class Temp extends TestBase {
 	protected String getFilesName() {
 		return "default";
 	}
+	/*
+	@Override
+	protected String getBaseFolder() {
+		return "casestudies/CaseStudy-CoronaWarnApp";
+	}
+	
+	@Override
+	protected String getFolderName() {
+		return "CoronaWarnApp";
+	}
+	//*/
 
 }

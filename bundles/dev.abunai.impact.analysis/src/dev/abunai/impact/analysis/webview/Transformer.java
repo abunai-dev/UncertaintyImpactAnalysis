@@ -3,22 +3,15 @@ package dev.abunai.impact.analysis.webview;
 import dev.abunai.impact.analysis.PCMUncertaintyImpactAnalysis;
 
 import java.util.List;
-import java.util.ArrayList;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.EClass;
-import org.palladiosimulator.pcm.allocation.util.AllocationResourceImpl;
-import org.palladiosimulator.pcm.core.composition.AssemblyContext;
-import org.palladiosimulator.pcm.core.composition.CompositionPackage;
-import org.palladiosimulator.pcm.core.entity.Entity;
 
 import java.io.File;
-
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
-import java.nio.file.Path;
+import org.palladiosimulator.pcm.system.SystemPackage;
 
 public class Transformer {
 	private final PCMUncertaintyImpactAnalysis analysis;
@@ -28,26 +21,22 @@ public class Transformer {
 	}
 	
 	public void handle() throws IOException {
-		//var a = findAllElementsOfType(CompositionPackage.eINSTANCE.getAssemblyContext(), AssemblyContext.class);
-		//for(var b : a) {printAssembly(b);}
-		var resources = analysis.getResourceProvider().getResources();
-		int i = 0;
-		for (Resource r : resources) {
-			MySerielizableObject m = new MySerielizableObject(r.getContents().get(0));
-			File file = new File(i++ + ".json");
-			if (!file.exists()) file.createNewFile();
-			new ObjectMapper().writeValue(file, m);
+		exportTopLevelElement(SystemPackage.Literals.SYSTEM, new SystemTransformer(), "", "system");
+	}
+	
+	private <T extends EObject> void exportTopLevelElement(EClass elementClass, AbstractTransformer<T> transformer, String path, String fileName) throws IOException {
+		List<T> elements = (List<T>) analysis.getResourceProvider().lookupToplevelElement(elementClass);
+		List<JsonObject> jsonData = elements.stream().map(e -> transformer.transform(e)).toList();
+		
+		if (!path.isEmpty() && !path.endsWith(File.separator)) {
+			path += File.separator;
 		}
-		//System.out.println(analysis.getResourceProvider().lookupToplevelElement(null))
+		File file = new File(path + fileName + ".json");
+		if (!file.exists()) {
+			file.createNewFile();
+		}
+		
+		new ObjectMapper().writeValue(file, jsonData);
 		
 	}
-	
-	void print(EObject e, int indent) {
-		System.out.print(" ".repeat(indent*2));
-		System.out.println(new MySerielizableObject(e));
-		for (EObject c : e.eContents()) {
-			print(c, indent+1);
-		}
-	}
-	
 }
