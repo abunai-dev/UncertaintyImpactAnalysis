@@ -1,0 +1,18 @@
+:root {
+    --color-foreground: #000;
+    --color-background: #fff;
+    --color-primary: #dfdfdf;
+    --dark-mode: 0;
+}
+
+:root[data-theme='dark'] {
+    --color-foreground: #fff;
+    --color-background: #1d1c22;
+    --color-primary: #302e38;
+    --dark-mode: 1;
+}
+
+#sprotty[data-theme='dark'] div {
+    /* Use default dark theme browser styles for scrollbars etc. inside all UI extensions */
+    color-scheme: dark;
+}
