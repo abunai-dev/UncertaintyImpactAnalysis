@@ -25,12 +25,13 @@ import { unbindHookModule } from './editMode/di.config'
 import { assemblyDiagramModule } from './diagrammElements/assemblyDiagram/di.config'
 import { AssemblyPort } from './diagrammElements/assemblyDiagram/ProvidingPort'
 import { AssemblyContextScheme } from './diagrammElements/assemblyDiagram/AssemblyContextNode'
+import { diagramCommonModule } from './diagrammElements/di.config'
 
 const container = new Container()
 
 loadDefaultModules(container)
 
-container.load(commonModule, unbindHookModule, assemblyDiagramModule)
+container.load(commonModule, unbindHookModule, assemblyDiagramModule, diagramCommonModule)
 
 const dispatcher = container.get<ActionDispatcher>(TYPES.IActionDispatcher)
 const defaultUIElements = container.getAll<AbstractUIExtension>(EDITOR_TYPES.DefaultUIElement)
@@ -69,7 +70,7 @@ function buildPort(id?: string): AssemblyPort {
 function buildEdge(source: string, target: string): SEdge {
     return {
         id: generateRandomId(),
-        type: 'edge',
+        type: 'edge:open',
         sourceId: source,
         targetId: target
     }

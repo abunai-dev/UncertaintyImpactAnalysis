@@ -9,7 +9,14 @@ export interface AssemblyPort extends SPort {
 }
 
 export class ProvidingAssemblyPort extends SPortImpl {
-
+  override get bounds(): Bounds {
+    return {
+      x: -4,
+      y: -24,
+      width: 10,
+      height: 10
+    }
+  }
 }
 
 @injectable()
@@ -20,8 +27,8 @@ export class ProvidingAssemblyPortView extends ShapeView {
       return undefined
     }
     return <g  class-sprotty-port={true}>
-      <line x1="0" y1="0" x2="0" y2="-12"></line>
-      <circle class-no-fill={true} cx="0" cy="-20" r="8"></circle>
+      <line x1="4" y1="12" x2="4" y2="24"></line>
+      <circle class-no-fill={true} cx="4" cy="4" r="8"></circle>
     </g>
   }
 
