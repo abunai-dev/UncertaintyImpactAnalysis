@@ -13,10 +13,18 @@ import {
     SetUIExtensionVisibilityAction,
     TYPES
 } from 'sprotty'
+import {
+    SEdge,
+    SLabel,
+    SModelElement,
+    SNode
+} from 'sprotty-protocol'
 import { commonModule } from './common/di.config'
 import { EDITOR_TYPES } from './EditorTypes'
 import { unbindHookModule } from './editMode/di.config'
 import { assemblyDiagramModule } from './diagrammElements/assemblyDiagram/di.config'
+import { AssemblyPort } from './diagrammElements/assemblyDiagram/ProvidingPort'
+import { AssemblyContextScheme } from './diagrammElements/assemblyDiagram/AssemblyContextNode'
 
 const container = new Container()
 
@@ -38,17 +46,61 @@ dispatcher.dispatchAll([
     })
 ])
 
+function generateRandomId() {
+    return Math.random().toString(36).substring(7)
+}
+
+function buildLabel(text: string): SLabel {
+    return {
+        id: generateRandomId(),
+        type: 'label',
+        text: text
+    }
+}
+
+function buildPort(id?: string): AssemblyPort {
+    return {
+        id: id ?? generateRandomId(),
+        type: 'port:assembly:providing',
+        name: '1234'
+    }
+}
+
+function buildEdge(source: string, target: string): SEdge {
+    return {
+        id: generateRandomId(),
+        type: 'edge',
+        sourceId: source,
+        targetId: target
+    }
+}
+
+function buildNode(label: SModelElement[]): AssemblyContextScheme {
+    return {
+        id: generateRandomId(),
+        type: 'node:assembly:assemblyContext',
+        children: label,
+        layout: 'vbox',
+        typeName: 'AssemblyContext',
+        name: 'World',
+        layoutOptions: {
+            hAlign: 'center',
+        },
+
+        position: {
+            x: 100,
+            y: 100
+        }
+    }
+}
+
+
 localModelSource.setModel({
     type: 'graph',
     id: 'root',
     children: [
-        {
-            type: 'node:assembly:assemblyContext',
-            id: 'node1'
-        },
-        {
-            type: 'node:assembly:assemblyContext',
-            id: 'node2'
-        },
+        buildNode([buildPort('123')]),
+        buildNode([buildPort('456')]),
+        buildEdge('123', '456')
     ]
 })

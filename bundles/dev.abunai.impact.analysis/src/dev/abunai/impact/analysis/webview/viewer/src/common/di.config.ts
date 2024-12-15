@@ -1,6 +1,6 @@
 import { ContainerModule } from 'inversify'
 import { LightDarkSwitch } from './lightDarkSwitch/LightDarkSwitch'
-import { configureModelElement, configureViewerOptions, LocalModelSource, SGraphImpl, SGraphView, TYPES } from 'sprotty'
+import { configureModelElement, configureViewerOptions, LocalModelSource, PolylineEdgeView, SEdgeImpl, SGraphImpl, SGraphView, SLabelImpl, SLabelView, TYPES } from 'sprotty'
 import { EDITOR_TYPES } from '../EditorTypes'
 
 export const commonModule = new ContainerModule((bind, unbind, isBound, rebind) => {
@@ -12,6 +12,8 @@ export const commonModule = new ContainerModule((bind, unbind, isBound, rebind) 
 
     const context = {bind, unbind, rebind, isBound}
     configureModelElement(context, 'graph', SGraphImpl, SGraphView)
+    configureModelElement(context, 'edge', SEdgeImpl, PolylineEdgeView)
+    configureModelElement(context, 'label', SLabelImpl, SLabelView)
     configureViewerOptions(context, {
         needsClientLayout: true
     })

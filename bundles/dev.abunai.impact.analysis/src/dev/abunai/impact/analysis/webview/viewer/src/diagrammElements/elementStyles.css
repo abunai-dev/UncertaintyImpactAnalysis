@@ -7,3 +7,20 @@
     fill: var(--color-primary);
     stroke-width: 1;
 }
+
+circle.no-fill {
+    fill: none;
+}
+
+.sprotty-node text {
+    fill: var(--color-foreground);
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+}
+
+.sprotty-edge {
+    stroke: var(--color-foreground);
+    fill: none;
+    stroke-width: 1;
+}
