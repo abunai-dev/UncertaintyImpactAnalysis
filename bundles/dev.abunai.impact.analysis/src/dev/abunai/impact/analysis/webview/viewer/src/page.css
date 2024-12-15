@@ -15,6 +15,7 @@ body {
  and absolute top/left/bottom/right values. */
 #sprotty {
     position: relative;
+    height: 100vh;
 }
 
 svg.sprotty-graph {
@@ -25,4 +26,10 @@ svg.sprotty-graph {
 
 .sprotty-hidden {
     display: none;
+}
+
+.ui-float {
+    position: absolute;
+    border-radius: 10px;
+    background-color: var(--color-primary);
 }

@@ -1,0 +1,9 @@
+.sprotty-node rect,
+.sprotty-node ellipse,
+.sprotty-node polygon,
+.sprotty-node line,
+.sprotty-node circle {
+    stroke: var(--color-foreground);
+    fill: var(--color-primary);
+    stroke-width: 1;
+}
