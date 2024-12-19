@@ -1,7 +1,6 @@
 package dev.abunai.impact.analysis.model;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -11,7 +10,6 @@ import org.dataflowanalysis.analysis.core.AbstractVertex;
 
 import dev.abunai.impact.analysis.model.impact.UncertaintyImpact;
 import org.dataflowanalysis.analysis.pcm.core.AbstractPCMVertex;
-import org.dataflowanalysis.analysis.pcm.core.CallReturnBehavior;
 import org.dataflowanalysis.analysis.pcm.core.PCMFlowGraphCollection;
 import org.dataflowanalysis.analysis.pcm.core.PCMTransposeFlowGraph;
 
@@ -31,11 +29,14 @@ public class UncertaintyImpactCollection {
 	}
 
 	public List<AbstractVertex<?>> getAllAffectedElementsAfterPropagation() {
-		return uncertaintyImpacts.stream().map(it -> it.getAffectedElement()).collect(Collectors.toList());
+		return uncertaintyImpacts.stream()
+				.map(UncertaintyImpact::getAffectedElement)
+				.collect(Collectors.toList());
 	}
 
 	public List<PCMTransposeFlowGraph> getAllAffectedDataFlowSectionsAfterPropagation() {
-		return uncertaintyImpacts.stream().map(it -> it.getAffectedDataFlowSections()).flatMap(Collection::stream)
+		return uncertaintyImpacts.stream().map(UncertaintyImpact::getAffectedDataFlowSections)
+				.flatMap(Collection::stream)
 				.toList();
 	}
 

@@ -12,11 +12,11 @@ import dev.abunai.impact.analysis.util.PropagationHelper;
 
 public class ComponentUncertaintyImpact extends UncertaintyImpact<AssemblyContext> {
 
-	private final SEFFPCMVertex<StartAction> affectedElement;
+	private final SEFFPCMVertex<?> affectedElement;
 	private final UncertaintySource<AssemblyContext> origin;
 	private final PropagationHelper propagationHelper;
 
-	public ComponentUncertaintyImpact(SEFFPCMVertex<StartAction> affectedElement,
+	public ComponentUncertaintyImpact(SEFFPCMVertex<?> affectedElement,
 									  UncertaintySource<AssemblyContext> origin, PropagationHelper propagationHelper) {
 		this.affectedElement = affectedElement;
 		this.origin = origin;
@@ -29,7 +29,7 @@ public class ComponentUncertaintyImpact extends UncertaintyImpact<AssemblyContex
 	}
 
 	@Override
-	public SEFFPCMVertex<StartAction> getAffectedElement() {
+	public SEFFPCMVertex<?> getAffectedElement() {
 		return affectedElement;
 	}
 

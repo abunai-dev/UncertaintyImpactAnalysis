@@ -29,7 +29,7 @@ public class ComponentUncertaintySource extends UncertaintySource<AssemblyContex
 
 	@Override
 	public List<ComponentUncertaintyImpact> propagate() {
-		List<SEFFPCMVertex<StartAction>> startActions = this.propagationHelper
+		List<SEFFPCMVertex<?>> startActions = this.propagationHelper
 				.findStartActionsOfAssemblyContext(this.component);
 		return startActions.stream().map(it -> new ComponentUncertaintyImpact(it, this, propagationHelper)).toList();
 	}

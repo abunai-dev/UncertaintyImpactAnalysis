@@ -13,9 +13,7 @@ import dev.abunai.impact.analysis.util.PropagationHelper;
 
 public class PCMUncertaintyImpactAnalysis extends PCMDataFlowConfidentialityAnalysis {
 
-	private PCMFlowGraphCollection flowGraphs = null;
-	private PropagationHelper propagationHelper = null;
-	private UncertaintySourceCollection uncertaintySourceCollection = null;
+    private UncertaintySourceCollection uncertaintySourceCollection = null;
 
 	public PCMUncertaintyImpactAnalysis(PCMResourceProvider resourceProvider, String modelProjectName,
 										Optional<Class<? extends Plugin>> modelProjectActivator) {
@@ -26,9 +24,9 @@ public class PCMUncertaintyImpactAnalysis extends PCMDataFlowConfidentialityAnal
 	@Override
 	public void initializeAnalysis() {
 		super.initializeAnalysis();
-		this.flowGraphs = super.findFlowGraphs();
-		this.propagationHelper = new PropagationHelper(this.flowGraphs, this.resourceProvider);
-		this.uncertaintySourceCollection = new UncertaintySourceCollection(this.flowGraphs, propagationHelper);
+        PCMFlowGraphCollection flowGraphs = super.findFlowGraphs();
+        PropagationHelper propagationHelper = new PropagationHelper(flowGraphs, this.resourceProvider);
+		this.uncertaintySourceCollection = new UncertaintySourceCollection(flowGraphs, propagationHelper);
 	}
 
 	public UncertaintySourceCollection getUncertaintySources() {

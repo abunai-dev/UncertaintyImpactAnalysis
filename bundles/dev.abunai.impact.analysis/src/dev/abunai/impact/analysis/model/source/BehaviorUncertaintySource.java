@@ -46,7 +46,7 @@ public class BehaviorUncertaintySource<T extends Entity> extends UncertaintySour
 
 	@Override
 	public List<BehaviorUncertaintyImpact<T>> propagate() {
-		List<AbstractPCMVertex<?>> processes = this.propagationHelper.findProccessesWithAction(action);
+		List<AbstractPCMVertex<?>> processes = this.propagationHelper.findProcessesWithAction(action);
 		return processes.stream().map(it -> new BehaviorUncertaintyImpact<>(it, this, this.propagationHelper)).toList();
 	}
 
