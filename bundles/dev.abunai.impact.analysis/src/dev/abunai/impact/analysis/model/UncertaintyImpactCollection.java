@@ -45,8 +45,6 @@ public class UncertaintyImpactCollection {
 
 		Set<PCMTransposeFlowGraph> impactSet = new HashSet<>();
 		for (PCMTransposeFlowGraph actionSequence : allAffectedSequences) {
-			// TODO: There is a bug here in the original code
-			// TODO: The code find semi-distinct ones (e.g. filters away returns, calls and starting elements remained
 			if (impactSet.stream().anyMatch(it -> {
 				var otherNodes = it.getVertices().stream()
 						.map(vertex -> (AbstractPCMVertex<?>) vertex)
@@ -62,7 +60,7 @@ public class UncertaintyImpactCollection {
 						.map(AbstractPCMVertex::getReferencedElement)
 						.toList();
 
-				return otherPCMElements.equals(ownPCMElements); //otherPCMElements.containsAll(ownPCMElements) && ownPCMElements.containsAll(otherPCMElements); //&& actionSequence.getVertices().size() < it.getVertices().size();
+				return otherPCMElements.equals(ownPCMElements);
 			})) {
 				continue;
 			} else {

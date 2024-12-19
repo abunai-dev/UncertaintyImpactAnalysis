@@ -73,11 +73,11 @@ public class UncertaintySourceCollection {
 
 	private void addBehaviorUncertainty(String id, Class<? extends Entity> targetType) {
 		var action = this.propagationHelper.findAction(id);
-		if (action.isPresent() && targetType.isInstance(action.get())) {
-			this.uncertaintySources.add(BehaviorUncertaintySource.of(targetType.cast(action.get()), propagationHelper));
-		}
-		throw new IllegalArgumentException(
+		if (action.isEmpty() || !targetType.isInstance(action.get())) {
+			throw new IllegalArgumentException(
 					String.format("Unable to find %s with the given id.", targetType.getSimpleName()));
+		}
+		this.uncertaintySources.add(BehaviorUncertaintySource.of(targetType.cast(action.get()), propagationHelper));
 	}
 
 	public void addActorUncertaintyInResourceContainer(String id) {
