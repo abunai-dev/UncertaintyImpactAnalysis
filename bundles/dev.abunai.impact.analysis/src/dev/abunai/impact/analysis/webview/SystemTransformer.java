@@ -27,8 +27,8 @@ public class SystemTransformer implements AbstractTransformer<org.palladiosimula
 				AssemblyConnector  a = (AssemblyConnector )c;
 				contents.add(new AssemblyConnectorJson(a.getId(), 
 						a.getProvidedRole_AssemblyConnector().getEntityName(), 
-						a.getProvidingAssemblyContext_AssemblyConnector().getId(), 
 						a.getRequiredRole_AssemblyConnector().getEntityName(),
+						a.getProvidingAssemblyContext_AssemblyConnector().getId(), 
 						a.getRequiringAssemblyContext_AssemblyConnector().getId()));
 			} else if (c instanceof OperationProvidedRole) {
 				OperationProvidedRole a = (OperationProvidedRole) c;

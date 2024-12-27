@@ -1,12 +1,12 @@
-import { inject, injectable } from "inversify";
+import { inject, injectable } from 'inversify'
 import {
     CommandExecutionContext,
     CommandReturn,
     DeleteElementCommand,
     EditLabelMouseListener,
     SModelElementImpl
-} from "sprotty";
-import { Action } from "sprotty-protocol";
+} from 'sprotty'
+import { Action } from 'sprotty-protocol'
 
 @injectable()
 export class EditLabelMouseListenerRemove extends EditLabelMouseListener {

@@ -2,14 +2,18 @@
 .sprotty-node ellipse,
 .sprotty-node polygon,
 .sprotty-node line,
+.sprotty-node path,
 .sprotty-node circle {
     stroke: var(--color-foreground);
     fill: var(--color-primary);
     stroke-width: 1;
 }
 
-circle.no-fill {
+.sprotty-port circle,
+.sprotty-port path {
+    stroke: var(--color-foreground);
     fill: none;
+    stroke-width: 1;
 }
 
 .sprotty-node text {
@@ -23,4 +27,8 @@ circle.no-fill {
     stroke: var(--color-foreground);
     fill: none;
     stroke-width: 1;
+}
+
+.sprotty-port text {
+    font-size: 8pt;
 }
