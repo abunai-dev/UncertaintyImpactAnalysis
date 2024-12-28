@@ -26,12 +26,12 @@ import { StraightEdgeLayoutEngine } from './layouting/layouter'
 const container = new Container()
 
 loadDefaultModules(container)
-container.load(elkLayoutModule)
-container.load(commonModule, unbindHookModule, assemblyDiagramModule, diagramCommonModule, autoLayoutModule)
+//container.load(elkLayoutModule)
+container.load(commonModule, unbindHookModule, assemblyDiagramModule, diagramCommonModule/*, autoLayoutModule*/)
 
 const dispatcher = container.get<ActionDispatcher>(TYPES.IActionDispatcher)
 const defaultUIElements = container.getAll<AbstractUIExtension>(EDITOR_TYPES.DefaultUIElement)
-const layouter = container.get<StraightEdgeLayoutEngine>(TYPES.IModelLayoutEngine)
+// const layouter = container.get<StraightEdgeLayoutEngine>(TYPES.IModelLayoutEngine)
 
 dispatcher.dispatchAll([
     // Show the default uis after startup
@@ -45,12 +45,11 @@ dispatcher.dispatchAll([
 
 async function test() {
     const localModelSource = container.get<LocalModelSource>(TYPES.ModelSource)
-    const r = await layouter.layout({
+    localModelSource.setModel({
         type: 'graph',
         id: 'root',
         children: transform()
     })
-    localModelSource.setModel(r)
 }
 document.addEventListener('DOMContentLoaded', async () => {
     test()

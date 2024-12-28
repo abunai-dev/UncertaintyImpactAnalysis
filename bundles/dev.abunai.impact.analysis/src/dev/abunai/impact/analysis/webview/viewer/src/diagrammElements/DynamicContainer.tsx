@@ -11,6 +11,7 @@ import {
 import { AssemblyContextNode } from './assemblyDiagram/AssemblyContextNode'
 
 export class DynamicContainerNode extends SNodeImpl {
+    static readonly DEFAULT_FEATURES = []
     override hasFeature(feature: symbol): boolean {
         return feature === dynamicContainerFeature || super.hasFeature(feature)
     }
