@@ -1,7 +1,7 @@
 /** @jsx svg */
 import { injectable } from 'inversify'
 import { VNode } from 'snabbdom'
-import { IViewArgs, RenderingContext, ShapeView, SLabelImpl, SNodeImpl, svg, undoRedoModule } from 'sprotty'
+import { IViewArgs, RenderingContext, ShapeView, SNodeImpl, svg } from 'sprotty'
 import { SNode } from 'sprotty-protocol'
 
 export interface AssemblyContextScheme extends SNode {

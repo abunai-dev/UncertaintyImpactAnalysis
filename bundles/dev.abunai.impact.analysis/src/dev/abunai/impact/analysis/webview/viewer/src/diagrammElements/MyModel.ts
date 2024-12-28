@@ -1,4 +1,4 @@
-import { containsSome, LocalModelSource } from 'sprotty'
+import { LocalModelSource } from 'sprotty'
 import { Action, Match, SModelIndex, SModelRoot } from 'sprotty-protocol'
 
 export class MyModel extends LocalModelSource {

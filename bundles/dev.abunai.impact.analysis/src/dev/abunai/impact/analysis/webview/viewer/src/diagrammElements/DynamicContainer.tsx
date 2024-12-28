@@ -3,14 +3,11 @@ import { injectable } from 'inversify'
 import { VNode } from 'snabbdom'
 import {
     IViewArgs,
-    RectangularNode,
     RectangularNodeView,
     SNodeImpl,
     svg,
-    RenderingContext,
-    IVNodePostprocessor
+    RenderingContext
 } from 'sprotty'
-import { SNode } from 'sprotty-protocol'
 import { AssemblyContextNode } from './assemblyDiagram/AssemblyContextNode'
 
 export class DynamicContainerNode extends SNodeImpl {

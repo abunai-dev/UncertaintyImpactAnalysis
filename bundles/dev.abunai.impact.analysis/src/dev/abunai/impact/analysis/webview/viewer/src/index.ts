@@ -13,19 +13,15 @@ import {
     SetUIExtensionVisibilityAction,
     TYPES
 } from 'sprotty'
-import { SEdge, SLabel, SModelElement, SNode } from 'sprotty-protocol'
 import { commonModule } from './common/di.config'
 import { EDITOR_TYPES } from './EditorTypes'
 import { unbindHookModule } from './editMode/di.config'
 import { assemblyDiagramModule } from './diagrammElements/assemblyDiagram/di.config'
-import { AssemblyPort } from './diagrammElements/assemblyDiagram/Port'
-import { AssemblyContextScheme } from './diagrammElements/assemblyDiagram/AssemblyContextNode'
 import { diagramCommonModule } from './diagrammElements/di.config'
 import { transform } from './transformer/AssemblyDiagramm'
 import { elkLayoutModule } from 'sprotty-elk'
 import { autoLayoutModule } from './layouting/di.config'
-import { DemoLayoutConfigurator, MyLayoutEngine } from './layouting/layouter'
-import { ElkLayoutEngine } from 'sprotty-elk/lib/elk-layout'
+import { StraightEdgeLayoutEngine } from './layouting/layouter'
 
 const container = new Container()
 
@@ -35,7 +31,7 @@ container.load(commonModule, unbindHookModule, assemblyDiagramModule, diagramCom
 
 const dispatcher = container.get<ActionDispatcher>(TYPES.IActionDispatcher)
 const defaultUIElements = container.getAll<AbstractUIExtension>(EDITOR_TYPES.DefaultUIElement)
-const layouter = container.get<MyLayoutEngine>(TYPES.IModelLayoutEngine)
+const layouter = container.get<StraightEdgeLayoutEngine>(TYPES.IModelLayoutEngine)
 
 dispatcher.dispatchAll([
     // Show the default uis after startup

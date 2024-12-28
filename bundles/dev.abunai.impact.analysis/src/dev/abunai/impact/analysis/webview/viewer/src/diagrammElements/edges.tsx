@@ -9,7 +9,6 @@ export class OpenArrowEdgeView extends PolylineEdgeView {
         const p2 = segments[last]
         const angle = Math.atan2(p2.y - p1.y, p2.x - p1.x)
         const arrowLength = 10
-        const arrowWidth = 8
         const arrow = [
             {
                 x: p2.x - arrowLength * Math.cos(angle - Math.PI / 6),
