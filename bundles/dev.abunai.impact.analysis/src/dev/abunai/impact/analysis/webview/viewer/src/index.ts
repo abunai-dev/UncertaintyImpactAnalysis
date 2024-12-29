@@ -19,16 +19,17 @@ import { EDITOR_TYPES } from './EditorTypes'
 import { unbindHookModule } from './editMode/di.config'
 import { assemblyDiagramModule } from './diagrammElements/assemblyDiagram/di.config'
 import { diagramCommonModule } from './diagrammElements/di.config'
-import { transform } from './transformer/AssemblyDiagramm'
+import { transform } from './transformer/AllocationDiagramm'
 import { elkLayoutModule } from 'sprotty-elk'
 import { autoLayoutModule } from './layouting/di.config'
 import { FitToScreenAction } from 'sprotty-protocol'
+import { allocationDiagramModule } from './diagrammElements/allocationDiagram/di.config'
 
 const container = new Container()
 
 loadDefaultModules(container)
 container.load(elkLayoutModule)
-container.load(commonModule, unbindHookModule, assemblyDiagramModule, diagramCommonModule, autoLayoutModule)
+container.load(commonModule, unbindHookModule, assemblyDiagramModule, diagramCommonModule, autoLayoutModule, allocationDiagramModule)
 
 const dispatcher = container.get<ActionDispatcher>(TYPES.IActionDispatcher)
 const defaultUIElements = container.getAll<AbstractUIExtension>(EDITOR_TYPES.DefaultUIElement)

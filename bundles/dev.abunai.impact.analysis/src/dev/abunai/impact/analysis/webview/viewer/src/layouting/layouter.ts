@@ -20,7 +20,7 @@ export class CustomLayoutConfigurator extends DefaultLayoutConfigurator {
             // These are all automatically determined by our dfd node views
             "org.eclipse.elk.omitNodeMicroLayout": "true",
             // Balanced graph > straight edges
-            "org.eclipse.elk.layered.nodePlacement.favorStraightEdges": "true",
+            "org.eclipse.elk.layered.nodePlacement.favorStraightEdges": "true"
         }
     }
 }

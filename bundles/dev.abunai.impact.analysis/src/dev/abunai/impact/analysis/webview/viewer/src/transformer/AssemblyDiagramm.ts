@@ -3,6 +3,7 @@ import { AssemblyContextScheme } from '../diagrammElements/assemblyDiagram/Assem
 import _jsonContent from './system.json'
 import { AssemblyPortScheme } from '../diagrammElements/assemblyDiagram/Port'
 import { SystemContainerScheme } from '../diagrammElements/assemblyDiagram/SystemContainer'
+import { getOfType } from './common'
 
 type ID = string
 
@@ -111,6 +112,3 @@ function transfromSystem(system: Json.System): SystemContainerScheme {
     }
 }
 
-function getOfType<T extends { type: string }>(arr: (T | { type: string })[], type: string): T[] {
-    return arr.filter((a) => a.type == type) as T[]
-}
