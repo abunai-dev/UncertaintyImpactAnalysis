@@ -2,7 +2,7 @@ import { ContainerModule } from 'inversify'
 import {
     configureModelElement,
     configureViewerOptions,
-    PolylineEdgeView,
+    LocalModelSource,
     SEdgeImpl,
     SGraphImpl,
     SGraphView,
@@ -12,12 +12,11 @@ import {
 } from 'sprotty'
 import { OpenArrowEdgeView } from './edges'
 import { DynamicContainerNode, DynamicOuterNodeView } from './DynamicContainer'
-import { MyModel } from './MyModel'
 
 export const diagramCommonModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     const context = { bind, unbind, rebind, isBound }
 
-    bind(TYPES.ModelSource).to(MyModel).inSingletonScope()
+    bind(TYPES.ModelSource).to(LocalModelSource).inSingletonScope()
     configureModelElement(context, 'graph', SGraphImpl, SGraphView)
     configureModelElement(context, 'edge:open', SEdgeImpl, OpenArrowEdgeView)
     configureModelElement(context, 'label', SLabelImpl, SLabelView)

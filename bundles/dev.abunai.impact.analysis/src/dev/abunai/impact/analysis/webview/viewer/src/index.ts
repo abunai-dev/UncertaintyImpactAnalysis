@@ -9,14 +9,9 @@ import {
     AbstractUIExtension,
     ActionDispatcher,
     IActionDispatcher,
-    ISnapper,
     loadDefaultModules,
     LocalModelSource,
-    modelSourceModule,
     SetUIExtensionVisibilityAction,
-    SModelElementImpl,
-    SModelRootImpl,
-    SNodeImpl,
     TYPES
 } from 'sprotty'
 import { commonModule } from './common/di.config'
@@ -27,9 +22,7 @@ import { diagramCommonModule } from './diagrammElements/di.config'
 import { transform } from './transformer/AssemblyDiagramm'
 import { elkLayoutModule } from 'sprotty-elk'
 import { autoLayoutModule } from './layouting/di.config'
-import { StraightEdgeLayoutEngine } from './layouting/layouter'
-import { FitToScreenAction, getBasicType } from 'sprotty-protocol'
-import { snapPortsOfNode } from './diagrammElements/assemblyDiagram/PortSnapper'
+import { FitToScreenAction } from 'sprotty-protocol'
 
 const container = new Container()
 

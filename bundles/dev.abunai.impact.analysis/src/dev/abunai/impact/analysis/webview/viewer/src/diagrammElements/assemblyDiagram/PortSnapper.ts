@@ -1,14 +1,12 @@
-import { inject, injectable } from "inversify";
+import { injectable } from "inversify";
 import {
     CenterGridSnapper,
     ISnapper,
-    LocalModelSource,
     MoveMouseListener,
     SChildElementImpl,
     SModelElementImpl,
     SNodeImpl,
     SPortImpl,
-    TYPES,
     isBoundsAware,
 } from "sprotty";
 import { getBasicType, Point, SNode } from "sprotty-protocol";

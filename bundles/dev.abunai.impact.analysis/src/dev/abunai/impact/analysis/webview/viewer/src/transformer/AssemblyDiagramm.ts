@@ -1,7 +1,7 @@
 import { SEdge } from 'sprotty-protocol'
 import { AssemblyContextScheme } from '../diagrammElements/assemblyDiagram/AssemblyContextNode'
 import _jsonContent from './system.json'
-import { AssemblyPort } from '../diagrammElements/assemblyDiagram/Port'
+import { AssemblyPortScheme } from '../diagrammElements/assemblyDiagram/Port'
 import { SystemContainerScheme } from '../diagrammElements/assemblyDiagram/SystemContainer'
 
 type ID = string
@@ -51,7 +51,7 @@ export function transform() {
 function transfromSystem(system: Json.System): SystemContainerScheme {
     const assemblyContexts: Record<ID, AssemblyContextScheme> = {}
     const edges: SEdge[] = []
-    const outsidePorts: AssemblyPort[] = []
+    const outsidePorts: AssemblyPortScheme[] = []
     for (const child of getOfType<Json.AssemblyContext>(system.contents, 'AssemblyContext')) {
         assemblyContexts[child.id] = {
             id: child.id,
@@ -69,12 +69,12 @@ function transfromSystem(system: Json.System): SystemContainerScheme {
         })
     }
     for (const edge of getOfType<Json.AssemblyConnector>(system.contents, 'AssemblyConnector')) {
-        const providingPort: AssemblyPort = {
+        const providingPort: AssemblyPortScheme = {
             type: 'port:assembly:providing',
             id: edge.providingAssebly + edge.id,
             name: edge.providingRole
         }
-        const requieringPort: AssemblyPort = {
+        const requieringPort: AssemblyPortScheme = {
             type: 'port:assembly:requiring',
             id: edge.requiredAssembly + edge.id,
             name: edge.requiredRole
@@ -89,7 +89,7 @@ function transfromSystem(system: Json.System): SystemContainerScheme {
         })
     }
     for (const edge of getOfType<Json.ProvidedDelegationConnector>(system.contents, 'ProvidedDelegationConnector')) {
-        const providingPort: AssemblyPort = {
+        const providingPort: AssemblyPortScheme = {
             type: 'port:assembly:providing',
             id: edge.id + edge.assemblyContext,
             name: 'PlaceHolderName'

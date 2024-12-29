@@ -4,8 +4,7 @@ import { AssemblyContextNode, AssemblyContextNodeView } from './AssemblyContextN
 import { ProvidingAssemblyPort, ProvidingAssemblyPortView } from './ProvidingPort'
 import { RequiringAssemblyPort, RequiringAssemblyPortView } from './RequiringPort'
 import { SystemContainer, SystemContainerView } from './SystemContainer'
-import { AlwaysSnapPortsMoveMouseListener, PortAwareSnapper, portSnapper } from './PortSnapper'
-import { AssemblyPort } from './Port'
+import { AlwaysSnapPortsMoveMouseListener, portSnapper } from './PortSnapper'
 
 export const assemblyDiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     const context = { bind, unbind, isBound, rebind }

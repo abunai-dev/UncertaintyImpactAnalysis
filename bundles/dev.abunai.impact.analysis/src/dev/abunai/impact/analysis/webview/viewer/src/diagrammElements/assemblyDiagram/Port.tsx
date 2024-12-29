@@ -1,7 +1,6 @@
 /** @jsx svg */
-import { isBoundsAware, IViewArgs, moveFeature, ShapeView, SPortImpl, svg, RenderingContext } from 'sprotty'
+import { isBoundsAware, moveFeature, SPortImpl } from 'sprotty'
 import { Bounds, SPort } from 'sprotty-protocol'
-import { VNode } from 'snabbdom'
 
 export interface AssemblyPortScheme extends SPort {
     name: string

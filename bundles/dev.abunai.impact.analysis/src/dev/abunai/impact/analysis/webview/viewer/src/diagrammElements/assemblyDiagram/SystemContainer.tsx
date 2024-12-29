@@ -1,9 +1,8 @@
 /** @jsx svg */
 import { SNode } from 'sprotty-protocol'
 import { DynamicContainerNode } from '../DynamicContainer'
-import { ISnapper, IViewArgs, RectangularNodeView, RenderingContext, svg, TYPES } from 'sprotty'
+import { IViewArgs, RectangularNodeView, RenderingContext, svg } from 'sprotty'
 import { VNode } from 'snabbdom'
-import { inject } from 'inversify'
 import { portSnapper, snapPortsOfNode } from './PortSnapper'
 
 export interface SystemContainerScheme extends SNode {
