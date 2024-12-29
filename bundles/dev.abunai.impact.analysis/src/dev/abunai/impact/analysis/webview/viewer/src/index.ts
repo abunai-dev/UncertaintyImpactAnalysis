@@ -8,9 +8,15 @@ import { Container } from 'inversify'
 import {
     AbstractUIExtension,
     ActionDispatcher,
+    IActionDispatcher,
+    ISnapper,
     loadDefaultModules,
     LocalModelSource,
+    modelSourceModule,
     SetUIExtensionVisibilityAction,
+    SModelElementImpl,
+    SModelRootImpl,
+    SNodeImpl,
     TYPES
 } from 'sprotty'
 import { commonModule } from './common/di.config'
@@ -22,16 +28,17 @@ import { transform } from './transformer/AssemblyDiagramm'
 import { elkLayoutModule } from 'sprotty-elk'
 import { autoLayoutModule } from './layouting/di.config'
 import { StraightEdgeLayoutEngine } from './layouting/layouter'
+import { FitToScreenAction, getBasicType } from 'sprotty-protocol'
+import { snapPortsOfNode } from './diagrammElements/assemblyDiagram/PortSnapper'
 
 const container = new Container()
 
 loadDefaultModules(container)
-//container.load(elkLayoutModule)
-container.load(commonModule, unbindHookModule, assemblyDiagramModule, diagramCommonModule/*, autoLayoutModule*/)
+container.load(elkLayoutModule)
+container.load(commonModule, unbindHookModule, assemblyDiagramModule, diagramCommonModule, autoLayoutModule)
 
 const dispatcher = container.get<ActionDispatcher>(TYPES.IActionDispatcher)
 const defaultUIElements = container.getAll<AbstractUIExtension>(EDITOR_TYPES.DefaultUIElement)
-// const layouter = container.get<StraightEdgeLayoutEngine>(TYPES.IModelLayoutEngine)
 
 dispatcher.dispatchAll([
     // Show the default uis after startup
@@ -49,8 +56,15 @@ async function test() {
         type: 'graph',
         id: 'root',
         children: transform()
+    }).then(() => {
+        container.get<IActionDispatcher>(TYPES.IActionDispatcher).dispatch(
+        FitToScreenAction.create([localModelSource.model.id], {
+            padding: 10
+        }))
     })
 }
+
+
 document.addEventListener('DOMContentLoaded', async () => {
     test()
 })

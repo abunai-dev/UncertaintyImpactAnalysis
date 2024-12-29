@@ -4,7 +4,7 @@ import { AssemblyContextNode, AssemblyContextNodeView } from './AssemblyContextN
 import { ProvidingAssemblyPort, ProvidingAssemblyPortView } from './ProvidingPort'
 import { RequiringAssemblyPort, RequiringAssemblyPortView } from './RequiringPort'
 import { SystemContainer, SystemContainerView } from './SystemContainer'
-import { AlwaysSnapPortsMoveMouseListener, PortAwareSnapper } from './PortSnapper'
+import { AlwaysSnapPortsMoveMouseListener, PortAwareSnapper, portSnapper } from './PortSnapper'
 import { AssemblyPort } from './Port'
 
 export const assemblyDiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
@@ -14,6 +14,6 @@ export const assemblyDiagramModule = new ContainerModule((bind, unbind, isBound,
     configureModelElement(context, 'port:assembly:requiring', RequiringAssemblyPort, RequiringAssemblyPortView)
     configureModelElement(context, 'node:assembly:system', SystemContainer, SystemContainerView)
 
-    bind(TYPES.ISnapper).to(PortAwareSnapper).inSingletonScope();
+    bind(TYPES.ISnapper).toConstantValue(portSnapper)
     bind(TYPES.MouseListener).to(AlwaysSnapPortsMoveMouseListener).inSingletonScope();
 })

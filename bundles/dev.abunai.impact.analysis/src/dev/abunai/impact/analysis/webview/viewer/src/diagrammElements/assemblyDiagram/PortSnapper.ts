@@ -1,15 +1,17 @@
-import { injectable } from "inversify";
+import { inject, injectable } from "inversify";
 import {
     CenterGridSnapper,
     ISnapper,
+    LocalModelSource,
     MoveMouseListener,
     SChildElementImpl,
     SModelElementImpl,
     SNodeImpl,
     SPortImpl,
+    TYPES,
     isBoundsAware,
 } from "sprotty";
-import { Point } from "sprotty-protocol";
+import { getBasicType, Point, SNode } from "sprotty-protocol";
 
 /**
  * A grid snapper that snaps to the nearest grid point.
@@ -86,8 +88,8 @@ export class PortAwareSnapper implements ISnapper {
     }
 
     snap(position: Point, element: SModelElementImpl): Point {
-        if (element instanceof SPortImpl) {
-            return this.snapPort(position, element);
+        if (getBasicType(element) == 'port') {
+            return this.snapPort(position, element as SPortImpl);
         } else {
             return this.nodeSnapper.snap(position, element);
         }
@@ -135,3 +137,5 @@ export function snapPortsOfNode(node: SNodeImpl, snapper: ISnapper): void {
         }
     });
 }
+
+export const portSnapper = new PortAwareSnapper()

@@ -8,7 +8,7 @@ export class MyModel extends LocalModelSource {
         cause?: Action,
         index?: SModelIndex
     ): Promise<void> {
-        console.log(this.layoutEngine)
         return super.doSubmitModel(newRoot, update, cause, index)
+        
     }
 }

@@ -3,6 +3,7 @@ import { injectable } from 'inversify'
 import { VNode } from 'snabbdom'
 import { IViewArgs, RenderingContext, ShapeView, SNodeImpl, svg } from 'sprotty'
 import { SNode } from 'sprotty-protocol'
+import { portSnapper, snapPortsOfNode } from './PortSnapper'
 
 export interface AssemblyContextScheme extends SNode {
     name: string
@@ -34,6 +35,9 @@ export class AssemblyContextNodeView extends ShapeView {
         if (!this.isVisible(model, context)) {
             return undefined
         }
+
+        snapPortsOfNode(model, portSnapper)
+
         return (
             <g class-sprotty-node={true} x={model.bounds.x} y={model.bounds.y}>
                 <rect width={model.bounds.width} height={model.bounds.height}></rect>
