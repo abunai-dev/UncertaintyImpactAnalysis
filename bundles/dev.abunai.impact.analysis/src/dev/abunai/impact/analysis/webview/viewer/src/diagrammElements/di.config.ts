@@ -3,6 +3,7 @@ import {
     configureModelElement,
     configureViewerOptions,
     LocalModelSource,
+    PolylineEdgeView,
     SEdgeImpl,
     SGraphImpl,
     SGraphView,
@@ -19,6 +20,7 @@ export const diagramCommonModule = new ContainerModule((bind, unbind, isBound, r
     bind(TYPES.ModelSource).to(LocalModelSource).inSingletonScope()
     configureModelElement(context, 'graph', SGraphImpl, SGraphView)
     configureModelElement(context, 'edge:open', SEdgeImpl, OpenArrowEdgeView)
+    configureModelElement(context, 'edge:line', SEdgeImpl, PolylineEdgeView)
     configureModelElement(context, 'label', SLabelImpl, SLabelView)
     configureModelElement(context, 'dynamic', DynamicContainerNode, DynamicOuterNodeView)
     configureViewerOptions(context, {

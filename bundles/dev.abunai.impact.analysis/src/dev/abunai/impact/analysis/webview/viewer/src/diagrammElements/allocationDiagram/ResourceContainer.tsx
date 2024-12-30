@@ -16,11 +16,12 @@ export class ResourceContainerNode extends DynamicContainerNode {
 
   get bounds() {
       const bounds = super.bounds
+      console.log(bounds)
       return {
           x: bounds.x,
           y: bounds.y,
           width: Math.max(bounds.width, this.getWidth()),
-          height: bounds.height
+          height: Math.max(bounds.height, 80)
       }
   }
 

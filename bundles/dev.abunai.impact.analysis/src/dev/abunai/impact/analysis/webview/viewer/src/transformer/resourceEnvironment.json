@@ -1,0 +1,27 @@
+[
+  {
+    "contents": [
+      {
+        "name": "PublicInternet",
+        "connectedResourceContainer": [
+          "_qvz80ITgEeywmO_IpTxeAg",
+          "_upfkIITgEeywmO_IpTxeAg"
+        ],
+        "type": "LinkingResource",
+        "id": "_3n5CgITgEeywmO_IpTxeAg"
+      },
+      {
+        "name": "OnPremiseServer",
+        "type": "ResourceContainer",
+        "id": "_qvz80ITgEeywmO_IpTxeAg"
+      },
+      {
+        "name": "CloudServer",
+        "type": "ResourceContainer",
+        "id": "_upfkIITgEeywmO_IpTxeAg"
+      }
+    ],
+    "type": "ResourceEnvironment",
+    "id": "aName"
+  }
+]

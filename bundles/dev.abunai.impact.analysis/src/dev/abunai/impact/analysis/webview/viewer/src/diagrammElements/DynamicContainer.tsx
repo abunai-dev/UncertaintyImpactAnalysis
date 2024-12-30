@@ -16,7 +16,12 @@ export class DynamicContainerNode extends SNodeImpl {
     }
 
     override get bounds() {
-        if (!this.children) return super.bounds
+        if (!this.children || this.children.length == 0) return {
+            x: this.position.x,
+            y: this.position.y,
+            width: 80,
+            height: 80
+        }
         let maxX = -Infinity,
             maxY = -Infinity
         for (const child of this.children) {
@@ -29,11 +34,12 @@ export class DynamicContainerNode extends SNodeImpl {
 
         // Add padding
         const padding = 50
+        console.log(this.position, maxX, maxY)
         return {
-            x: 0,
-            y: 0,
-            width: maxX + 2 * padding,
-            height: maxY + 2 * padding
+            x: this.position.x,
+            y: this.position.y,
+            width: maxX + 2 * padding - this.position.x,
+            height: maxY + 2 * padding - this.position.y
         }
     }
 }
