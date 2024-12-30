@@ -54,7 +54,7 @@ public abstract class UncertaintyImpact<T extends Entity> {
 	public List<PCMTransposeFlowGraph> getAffectedDataFlowSections() {
 		var affectedDataFlows = this.getAffectedDataFlows();
 
-		return affectedDataFlows.stream().map(it -> getAffectedDataFlowSectionOf(it)).toList();
+		return affectedDataFlows.stream().map(this::getAffectedDataFlowSectionOf).toList();
 	}
 
 	@Override
