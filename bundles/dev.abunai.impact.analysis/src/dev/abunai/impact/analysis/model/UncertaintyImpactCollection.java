@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.log4j.Logger;
 import org.dataflowanalysis.analysis.core.AbstractVertex;
 
 import dev.abunai.impact.analysis.model.impact.UncertaintyImpact;
@@ -14,13 +15,13 @@ import org.dataflowanalysis.analysis.pcm.core.PCMFlowGraphCollection;
 import org.dataflowanalysis.analysis.pcm.core.PCMTransposeFlowGraph;
 
 public class UncertaintyImpactCollection {
-
+	private static final Logger logger = Logger.getLogger(UncertaintyImpactCollection.class);
 	private final List<UncertaintyImpact<?>> uncertaintyImpacts;
-	private final PCMFlowGraphCollection actionSequences;
+	private final PCMFlowGraphCollection flowGraphs;
 
-	public UncertaintyImpactCollection(PCMFlowGraphCollection actionSequences,
+	public UncertaintyImpactCollection(PCMFlowGraphCollection flowGraphs,
 			List<UncertaintyImpact<?>> uncertaintyImpacts) {
-		this.actionSequences = actionSequences;
+		this.flowGraphs = flowGraphs;
 		this.uncertaintyImpacts = uncertaintyImpacts;
 	}
 
@@ -90,22 +91,23 @@ public class UncertaintyImpactCollection {
 		return impactSet;
 	}
 
-	// TODO: This is broken
 	public int getActionSequenceIndex(List<? extends AbstractVertex<?>> entries) {
-		for (int i = 0; i < this.actionSequences.getTransposeFlowGraphs().size(); i++) {
-			var elements = this.actionSequences.getTransposeFlowGraphs().get(i).getVertices().stream()
+		for (int i = 0; i < this.flowGraphs.getTransposeFlowGraphs().size(); i++) {
+			var elements = this.flowGraphs.getTransposeFlowGraphs().get(i).getVertices().stream()
 					.map(it -> (AbstractPCMVertex<?>) it).toList();
 
-			boolean matches = entries.stream()
-					.allMatch(vertex -> elements.stream()
-							.map(it -> (AbstractPCMVertex<?>) it)
-							.anyMatch(it -> it.isEquivalentInContext(vertex)));
+			boolean matches = true;
+			for (var entry : entries) {
+				if (elements.stream().noneMatch(it -> it.isEquivalentInContext(entry))) {
+					matches = false;
+					break;
+				}
+			}
 
 			if (matches) {
 				return i;
 			}
 		}
-
 		return -1;
 	}
 
