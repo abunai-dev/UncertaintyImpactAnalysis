@@ -34,7 +34,7 @@ public class BehaviorUncertaintyImpact<T extends Entity> extends UncertaintyImpa
 
 	@Override
 	public List<PCMTransposeFlowGraph> getAffectedDataFlows() {
-		return propagationHelper.findActionSequencesWithElement(affectedElement);
+		return propagationHelper.findTransposeFlowGraphsWithElement(affectedElement);
 	}
 
 }

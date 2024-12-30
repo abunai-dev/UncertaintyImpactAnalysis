@@ -221,7 +221,7 @@ public class PropagationHelper {
 		return matches;
 	}
 
-	public List<PCMTransposeFlowGraph> findActionSequencesWithElement(AbstractPCMVertex<?> element) {
+	public List<PCMTransposeFlowGraph> findTransposeFlowGraphsWithElement(AbstractPCMVertex<?> element) {
 		return flowGraphs.getTransposeFlowGraphs().stream()
 				.filter(PCMTransposeFlowGraph.class::isInstance)
 				.filter(it -> it.getVertices().contains(element))
