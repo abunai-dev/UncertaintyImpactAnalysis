@@ -1,10 +1,11 @@
 package dev.abunai.impact.analysis.tests.evaluation;
 
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.function.BiPredicate;
 
+import dev.abunai.impact.analysis.PCMUncertaintyImpactAnalysisBuilder;
 import org.dataflowanalysis.analysis.pcm.core.PCMTransposeFlowGraph;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 
@@ -12,17 +13,16 @@ import dev.abunai.impact.analysis.model.UncertaintyImpactCollection;
 import dev.abunai.impact.analysis.tests.TestBase;
 
 public abstract class EvaluationBase extends TestBase {
-
-	abstract void addUncertaintySources();
-
-	abstract String getScenarioName();
-
-	abstract BiPredicate<List<String>, List<String>> getConstraint();
-
 	@Override
 	protected String getBaseFolder() {
-		return "casestudies/CaseStudy-CoronaWarnApp";
+		return "";
 	}
+
+	protected abstract void addUncertaintySources();
+
+	protected abstract String getScenarioName();
+
+	protected abstract BiPredicate<List<String>, List<String>> getConstraint();
 
 	@Test
 	public void evaluateScenario() {
@@ -55,7 +55,6 @@ public abstract class EvaluationBase extends TestBase {
 		}
 	}
 
-	//@Disabled
 	@Test
 	public void printAllDataFlows() {
 		var flowGraphs = analysis.findFlowGraphs();
