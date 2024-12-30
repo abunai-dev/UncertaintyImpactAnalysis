@@ -34,7 +34,7 @@ public class InterfaceUncertaintyImpact extends UncertaintyImpact<OperationSigna
 
 	@Override
 	public List<PCMTransposeFlowGraph> getAffectedDataFlows() {
-		return propagationHelper.findActionSequencesWithElement(affectedElement);
+		return propagationHelper.findTransposeFlowGraphsWithElement(affectedElement);
 	}
 
 }

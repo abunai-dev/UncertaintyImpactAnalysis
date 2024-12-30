@@ -33,12 +33,12 @@ public abstract class EvaluationBase extends TestBase {
 		result.printResultsWithTitle(getScenarioName(), true);
 
 		// Do confidentiality analysis
-		var actionSequences = analysis.findFlowGraphs();
-		actionSequences.evaluate();
+		var flowGraphs = analysis.findFlowGraphs();
+		flowGraphs.evaluate();
 
 		System.out.println("Confidentiality Violations: ");
-		for (int i = 0; i < actionSequences.getTransposeFlowGraphs().size(); i++) {
-			var violations = analysis.queryDataFlow(actionSequences.getTransposeFlowGraphs().get(i), it -> {
+		for (int i = 0; i < flowGraphs.getTransposeFlowGraphs().size(); i++) {
+			var violations = analysis.queryDataFlow(flowGraphs.getTransposeFlowGraphs().get(i), it -> {
 
 				List<String> dataLiterals = it.getAllDataCharacteristics().stream().map(e -> e.getAllCharacteristics())
 						.flatMap(List::stream).map(e -> e.getValueName()).toList();
@@ -58,13 +58,13 @@ public abstract class EvaluationBase extends TestBase {
 	//@Disabled
 	@Test
 	public void printAllDataFlows() {
-		var actionSequences = analysis.findFlowGraphs();
+		var flowGraphs = analysis.findFlowGraphs();
 
 		System.out.println("All data flows:");
 
-		for (int i = 0; i < actionSequences.getTransposeFlowGraphs().size(); i++) {
+		for (int i = 0; i < flowGraphs.getTransposeFlowGraphs().size(); i++) {
 			System.out.println(
-					UncertaintyImpactCollection.formatDataFlow(i, (PCMTransposeFlowGraph) actionSequences.getTransposeFlowGraphs().get(i), true));
+					UncertaintyImpactCollection.formatDataFlow(i, (PCMTransposeFlowGraph) flowGraphs.getTransposeFlowGraphs().get(i), true));
 		}
 	}
 }

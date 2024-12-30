@@ -42,15 +42,15 @@ public class UncertaintyImpactCollection {
 	}
 
 	public Set<PCMTransposeFlowGraph> getImpactSet(boolean distinct) {
-		List<PCMTransposeFlowGraph> allAffectedSequences = this.getAllAffectedDataFlowSectionsAfterPropagation();
+		List<PCMTransposeFlowGraph> affectedTransposeFlowGraphs = this.getAllAffectedDataFlowSectionsAfterPropagation();
 
 		Set<PCMTransposeFlowGraph> impactSet = new HashSet<>();
-		for (PCMTransposeFlowGraph actionSequence : allAffectedSequences) {
+		for (PCMTransposeFlowGraph transposeFlowGraph : affectedTransposeFlowGraphs) {
 			if (impactSet.stream().anyMatch(it -> {
 				var otherNodes = it.getVertices().stream()
 						.map(vertex -> (AbstractPCMVertex<?>) vertex)
 						.toList();
-				var ownNodes = actionSequence.getVertices().stream()
+				var ownNodes = transposeFlowGraph.getVertices().stream()
 						.map(AbstractPCMVertex.class::cast)
 						.toList();
 
@@ -65,23 +65,23 @@ public class UncertaintyImpactCollection {
 			})) {
 				continue;
 			} else {
-				impactSet.add(actionSequence);
+				impactSet.add(transposeFlowGraph);
 			}
 		}
 
 		if (distinct) {
 			Set<PCMTransposeFlowGraph> entriesToRemove = new HashSet<>();
-			for (PCMTransposeFlowGraph actionSequence : impactSet) {
-				List<PCMTransposeFlowGraph> similarDataFlows = impactSet.stream().filter(it -> getActionSequenceIndex(
-						it.getVertices()) == getActionSequenceIndex(actionSequence.getVertices())).toList();
+			for (PCMTransposeFlowGraph transposeFlowGraph : impactSet) {
+				List<PCMTransposeFlowGraph> similarDataFlows = impactSet.stream().filter(it -> getFlowGraphIndex(
+						it.getVertices()) == getFlowGraphIndex(transposeFlowGraph.getVertices())).toList();
 
 				for (PCMTransposeFlowGraph similarDataFlow : similarDataFlows) {
-					if (similarDataFlow.equals(actionSequence)) {
+					if (similarDataFlow.equals(transposeFlowGraph)) {
 						continue;
-					} else if (actionSequence.getVertices().size() >= similarDataFlow.getVertices().size()) {
+					} else if (transposeFlowGraph.getVertices().size() >= similarDataFlow.getVertices().size()) {
 						entriesToRemove.add(similarDataFlow);
 					} else {
-						entriesToRemove.add(actionSequence);
+						entriesToRemove.add(transposeFlowGraph);
 					}
 				}
 			}
@@ -91,7 +91,7 @@ public class UncertaintyImpactCollection {
 		return impactSet;
 	}
 
-	public int getActionSequenceIndex(List<? extends AbstractVertex<?>> entries) {
+	public int getFlowGraphIndex(List<? extends AbstractVertex<?>> entries) {
 		for (int i = 0; i < this.flowGraphs.getTransposeFlowGraphs().size(); i++) {
 			var elements = this.flowGraphs.getTransposeFlowGraphs().get(i).getVertices().stream()
 					.map(it -> (AbstractPCMVertex<?>) it).toList();
@@ -137,14 +137,14 @@ public class UncertaintyImpactCollection {
 
 			System.out.printf("\n\nImpacted data flow sections (%d):\n", impactSet.size());
 			impactSet.stream()
-					.map(it -> formatDataFlow(this.getActionSequenceIndex(it.getVertices()), it, newLineAfterEachEntry))
+					.map(it -> formatDataFlow(this.getFlowGraphIndex(it.getVertices()), it, newLineAfterEachEntry))
 					.forEach(System.out::println);
 		}
 
 		if (printFinalImpactSet) {
 			System.out.printf("\n\nDistinct Impact set (%d):\n", distinctImpactSet.size());
 			distinctImpactSet.stream()
-					.map(it -> formatDataFlow(this.getActionSequenceIndex(it.getVertices()), it, newLineAfterEachEntry))
+					.map(it -> formatDataFlow(this.getFlowGraphIndex(it.getVertices()), it, newLineAfterEachEntry))
 					.forEach(System.out::println);
 		}
 

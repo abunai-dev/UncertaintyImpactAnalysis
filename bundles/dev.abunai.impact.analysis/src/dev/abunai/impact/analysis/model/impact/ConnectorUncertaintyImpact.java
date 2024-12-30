@@ -34,7 +34,7 @@ public class ConnectorUncertaintyImpact<T extends Connector> extends Uncertainty
 
 	@Override
 	public List<PCMTransposeFlowGraph> getAffectedDataFlows() {
-		return propagationHelper.findActionSequencesWithElement(affectedElement);
+		return propagationHelper.findTransposeFlowGraphsWithElement(affectedElement);
 	}
 
 }

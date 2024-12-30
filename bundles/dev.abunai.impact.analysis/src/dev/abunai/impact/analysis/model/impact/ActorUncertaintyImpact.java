@@ -34,7 +34,7 @@ public class ActorUncertaintyImpact extends UncertaintyImpact<Entity> {
 
 	@Override
 	public List<PCMTransposeFlowGraph> getAffectedDataFlows() {
-		return propagationHelper.findActionSequencesWithElement(affectedElement);
+		return propagationHelper.findTransposeFlowGraphsWithElement(affectedElement);
 	}
 
 }
