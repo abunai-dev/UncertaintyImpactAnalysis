@@ -2,11 +2,11 @@
 import { injectable } from 'inversify'
 import { IViewArgs, ShapeView, svg, RenderingContext } from 'sprotty'
 import { VNode } from 'snabbdom'
-import { AssemblyPort } from './Port'
+import { AssemblyPortImpl } from './Port'
 import { Bounds } from 'sprotty-protocol'
 
 
-export class ProvidingAssemblyPort extends AssemblyPort {
+export class ProvidingAssemblyPortImpl extends AssemblyPortImpl {
     override get bounds(): Bounds {
             const base = {
                 x: this.position.x,
@@ -37,7 +37,7 @@ export class ProvidingAssemblyPort extends AssemblyPort {
 @injectable()
 export class ProvidingAssemblyPortView extends ShapeView {
 
-        render(model: Readonly<AssemblyPort>, context: RenderingContext, args?: IViewArgs): VNode | undefined {
+        render(model: Readonly<AssemblyPortImpl>, context: RenderingContext, args?: IViewArgs): VNode | undefined {
             if (!this.isVisible(model, context)) {
                 return undefined
             }

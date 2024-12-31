@@ -2,11 +2,11 @@
 import { injectable } from 'inversify'
 import { IViewArgs, ShapeView, svg, RenderingContext } from 'sprotty'
 import { VNode } from 'snabbdom'
-import { AssemblyPort } from './Port'
+import { AssemblyPortImpl } from './Port'
 import { Bounds } from 'sprotty-protocol'
 
 
-export class RequiringAssemblyPort extends AssemblyPort {
+export class RequiringAssemblyPortImpl extends AssemblyPortImpl {
     override get bounds(): Bounds {
             const base = {
                 x: this.position.x,
@@ -37,12 +37,10 @@ export class RequiringAssemblyPort extends AssemblyPort {
 @injectable()
 export class RequiringAssemblyPortView extends ShapeView {
 
-    render(model: Readonly<AssemblyPort>, context: RenderingContext, args?: IViewArgs): VNode | undefined {
+    render(model: Readonly<AssemblyPortImpl>, context: RenderingContext, args?: IViewArgs): VNode | undefined {
         if (!this.isVisible(model, context)) {
             return undefined
         }
-        const circleX = model.sideFactor.y * 2 + model.sideFactor.x * 20;
-        const circleY = model.sideFactor.x * 2 + model.sideFactor.y * -20;
         const lineX = model.sideFactor.y * 2 + model.sideFactor.x * 12;
         const lineY = model.sideFactor.x * 2 + model.sideFactor.y * -12;
 
@@ -59,7 +57,7 @@ export class RequiringAssemblyPortView extends ShapeView {
         )
     }
 
-    getPath(model: Readonly<AssemblyPort>) {
+    getPath(model: Readonly<AssemblyPortImpl>) {
         const sideFactor = model.sideFactor
         if (sideFactor.x == 0 && sideFactor.y == 1) {
             return `M 10 -20 A 8 8 0 0 1 -6 -20`

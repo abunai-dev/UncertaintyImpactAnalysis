@@ -1,56 +1,43 @@
 import 'reflect-metadata'
-
 import './theme.css'
 import './page.css'
 import 'sprotty/css/sprotty.css'
-import './diagrammElements/elementStyles.css'
+import './diagramElements/elementStyles.css'
 import { Container } from 'inversify'
 import {
-    AbstractUIExtension,
-    ActionDispatcher,
     IActionDispatcher,
     loadDefaultModules,
     LocalModelSource,
-    SetUIExtensionVisibilityAction,
     TYPES
 } from 'sprotty'
-import { commonModule } from './common/di.config'
-import { EDITOR_TYPES } from './EditorTypes'
 import { unbindHookModule } from './editMode/di.config'
-import { assemblyDiagramModule } from './diagrammElements/assemblyDiagram/di.config'
-import { diagramCommonModule } from './diagrammElements/di.config'
-import { transform } from './transformer/ResourceEnvironmentDiagramm'
 import { elkLayoutModule } from 'sprotty-elk'
 import { autoLayoutModule } from './layouting/di.config'
-import { FitToScreenAction } from 'sprotty-protocol'
-import { allocationDiagramModule } from './diagrammElements/allocationDiagram/di.config'
-import { resourceEnvironmentModule } from './diagrammElements/resourceEnvironment/di.config'
+import { FitToScreenAction, SModelElement } from 'sprotty-protocol'
+import { diagramModule } from './diagramElements/di.config'
+import { nodeModule } from './diagramElements/nodes/di.config'
+import { edgeModule } from './diagramElements/edges/di.config'
+import { portModule } from './diagramElements/ports/di.config'
+import { AllocationFileContent, AllocationTransformer } from './transformer/Allocation'
+import allocationJson from './transformer/json/allocation.json'
+import { AssemblyFileContent, AssemblyTransformer } from './transformer/Assembly'
+import assemblyJson from './transformer/json/system.json'
+import { ResourceEnvironmentFileContent, ResourceEnvironmentTransformer } from './transformer/ResourceEnvironment'
+import resourceEnvironmentJson from './transformer/json/resourceEnvironment.json'
 
 const container = new Container()
 
 loadDefaultModules(container)
 container.load(elkLayoutModule)
-container.load(commonModule, unbindHookModule, assemblyDiagramModule, diagramCommonModule, autoLayoutModule, allocationDiagramModule, resourceEnvironmentModule)
+container.load(unbindHookModule, autoLayoutModule, diagramModule, nodeModule, edgeModule, portModule)
 
-const dispatcher = container.get<ActionDispatcher>(TYPES.IActionDispatcher)
-const defaultUIElements = container.getAll<AbstractUIExtension>(EDITOR_TYPES.DefaultUIElement)
-
-dispatcher.dispatchAll([
-    // Show the default uis after startup
-    ...defaultUIElements.map((uiElement) => {
-        return SetUIExtensionVisibilityAction.create({
-            extensionId: uiElement.id(),
-            visible: true
-        })
-    })
-])
-
-async function test() {
+async function test(content: SModelElement[]) {
+    console.log(content)
     const localModelSource = container.get<LocalModelSource>(TYPES.ModelSource)
     localModelSource.setModel({
         type: 'graph',
         id: 'root',
-        children: transform()
+        children: content
     }).then(() => {
         container.get<IActionDispatcher>(TYPES.IActionDispatcher).dispatch(
         FitToScreenAction.create([localModelSource.model.id], {
@@ -61,5 +48,7 @@ async function test() {
 
 
 document.addEventListener('DOMContentLoaded', async () => {
-    test()
+    test(new AllocationTransformer().transform(allocationJson as AllocationFileContent))
+    //test(new AssemblyTransformer().transform(assemblyJson as AssemblyFileContent))
+    //test(new ResourceEnvironmentTransformer().transform(resourceEnvironmentJson as ResourceEnvironmentFileContent))
 })

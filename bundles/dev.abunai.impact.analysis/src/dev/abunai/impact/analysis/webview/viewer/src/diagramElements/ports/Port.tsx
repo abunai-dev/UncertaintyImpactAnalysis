@@ -2,11 +2,11 @@
 import { isBoundsAware, moveFeature, SPortImpl } from 'sprotty'
 import { Bounds, SPort } from 'sprotty-protocol'
 
-export interface AssemblyPortScheme extends SPort {
+export interface AssemblyPort extends SPort {
     name: string
 }
 
-export abstract class AssemblyPort extends SPortImpl {
+export abstract class AssemblyPortImpl extends SPortImpl {
     static DEFAULT_FEATURES: symbol[] = [moveFeature, ...SPortImpl.DEFAULT_FEATURES]
     public name: string
 
