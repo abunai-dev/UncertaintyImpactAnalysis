@@ -1,26 +1,13 @@
 package dev.abunai.impact.analysis.tests.evaluation;
 
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.BiPredicate;
 
-import dev.abunai.impact.analysis.testmodels.Activator;
 import dev.abunai.impact.analysis.tests.ImpactAnnotator;
 import org.dataflowanalysis.analysis.core.CharacteristicValue;
 import org.dataflowanalysis.analysis.core.DataCharacteristic;
-import org.dataflowanalysis.analysis.pcm.core.AbstractPCMVertex;
 import org.dataflowanalysis.analysis.pcm.core.PCMTransposeFlowGraph;
-import org.dataflowanalysis.converter.DataFlowDiagramConverter;
-import org.dataflowanalysis.converter.PCMConverter;
-import org.dataflowanalysis.converter.WebEditorConverter;
-import org.dataflowanalysis.converter.webdfd.Annotation;
-import org.dataflowanalysis.dfd.datadictionary.Assignment;
-import org.dataflowanalysis.dfd.dataflowdiagram.Flow;
-import org.dataflowanalysis.dfd.dataflowdiagram.Node;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 
@@ -92,7 +79,7 @@ public abstract class EvaluationBase extends TestBase {
 				.get(getBaseFolder(), getFolderName(), getFilesName() + ".nodecharacteristics").toString();
 
 		var impactAnnotator = new ImpactAnnotator(analysis, result, this.getConstraint());
-		var resultWeb = impactAnnotator.getAnnotatedResult(usageModelPath, allocationPath, nodeCharacteristicsPath);
+		var resultWeb = impactAnnotator.getAnnotatedResult();
 		impactAnnotator.saveAnnotatedWebDFD(resultWeb, getFolderName() + ".json");
 	}
 
@@ -107,3 +94,4 @@ public abstract class EvaluationBase extends TestBase {
 					UncertaintyImpactCollection.formatDataFlow(i, (PCMTransposeFlowGraph) flowGraphs.getTransposeFlowGraphs().get(i), true));
 		}
 	}
+}
