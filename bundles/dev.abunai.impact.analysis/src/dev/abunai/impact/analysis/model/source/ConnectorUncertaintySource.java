@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.dataflowanalysis.analysis.pcm.core.AbstractPCMActionSequenceElement;
+import org.dataflowanalysis.analysis.pcm.core.AbstractPCMVertex;
 import org.palladiosimulator.pcm.core.composition.AssemblyConnector;
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
 import org.palladiosimulator.pcm.core.composition.Connector;
@@ -67,7 +67,7 @@ public class ConnectorUncertaintySource<T extends Connector> extends Uncertainty
 
 	@Override
 	public List<? extends UncertaintyImpact<? extends T>> propagate() {
-		List<AbstractPCMActionSequenceElement<?>> matches = new ArrayList<>();
+		List<AbstractPCMVertex<?>> matches = new ArrayList<>();
 
 		OperationInterface interfaze = getConnectorInterface();
 		AssemblyContext providingContext = getConnectorProvidingContext();
@@ -84,14 +84,14 @@ public class ConnectorUncertaintySource<T extends Connector> extends Uncertainty
 
 		if (!systemCallNodes.isEmpty() && connector instanceof ProvidedDelegationConnector castedConnector) {
 			var filteredSystemCallNodes = systemCallNodes.stream()
-					.filter(it -> it.getElement().getProvidedRole_EntryLevelSystemCall()
+					.filter(it -> it.getReferencedElement().getProvidedRole_EntryLevelSystemCall()
 							.equals(castedConnector.getOuterProvidedRole_ProvidedDelegationConnector()))
 					.toList();
 			matches.addAll(filteredSystemCallNodes);
 		}
 
 		if (!externalCallNodes.isEmpty() && connector instanceof AssemblyConnector castedConnector) {
-			var filteredExternalCallNodes = externalCallNodes.stream().filter(it -> it.getElement()
+			var filteredExternalCallNodes = externalCallNodes.stream().filter(it -> it.getReferencedElement()
 					.getRole_ExternalService().equals(castedConnector.getRequiredRole_AssemblyConnector())).toList();
 			matches.addAll(filteredExternalCallNodes);
 		}

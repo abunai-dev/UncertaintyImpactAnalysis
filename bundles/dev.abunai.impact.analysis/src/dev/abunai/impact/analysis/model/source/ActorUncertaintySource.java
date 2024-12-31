@@ -3,7 +3,7 @@ package dev.abunai.impact.analysis.model.source;
 import java.util.List;
 import java.util.Objects;
 
-import org.dataflowanalysis.analysis.pcm.core.AbstractPCMActionSequenceElement;
+import org.dataflowanalysis.analysis.pcm.core.AbstractPCMVertex;
 import org.palladiosimulator.pcm.core.entity.Entity;
 import org.palladiosimulator.pcm.resourceenvironment.ResourceContainer;
 import org.palladiosimulator.pcm.usagemodel.UsageScenario;
@@ -40,7 +40,7 @@ public class ActorUncertaintySource<T extends Entity> extends UncertaintySource<
 
 	@Override
 	public List<ActorUncertaintyImpact> propagate() {
-		List<? extends AbstractPCMActionSequenceElement<?>> processes = propagationHelper
+		List<? extends AbstractPCMVertex<?>> processes = propagationHelper
 				.findProcessesThatRepresentResourceContainerOrUsageScenario(this.actor);
 		return processes.stream().map(it -> new ActorUncertaintyImpact(it, this, this.propagationHelper)).toList();
 	}

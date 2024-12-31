@@ -32,7 +32,7 @@ public class AnalysisTest extends TestBase {
 	public void testResourceContainerActorUncertainty() {
 		analysis.getUncertaintySources().addActorUncertaintyInResourceContainer("_qvz80ITgEeywmO_IpTxeAg");
 		analysis.propagate().printResults(true, true, true, false);
-		assertAnalysisResults(11, 8, 1);
+		assertAnalysisResults(11, 11, 1);
 	}
 
 	@Test
@@ -45,8 +45,8 @@ public class AnalysisTest extends TestBase {
 	@Test
 	public void testInterfaceUncertaintyInTheCenter() {
 		analysis.getUncertaintySources().addInterfaceUncertaintyInInterface("_XGAZwITiEeywmO_IpTxeAg");
-		analysis.propagate().printResults(true, true, true, false);
-		assertAnalysisResults(9, 6, 1);
+		analysis.propagate().printResults(true, true, true, true);
+		assertAnalysisResults(9, 9, 1);
 	}
 
 	@Test
@@ -75,7 +75,7 @@ public class AnalysisTest extends TestBase {
 	public void testConnectorUncertaintyInTheCenter() {
 		analysis.getUncertaintySources().addConnectorUncertaintyInConnector("_BYWIkITkEeywmO_IpTxeAg");
 		analysis.propagate().printResults(true, true, true, false);
-		assertAnalysisResults(9, 6, 1);
+		assertAnalysisResults(9, 9, 1);
 	}
 
 	@Test

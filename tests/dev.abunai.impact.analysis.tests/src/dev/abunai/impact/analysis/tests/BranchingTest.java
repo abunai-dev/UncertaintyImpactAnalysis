@@ -32,7 +32,7 @@ public class BranchingTest extends TestBase {
 	public void testExternalCallInBranch() {
 		analysis.getUncertaintySources().addBehaviorUncertaintyInExternalCallAction("_QqAdMNv2EeyYrpd_1AtxSw");
 		analysis.propagate().printResults(true, true, true, false);
-		assertAnalysisResults(2, 1, 1);
+		assertAnalysisResults(2, 2, 1);
 	}
 
 }

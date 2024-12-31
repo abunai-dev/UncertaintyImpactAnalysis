@@ -1,8 +1,6 @@
 package dev.abunai.impact.analysis;
 
 import org.dataflowanalysis.analysis.pcm.PCMDataFlowConfidentialityAnalysisBuilder;
-import org.dataflowanalysis.analysis.pcm.core.PCMDataCharacteristicsCalculatorFactory;
-import org.dataflowanalysis.analysis.pcm.core.PCMNodeCharacteristicsCalculator;
 import org.dataflowanalysis.analysis.pcm.resource.PCMResourceProvider;
 import org.dataflowanalysis.analysis.pcm.resource.PCMURIResourceProvider;
 import org.dataflowanalysis.analysis.utils.ResourceUtils;
@@ -16,8 +14,7 @@ public class PCMUncertaintyImpactAnalysisBuilder extends PCMDataFlowConfidential
 				ResourceUtils.createRelativePluginURI(relativeUsageModelPath, modelProjectName),
 				ResourceUtils.createRelativePluginURI(relativeAllocationModelPath, modelProjectName),
 				ResourceUtils.createRelativePluginURI(relativeNodeCharacteristicsPath, modelProjectName));
-		return new PCMUncertaintyImpactAnalysis(new PCMNodeCharacteristicsCalculator(resourceProvider),
-				new PCMDataCharacteristicsCalculatorFactory(resourceProvider), resourceProvider, modelProjectName,
+		return new PCMUncertaintyImpactAnalysis(resourceProvider, modelProjectName,
 				pluginActivator);
 
 	}

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import org.dataflowanalysis.analysis.pcm.core.AbstractPCMActionSequenceElement;
+import org.dataflowanalysis.analysis.pcm.core.AbstractPCMVertex;
 import org.palladiosimulator.pcm.repository.OperationSignature;
 
 import dev.abunai.impact.analysis.model.impact.InterfaceUncertaintyImpact;
@@ -34,7 +34,7 @@ public class InterfaceUncertaintySource extends UncertaintySource<OperationSigna
 		var systemCallNodes = propagationHelper.findEntryLevelSystemCallsViaSignature(this.signature);
 		var externalCallNodes = propagationHelper.findExternalCallsViaSignature(this.signature);
 
-		List<? extends AbstractPCMActionSequenceElement<?>> allNodes = Stream
+		List<? extends AbstractPCMVertex<?>> allNodes = Stream
 				.of(startNodes, systemCallNodes, externalCallNodes).flatMap(Collection::stream).toList();
 
 		return allNodes.stream().map(it -> new InterfaceUncertaintyImpact(it, this, propagationHelper)).toList();
