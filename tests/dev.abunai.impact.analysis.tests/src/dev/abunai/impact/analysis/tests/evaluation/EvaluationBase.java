@@ -10,20 +10,13 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import dev.abunai.impact.analysis.testmodels.Activator;
 import dev.abunai.impact.analysis.tests.ImpactAnnotator;
+import org.dataflowanalysis.analysis.core.AbstractTransposeFlowGraph;
+import org.dataflowanalysis.analysis.core.AbstractVertex;
 import org.dataflowanalysis.analysis.core.CharacteristicValue;
 import org.dataflowanalysis.analysis.core.DataCharacteristic;
 import org.dataflowanalysis.analysis.pcm.core.AbstractPCMVertex;
 import org.dataflowanalysis.analysis.pcm.core.PCMTransposeFlowGraph;
-import org.dataflowanalysis.converter.DataFlowDiagramConverter;
-import org.dataflowanalysis.converter.PCMConverter;
-import org.dataflowanalysis.converter.WebEditorConverter;
-import org.dataflowanalysis.converter.webdfd.Annotation;
-import org.dataflowanalysis.dfd.datadictionary.Assignment;
-import org.dataflowanalysis.dfd.dataflowdiagram.Flow;
-import org.dataflowanalysis.dfd.dataflowdiagram.Node;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 
@@ -95,7 +88,7 @@ public abstract class EvaluationBase extends TestBase {
 				.get(getBaseFolder(), getFolderName(), getFilesName() + ".nodecharacteristics").toString();
 
 		var impactAnnotator = new ImpactAnnotator(analysis, result, this.getConstraint());
-		var resultWeb = impactAnnotator.getAnnotatedResult(usageModelPath, allocationPath, nodeCharacteristicsPath);
+		var resultWeb = impactAnnotator.getAnnotatedResult();
 		impactAnnotator.saveAnnotatedWebDFD(resultWeb, getFolderName() + ".json");
 	}
 
