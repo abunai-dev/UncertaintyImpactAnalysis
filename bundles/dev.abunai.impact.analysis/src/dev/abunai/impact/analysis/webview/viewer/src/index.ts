@@ -24,6 +24,8 @@ import { AssemblyFileContent, AssemblyTransformer } from './transformer/Assembly
 import assemblyJson from './transformer/json/system.json'
 import { ResourceEnvironmentFileContent, ResourceEnvironmentTransformer } from './transformer/ResourceEnvironment'
 import resourceEnvironmentJson from './transformer/json/resourceEnvironment.json'
+import { UsageModelFileContent, UsageModelTransformer } from './transformer/UsageModel'
+import usageModelJson from './transformer/json/usageModel.json'
 
 const container = new Container()
 
@@ -32,7 +34,6 @@ container.load(elkLayoutModule)
 container.load(unbindHookModule, autoLayoutModule, diagramModule, nodeModule, edgeModule, portModule)
 
 async function test(content: SModelElement[]) {
-    console.log(content)
     const localModelSource = container.get<LocalModelSource>(TYPES.ModelSource)
     localModelSource.setModel({
         type: 'graph',
@@ -48,7 +49,8 @@ async function test(content: SModelElement[]) {
 
 
 document.addEventListener('DOMContentLoaded', async () => {
-    test(new AllocationTransformer().transform(allocationJson as AllocationFileContent))
+    //test(new AllocationTransformer().transform(allocationJson as AllocationFileContent))
     //test(new AssemblyTransformer().transform(assemblyJson as AssemblyFileContent))
     //test(new ResourceEnvironmentTransformer().transform(resourceEnvironmentJson as ResourceEnvironmentFileContent))
+    test(new UsageModelTransformer().transform(usageModelJson as UsageModelFileContent))
 })

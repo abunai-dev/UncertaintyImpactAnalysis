@@ -10,7 +10,7 @@ export class CustomLayoutConfigurator extends DefaultLayoutConfigurator {
         return {
             'org.eclipse.elk.edgeRouting': 'POLYLINE',
             'org.eclipse.elk.hierarchyHandling': 'INCLUDE_CHILDREN',
-            'org.eclipse.elk.direction': 'UP',
+            'org.eclipse.elk.direction': 'DOWN',
             'org.eclipse.elk.layered.considerModelOrder.strategy': 'PREFER_NODES',
             "org.eclipse.elk.algorithm": "org.eclipse.elk.layered",
             "org.eclipse.elk.layered.spacing.nodeNodeBetweenLayers": "30.0",

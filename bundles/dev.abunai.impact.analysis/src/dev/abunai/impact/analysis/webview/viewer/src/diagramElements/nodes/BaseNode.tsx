@@ -45,10 +45,9 @@ export class BaseNodeImpl extends SNodeImpl implements BaseNodeVariables {
       if (!hasBounds(child)) {
         continue
       }
-      maxX = Math.max(maxX, child.bounds.x + child.bounds.width + 50)
-      maxY = Math.max(maxY, child.bounds.y + child.bounds.height + 50)
+      maxX = Math.max(maxX, child.bounds.x + child.bounds.width + 20)
+      maxY = Math.max(maxY, child.bounds.y + child.bounds.height + 20)
     }
-    if (this.type === NODES.ASSEMBLY_CONTEXT) console.log(maxX, maxY, super.bounds)
     return {
       x: this.position.x,
       y: this.position.y,
