@@ -6,5 +6,8 @@ export enum NODES {
   START = 'node:start',
   STOP = 'node:stop',
   USAGE_SCENARIO = 'node:usage_scenatio',
-  SCENARIO_BEHAVIOUR = 'node:scenario_behaviour'
+  SCENARIO_BEHAVIOUR = 'node:scenario_behaviour',
+  INTERFACE = 'node:interface',
+  COMPOSITE_DATA_TYPE = 'node:composite_data_type',
+  BASIC_COMPONENT = 'node:basic_component'
 }

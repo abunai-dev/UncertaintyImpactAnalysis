@@ -33,6 +33,11 @@
     font-size: 8pt;
 }
 
+rect.do-fill,	
+ellipse.do-fill, 
+polygon.do-fill, 
+line.do-fill, 
+path.do-fill,
 circle.do-fill {
     fill: var(--color-foreground);
 }

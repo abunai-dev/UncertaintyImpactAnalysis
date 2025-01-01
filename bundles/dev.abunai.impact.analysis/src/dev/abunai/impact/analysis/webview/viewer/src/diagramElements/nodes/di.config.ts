@@ -9,6 +9,10 @@ import { NODES } from "."
 import { StartNodeView, StopNodeView } from "./CircularNodes"
 import { ScenarioBehaviourView } from "./ScenarioBehaviour"
 import { UsageScenarioView } from "./UsageScenario"
+import { SignnatureNodeImpl } from "./SignatureNode"
+import { InterfaceView } from "./Interface"
+import { CompositeDataTypeView } from "./CompositeDataType"
+import { BasicComponentImpl, BasicComponentView } from "./BasicComponent"
 
 export const nodeModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     const context = { bind, unbind, isBound, rebind }
@@ -20,4 +24,7 @@ export const nodeModule = new ContainerModule((bind, unbind, isBound, rebind) =>
     configureModelElement(context, NODES.STOP, SNodeImpl, StopNodeView)
     configureModelElement(context, NODES.SCENARIO_BEHAVIOUR, BaseNodeImpl, ScenarioBehaviourView)
     configureModelElement(context, NODES.USAGE_SCENARIO, BaseNodeImpl, UsageScenarioView)
+    configureModelElement(context, NODES.INTERFACE, SignnatureNodeImpl, InterfaceView)
+    configureModelElement(context, NODES.COMPOSITE_DATA_TYPE, SignnatureNodeImpl, CompositeDataTypeView)
+    configureModelElement(context, NODES.BASIC_COMPONENT, BasicComponentImpl, BasicComponentView)
 })

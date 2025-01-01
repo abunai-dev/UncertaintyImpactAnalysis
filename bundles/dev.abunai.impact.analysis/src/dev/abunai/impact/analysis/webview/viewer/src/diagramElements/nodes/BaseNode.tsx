@@ -5,7 +5,7 @@ import { getBasicType, SModelElement, SNode } from "sprotty-protocol";
 import { NODES } from "../nodes";
 import { portSnapper, snapPortsOfNode } from "../ports/PortSnapper";
 
-interface BaseNodeVariables {
+export interface BaseNodeVariables {
   typeName: string,
   name: string
 }

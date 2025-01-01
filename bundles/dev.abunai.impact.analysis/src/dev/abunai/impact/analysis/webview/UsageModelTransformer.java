@@ -3,6 +3,7 @@ package dev.abunai.impact.analysis.webview;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.palladiosimulator.pcm.usagemodel.AbstractUserAction;
 import org.palladiosimulator.pcm.usagemodel.ScenarioBehaviour;
 import org.palladiosimulator.pcm.usagemodel.UsageModel;
 import org.palladiosimulator.pcm.usagemodel.UsageScenario;

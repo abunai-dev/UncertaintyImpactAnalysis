@@ -26,6 +26,8 @@ import { ResourceEnvironmentFileContent, ResourceEnvironmentTransformer } from '
 import resourceEnvironmentJson from './transformer/json/resourceEnvironment.json'
 import { UsageModelFileContent, UsageModelTransformer } from './transformer/UsageModel'
 import usageModelJson from './transformer/json/usageModel.json'
+import { RepositoryFileContent, RepositoryTransformer } from './transformer/Repository'
+import repositoryJson from './transformer/json/repository.json'
 
 const container = new Container()
 
@@ -52,5 +54,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     //test(new AllocationTransformer().transform(allocationJson as AllocationFileContent))
     //test(new AssemblyTransformer().transform(assemblyJson as AssemblyFileContent))
     //test(new ResourceEnvironmentTransformer().transform(resourceEnvironmentJson as ResourceEnvironmentFileContent))
-    test(new UsageModelTransformer().transform(usageModelJson as UsageModelFileContent))
+    //test(new UsageModelTransformer().transform(usageModelJson as UsageModelFileContent))
+    test(new RepositoryTransformer().transform(repositoryJson as RepositoryFileContent))
 })

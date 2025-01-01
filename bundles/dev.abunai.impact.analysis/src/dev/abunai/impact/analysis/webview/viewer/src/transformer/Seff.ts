@@ -35,15 +35,17 @@ export type ActionBase = Json.ActionBase
 export class SeffTransformer extends AbstractTransformer<Json.ActionBase> {
 
   transform(actions: Json.ActionBase[]): SModelElement[] {
+    const filteredActions = actions.filter(a => a!=null)
     const contents: (SNode|SEdge)[] = []
 
-    for (const start of getOfType<Json.StartNode>(actions, 'Start')) {
+    for (const start of getOfType<Json.StartNode>(filteredActions, 'Start')) {
       contents.push(buildStartNode(start.id))
     }
-    for (const stop of getOfType<Json.StopNode>(actions, 'Stop')) {
+    for (const stop of getOfType<Json.StopNode>(filteredActions, 'Stop')) {
       contents.push(buildStopNode(stop.id))
     }
-    for (const entryLevelSystemCall of getOfType<Json.EntryLevelSystemCall>(actions, 'EntryLevelSystemCall')) {
+    for (const entryLevelSystemCall of getOfType<Json.EntryLevelSystemCall>(filteredActions, 'EntryLevelSystemCall')) {
+      /** Todo: change */
       contents.push(buildBaseNode(
         entryLevelSystemCall.id,
         NODES.LINKING_RESOURCE,
@@ -53,7 +55,7 @@ export class SeffTransformer extends AbstractTransformer<Json.ActionBase> {
     }
 
 
-    for (const action of actions) {
+    for (const action of filteredActions) {
       if (action.successor != null) {
         contents.push({
           id: action.id + action.successor,

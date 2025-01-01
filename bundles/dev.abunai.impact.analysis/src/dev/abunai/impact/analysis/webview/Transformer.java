@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 
 import org.palladiosimulator.pcm.allocation.AllocationPackage;
+import org.palladiosimulator.pcm.repository.RepositoryPackage;
 import org.palladiosimulator.pcm.resourceenvironment.ResourceEnvironment;
 import org.palladiosimulator.pcm.resourceenvironment.ResourceenvironmentPackage;
 import org.palladiosimulator.pcm.system.SystemPackage;
@@ -29,7 +30,8 @@ public class Transformer {
 		//exportTopLevelElement(SystemPackage.Literals.SYSTEM, new SystemTransformer(), "", "system");
 		//exportTopLevelElement(AllocationPackage.Literals.ALLOCATION, new AllocationTransformer(), "", "allocation");
 		//exportTopLevelElement(ResourceenvironmentPackage.Literals.RESOURCE_ENVIRONMENT, new ResourceEnvironmentTransformer(), "", "resourceEnvironment");
-		exportTopLevelElement(UsagemodelPackage.Literals.USAGE_MODEL, new UsageModelTransformer(), "", "usageModel");
+		//exportTopLevelElement(UsagemodelPackage.Literals.USAGE_MODEL, new UsageModelTransformer(), "", "usageModel");
+		exportTopLevelElement(RepositoryPackage.Literals.REPOSITORY, new RepositoryTransformer(), "", "repository");
 	}
 	
 	private <T extends EObject> void exportTopLevelElement(EClass elementClass, AbstractTransformer<T> transformer, String path, String fileName) throws IOException {

@@ -2,30 +2,47 @@ package dev.abunai.impact.analysis.webview;
 
 import java.util.List;
 
+import org.palladiosimulator.pcm.core.entity.Entity;
 import org.palladiosimulator.pcm.parameter.VariableUsage;
-import org.palladiosimulator.pcm.usagemodel.AbstractUserAction;
+import org.palladiosimulator.pcm.seff.StartAction;
+import org.palladiosimulator.pcm.seff.StopAction;
 import org.palladiosimulator.pcm.usagemodel.EntryLevelSystemCall;
 import org.palladiosimulator.pcm.usagemodel.Start;
 import org.palladiosimulator.pcm.usagemodel.Stop;
 
-public class SeffTransformer implements AbstractTransformer<AbstractUserAction> {
+public class SeffTransformer implements AbstractTransformer<Entity> {
 
 	@Override
-	public ActionJson transform(AbstractUserAction action) {
+	public ActionJson transform(Entity action) {
 		if (action instanceof Start) {
-			return new StartActionJson(action.getId(), action.getSuccessor());
+			return new StartActionJson(action.getId(), getId(((Start)action).getSuccessor()));
 		}
+		if (action instanceof StartAction) {
+			return new StartActionJson(action.getId(), getId(((StartAction)action).getSuccessor_AbstractAction()));
+		}
+		
 		if (action instanceof Stop) {
-			return new StopActionJson(action.getId(), action.getSuccessor());
+			return new StopActionJson(action.getId(), getId(((Stop)action).getSuccessor()));
 		}
+		if (action instanceof StopAction) {
+			return new StopActionJson(action.getId(), getId(((StopAction)action).getSuccessor_AbstractAction()));
+		}
+		
 		if (action instanceof EntryLevelSystemCall) {
 			EntryLevelSystemCall node = (EntryLevelSystemCall)action;
-			return new EntryLevelSystemCallJson(node.getId(), node.getSuccessor(), node.getEntityName(), 
+			return new EntryLevelSystemCallJson(node.getId(), getId(node.getSuccessor()), node.getEntityName(), 
 					node.getInputParameterUsages_EntryLevelSystemCall().stream().map(v -> transformVariableUsage(v)).toList(), 
 					node.getOutputParameterUsages_EntryLevelSystemCall().stream().map(v -> transformVariableUsage(v)).toList());
 			
 		}
-		throw new RuntimeException("Could not identify type");
+		return null;
+		//throw new RuntimeException("Could not identify type");
+	}
+	
+	String getId(Entity e) {
+		if (e == null) return null;
+		return e.getId();
+				
 	}
 
 	
@@ -47,7 +64,7 @@ class EntryLevelSystemCallJson extends ActionJson {
 	public List<VariableUsageJson> inputParameterUsages;
 	public List<VariableUsageJson> outputParameterUsages;
 	
-	public EntryLevelSystemCallJson(String id, AbstractUserAction successor, String name, List<VariableUsageJson> inputParameterUsages,
+	public EntryLevelSystemCallJson(String id, String successor, String name, List<VariableUsageJson> inputParameterUsages,
 			List<VariableUsageJson> outputParameterUsages) {
 		super(id, "EntryLevelSystemCall", successor);
 		this.name = name;
@@ -58,7 +75,7 @@ class EntryLevelSystemCallJson extends ActionJson {
 
 class StopActionJson extends ActionJson {
 
-	public StopActionJson(String id, AbstractUserAction successor) {
+	public StopActionJson(String id, String successor) {
 		super(id, "Stop", successor);
 	}
 	
@@ -66,7 +83,7 @@ class StopActionJson extends ActionJson {
 
 class StartActionJson extends ActionJson {
 
-	public StartActionJson(String id, AbstractUserAction successor) {
+	public StartActionJson(String id, String successor) {
 		super(id, "Start", successor);
 	}
 	
@@ -76,10 +93,10 @@ abstract class ActionJson extends JsonObject {
 
 	public String successor;
 	
-	protected ActionJson(String id, String type, AbstractUserAction successor) {
+	protected ActionJson(String id, String type, String successor) {
 		super(id, type);
 		if (successor != null) {
-			this.successor = successor.getId();
+			this.successor = successor;
 		}
 	}
 	
