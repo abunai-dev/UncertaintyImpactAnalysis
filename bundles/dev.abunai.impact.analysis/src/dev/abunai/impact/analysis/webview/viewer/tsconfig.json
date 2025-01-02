@@ -10,5 +10,13 @@
         "types": ["reflect-metadata"],
         "resolveJsonModule": true
     },
+    "references": [
+        {
+        "path": "./tsconfig.node.json"
+        },
+        {
+        "path": "./tsconfig.app.json"
+        }
+    ],
     "lib": ["ES2019", "DOM"]
 }
