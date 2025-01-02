@@ -35,7 +35,7 @@ class ConfigurableGridSnapper extends CenterGridSnapper {
  * to allow for more precise positioning of ports.
  */
 @injectable()
-export class PortAwareSnapper implements ISnapper {
+class PortAwareSnapper implements ISnapper {
     private readonly nodeSnapper = new ConfigurableGridSnapper(5);
     // The port grid size is a multiple of the node grid size to ensure
     // that the ports of two nodes neighboring each other can be aligned.
@@ -93,6 +93,8 @@ export class PortAwareSnapper implements ISnapper {
         }
     }
 }
+
+export { PortAwareSnapper };
 
 /**
  * Custom MoveMouseListener that only allows to disable snapping for nodes.

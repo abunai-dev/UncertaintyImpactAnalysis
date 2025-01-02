@@ -35,7 +35,7 @@ export class RequiringAssemblyPortImpl extends AssemblyPortImpl {
 }
 
 @injectable()
-export class RequiringAssemblyPortView extends ShapeView {
+class RequiringAssemblyPortView extends ShapeView {
 
     render(model: Readonly<AssemblyPortImpl>, context: RenderingContext, args?: IViewArgs): VNode | undefined {
         if (!this.isVisible(model, context)) {
@@ -76,3 +76,5 @@ export class RequiringAssemblyPortView extends ShapeView {
         return `M 10 -20 A 8 8 0 0 1 -6 -20`
     }
 }
+
+export { RequiringAssemblyPortView }

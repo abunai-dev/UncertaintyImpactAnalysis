@@ -88,7 +88,7 @@ export class RepositoryTransformer extends FlatMapTransformer<Json.Repository> {
         component.seffs.map(seff => {
           return {
             signature: seff.signature,
-            actions: seffTransformer.transform(seff.actions)
+            actions: seffTransformer.transfromActions(seff.actions)
           }
         })
       ))

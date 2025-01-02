@@ -3,8 +3,8 @@ import { injectable } from 'inversify'
 import { DefaultLayoutConfigurator, ElkFactory, ElkLayoutEngine } from 'sprotty-elk'
 import { type SEdge, type SGraph, type SModelElement, SModelIndex, type SShapeElement } from 'sprotty-protocol'
 
-@injectable()
-export class CustomLayoutConfigurator extends DefaultLayoutConfigurator {
+@injectable() 
+class CustomLayoutConfigurator extends DefaultLayoutConfigurator {
     // Configure graph-level options
     protected override graphOptions(sgraph: SGraph, index: SModelIndex): LayoutOptions {
         return {
@@ -24,6 +24,8 @@ export class CustomLayoutConfigurator extends DefaultLayoutConfigurator {
         }
     }
 }
+
+export { CustomLayoutConfigurator }
 
 export const elkFactory: ElkFactory = () => new ElkConstructor({ algorithms: ['layered'] })
 

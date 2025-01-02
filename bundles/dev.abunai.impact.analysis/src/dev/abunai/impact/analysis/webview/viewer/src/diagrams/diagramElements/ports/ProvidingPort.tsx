@@ -1,7 +1,7 @@
 /** @jsx svg */
 import { injectable } from 'inversify'
-import { IViewArgs, ShapeView, svg, RenderingContext } from 'sprotty'
-import { VNode } from 'snabbdom'
+import { type IViewArgs, ShapeView, svg, type RenderingContext } from 'sprotty'
+import type { VNode } from 'snabbdom'
 import { AssemblyPortImpl } from './Port'
 import { Bounds } from 'sprotty-protocol'
 
@@ -35,7 +35,7 @@ export class ProvidingAssemblyPortImpl extends AssemblyPortImpl {
 }
 
 @injectable()
-export class ProvidingAssemblyPortView extends ShapeView {
+class ProvidingAssemblyPortView extends ShapeView {
 
         render(model: Readonly<AssemblyPortImpl>, context: RenderingContext, args?: IViewArgs): VNode | undefined {
             if (!this.isVisible(model, context)) {
@@ -59,3 +59,5 @@ export class ProvidingAssemblyPortView extends ShapeView {
             )
         }
 }
+
+export { ProvidingAssemblyPortView }

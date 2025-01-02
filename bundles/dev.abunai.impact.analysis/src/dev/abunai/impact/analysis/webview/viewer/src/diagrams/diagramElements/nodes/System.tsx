@@ -1,5 +1,5 @@
 /** @jsx svg */
-import { VNode } from "snabbdom";
+import type { VNode } from "snabbdom";
 import { BaseNodeView } from "./BaseNode";
 import { svg } from "sprotty";
 
