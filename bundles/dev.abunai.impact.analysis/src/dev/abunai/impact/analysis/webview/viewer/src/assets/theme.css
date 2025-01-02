@@ -16,3 +16,7 @@
     /* Use default dark theme browser styles for scrollbars etc. inside all UI extensions */
     color-scheme: dark;
 }
+
+* {
+    transition: background-color 0.4s, color 0.4s, fill 0.4s, stroke 0.4s;
+}

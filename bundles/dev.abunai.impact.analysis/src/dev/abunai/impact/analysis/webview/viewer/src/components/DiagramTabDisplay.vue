@@ -1,12 +1,12 @@
 <template>
-  <div class="tab-outer">
-    <div class="tab-bar">
+  <div id="tab-outer">
+    <div id="tab-bar">
       <button @click="changeTab(idx)" class="tab" v-for="[idx, uuid] of uuids.entries()" :key="uuid + '-tab'" :class="{ selected: idx == index }">
         {{ tabManager.getTab(idx).name }}
         <span v-if="tabManager.getTab(idx).closable" @click="e => closeTab(idx, e)">X</span>
       </button>  
     </div>
-    <div class="tab-content">
+    <div id="tab-content">
       <div id="sprotty"></div>
     </div>
   </div>
@@ -53,7 +53,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.tab-bar {
+#tab-bar {
   display: flex;
   gap: 1rem;
   background-color: var(--color-primary);
@@ -76,14 +76,14 @@ onMounted(() => {
   background-color: var(--color-background);
 }
 
-.tab-outer {
+#tab-outer {
   display: flex;
   flex-direction: column;
   height: 100%;
   width: 100%
 }
 
-.tab-content {
+#tab-content {
   flex-grow: 1;
   overflow: hidden;
 }
