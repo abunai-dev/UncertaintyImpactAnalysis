@@ -5,8 +5,8 @@
         <span class="fa-solid fa-magnifying-glass"></span>
         <input v-model="filter" placeholder="Filter/Search" />
       </div>
-      <div id="uncertainty-holder">
-        <UncertaintyPanel v-for="uncertainty in filteredData" :key="uncertainty.id" :uncertainty="uncertainty" />
+      <div id="uncertainty-holder" ref="scrollContainer">
+        <UncertaintyPanel v-for="uncertainty in filteredData" :key="uncertainty.id" :uncertainty="uncertainty" :scroll-offset-y="scrollOffsetY" />
       </div>
       <a href="https://arc3n.abunai.dev/" target="_blank">Open ARC3N</a>
     </div>
@@ -48,6 +48,9 @@ function applyFilter(uncertainty: JsonUncertainty, filter: string): boolean {
   return false
 }
 
+const scrollContainer = ref<HTMLElement | null>(null);
+const scrollOffsetY = ref(0);
+
 onMounted(() => {
   fetch('data.json')
     .then(response => response.json() as Promise<JsonUncertainty[]>)
@@ -59,6 +62,9 @@ onMounted(() => {
       console.error('Error:', error);
       fetchStatus.value = 'error';
     });
+  scrollContainer.value?.addEventListener('scroll', () => {
+    scrollOffsetY.value = scrollContainer.value?.scrollTop ?? 0;
+  });
 });
 </script>
 
@@ -108,7 +114,7 @@ input {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  overflow: scroll;
+  overflow-x: scroll;
   flex-grow: 1;
 }
 
