@@ -11,7 +11,6 @@
 
 <script setup lang="ts">
 import DiagramTabDisplay from './components/DiagramTabDisplay.vue';
-import ThemeSwitch from './components/ThemeSwitch.vue';
 import UncertaintySideBar from './components/UncertaintySideBar.vue';
 </script>
 
@@ -31,7 +30,7 @@ import UncertaintySideBar from './components/UncertaintySideBar.vue';
 }
 
 #sidebar-holder {
-  width: 200px;
+  width: 400px;
   height: 100%;
 }
 </style>
