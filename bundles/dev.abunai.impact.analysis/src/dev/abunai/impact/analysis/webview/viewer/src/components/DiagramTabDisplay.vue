@@ -63,10 +63,6 @@ onMounted(() => {
   display: flex;
   gap: 1rem;
   background-color: var(--color-primary);
-  padding-right: 1rem;
-  align-items: center;
-  align-items: center;
-  justify-content: center;
 }
 
 #tab-list {
@@ -79,7 +75,12 @@ onMounted(() => {
 }
 
 #tab-bar-end {
-
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  padding-right: 1rem;
+  display: center;
+  align-items: center;
+  justify-content: center;
 }
 
 .tab {
