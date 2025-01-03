@@ -18,5 +18,5 @@
 }
 
 * {
-    transition: background-color 0.4s, color 0.4s, fill 0.4s, stroke 0.4s;
+    transition: background-color 0.4s, color 0.4s, fill 0.4s, stroke 0.4s, border-color 0.4s;
 }

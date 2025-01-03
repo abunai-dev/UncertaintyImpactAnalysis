@@ -1,10 +1,15 @@
 <template>
   <div id="tab-outer">
     <div id="tab-bar">
-      <button @click="changeTab(idx)" class="tab" v-for="[idx, uuid] of uuids.entries()" :key="uuid + '-tab'" :class="{ selected: idx == index }">
-        {{ tabManager.getTab(idx).name }}
-        <span v-if="tabManager.getTab(idx).closable" @click="e => closeTab(idx, e)">X</span>
-      </button>  
+      <div id="tab-list">
+          <button @click="changeTab(idx)" class="tab" v-for="[idx, uuid] of uuids.entries()" :key="uuid + '-tab'" :class="{ selected: idx == index }">
+          {{ tabManager.getTab(idx).name }}
+          <span v-if="tabManager.getTab(idx).closable" @click="e => closeTab(idx, e)">X</span>
+        </button> 
+      </div>
+      <div id="tab-bar-end">
+        <ThemeSwitch />
+      </div>
     </div>
     <div id="tab-content">
       <div id="sprotty"></div>
@@ -16,6 +21,7 @@
 import { onMounted, ref } from 'vue';
 import { TabManager } from '../model/TabManager';
 import { init, load } from '../diagrams';
+import ThemeSwitch from './ThemeSwitch.vue';
 
 const tabManager = TabManager.getInstance()
 const uuids = ref(tabManager.getUuids())
@@ -57,8 +63,23 @@ onMounted(() => {
   display: flex;
   gap: 1rem;
   background-color: var(--color-primary);
+  padding-right: 1rem;
+  align-items: center;
+  align-items: center;
+  justify-content: center;
+}
+
+#tab-list {
   padding-left: 1rem;
   padding-top: 0.5rem;
+  display: flex;
+  gap: 1rem;
+  flex-grow: 1;
+  overflow-x: auto;
+}
+
+#tab-bar-end {
+
 }
 
 .tab {

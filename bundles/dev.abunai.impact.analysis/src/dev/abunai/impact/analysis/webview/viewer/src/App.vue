@@ -7,7 +7,6 @@
       <DiagramTabDisplay />
     </div>
   </div>
-  <ThemeSwitch id="theme-switch" />
 </template>
 
 <script setup lang="ts">
@@ -34,11 +33,5 @@ import UncertaintySideBar from './components/UncertaintySideBar.vue';
 #sidebar-holder {
   width: 200px;
   height: 100%;
-}
-
-#theme-switch {
-  position: absolute;
-  top: 5px;
-  right: 10px;
 }
 </style>

@@ -54,8 +54,8 @@ watch(() => darkMode.value, (_) => {
  .switch {
   position: relative;
   display: inline-block;
-  width: 38px;
-  height: 21px;
+  width: 40px;
+  height: 24px;
 }
 
 /* Hide default HTML checkbox */
@@ -83,8 +83,8 @@ watch(() => darkMode.value, (_) => {
   content: "";
   height: 16px;
   width: 16px;
-  left: 3px;
-  bottom: 3px;
+  left: 4px;
+  bottom: 4px;
   background-color: var(--color-primary);
   -webkit-transition: .4s;
   transition: .4s;
