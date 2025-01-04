@@ -3,6 +3,8 @@ import { type BaseNode, buildBaseNode } from "../diagramElements/nodes/schemes/B
 import { EDGES } from "../diagramElements/edges"
 import { FlatMapTransformer, getOfType, type JsonBase } from "./base"
 import { NODES } from "../diagramElements/nodes"
+import { TypeRegistry } from "@/model/TypeRegistry"
+import { ArchitecturalElementTypeOptionList } from "@/model/Uncertainty/option/ArchitecturalElementTypeOptions"
 
 namespace Json {
   export interface ResourceEnvironment extends JsonBase {
@@ -26,8 +28,10 @@ export type ResourceEnvironmentFileContent = Json.ResourceEnvironment[]
 
 export class ResourceEnvironmentTransformer extends FlatMapTransformer<Json.ResourceEnvironment> {
   transformSingle(resourceEnvrironment: Json.ResourceEnvironment): SModelElement[] {
+    const typeRegistry = TypeRegistry.getInstance()
     const contents: (BaseNode|SEdge)[] = []
   for (const resourceContainer of getOfType<Json.ResourceContainer>(resourceEnvrironment.contents, 'ResourceContainer')) {
+    typeRegistry.registerComponent(resourceContainer.id, ArchitecturalElementTypeOptionList.EXTERNAL_RESOURCE)
     contents.push(buildBaseNode(
       resourceContainer.id,
       NODES.RESOURCE_CONTAINER,

@@ -3,6 +3,7 @@ import { type IViewArgs, type RenderingContext, svg, ShapeView, SNodeImpl } from
 import type { BaseNodeVariables } from "./schemes/BaseNode";
 import type { VNode } from "snabbdom";
 import type { BasicComponentVariables, Seff } from "./schemes/BasicComponent";
+import { getSelectionMode, SelectionModes } from "@/diagrams/selection/SelectionModes";
 
 
 
@@ -10,6 +11,10 @@ export class BasicComponentImpl extends SNodeImpl implements BaseNodeVariables, 
   seffs: Seff[];
   typeName: string;
   name: string; 
+
+   get getSelection() {
+          return getSelectionMode(this.id)
+      }
 }
 
 export class BasicComponentView extends ShapeView {
@@ -21,7 +26,7 @@ export class BasicComponentView extends ShapeView {
 
     const lastSeffY = 93 + (model.seffs.length - 1) * 18
 
-    return <g class-sprotty-node={true} x={model.bounds.x} y={model.bounds.y}>
+    return <g class-sprotty-node={true} x={model.bounds.x} y={model.bounds.y} class-selected-component={model.getSelection == SelectionModes.SELECTED} class-other-selected={model.getSelection == SelectionModes.OTHER}>
         <rect width={model.bounds.width} height={model.bounds.height}></rect>
         <text y="19" x="40">
             {'<<' + model.typeName + '>>'}
@@ -61,7 +66,7 @@ export class BasicComponentView extends ShapeView {
         <text x="8" y={lastSeffY+96}>ResourceRequiredRoles</text>
         <line x1="0" x2={model.bounds.width} y1={lastSeffY+102} y2={lastSeffY+102}></line>
 
-        <g>
+        <g class-sprotty-symbol={true}>
         <rect x="15" y="10" width="15" height="20"></rect>
           <rect x="11" y="14" width="8" height="4"></rect>
           <rect x="11" y="22" width="8" height="4"></rect>

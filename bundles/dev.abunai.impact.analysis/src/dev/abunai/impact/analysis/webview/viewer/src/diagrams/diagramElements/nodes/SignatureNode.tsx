@@ -3,11 +3,16 @@ import { type IViewArgs, type RenderingContext, svg, ShapeView, SNodeImpl } from
 import type { BaseNodeVariables } from "./schemes/BaseNode";
 import type { VNode } from "snabbdom";
 import type { SignatureNodeVariables } from "./schemes/SignatureNode";
+import { getSelectionMode, SelectionModes } from "@/diagrams/selection/SelectionModes";
 
 export class SignnatureNodeImpl extends SNodeImpl implements SignatureNodeVariables, BaseNodeVariables {
   typeName: string;
   name: string;
   signatures: string[];
+
+  get getSelection() {
+        return getSelectionMode(this.id)
+    }
 }
 
 export abstract class SignatureNodeView extends ShapeView {
@@ -16,7 +21,16 @@ export abstract class SignatureNodeView extends ShapeView {
       return undefined
     }
 
-    return <g class-sprotty-node={true} x={model.bounds.x} y={model.bounds.y}>
+    const symbol = this.renderSymbol()
+      symbol.data = {
+        ...symbol.data,
+        class: {
+          ...symbol.data?.class,
+          'sprotty-symbol': true
+        }
+      }
+
+    return <g class-sprotty-node={true} x={model.bounds.x} y={model.bounds.y} class-selected-component={model.getSelection == SelectionModes.SELECTED} class-other-selected={model.getSelection == SelectionModes.OTHER}>
         <rect width={model.bounds.width} height={model.bounds.height}></rect>
         <text y="19" x="40">
             {'<<' + model.typeName + '>>'}
@@ -35,7 +49,7 @@ export abstract class SignatureNodeView extends ShapeView {
           })
         }
 
-        {this.renderSymbol()}
+        {symbol}
     </g>
   }
 

@@ -1,8 +1,32 @@
 /** @jsx svg */
-import { PolylineEdgeView, SEdgeImpl, svg, type RenderingContext } from 'sprotty'
+import { getSelectionMode, SelectionModes } from '@/diagrams/selection/SelectionModes'
+import type { VNode } from 'snabbdom'
+import { PolylineEdgeView, SEdgeImpl, selectFeature, svg, type IViewArgs, type RenderingContext } from 'sprotty'
 import { Point } from 'sprotty-protocol/lib/utils/geometry'
 
-export class OpenArrowEdgeView extends PolylineEdgeView {
+export class CustomEdgeImpl extends SEdgeImpl {
+    static readonly DEFAULT_FEATURES = [selectFeature];
+
+    get getSelection() {
+        return getSelectionMode(this.id)
+    }
+}
+
+export class LineEdgeView extends PolylineEdgeView {
+    render(edge: Readonly<CustomEdgeImpl>, context: RenderingContext, args?: IViewArgs): VNode | undefined {
+        const r = super.render(edge, context, args)
+        if (r === undefined) return undefined
+        r.data = { ...r.data, class: {
+            ...r.data?.class,
+            'selected-component': edge.getSelection == SelectionModes.SELECTED, 
+            'other-selected': edge.getSelection == SelectionModes.OTHER
+        } }
+        return r
+    }
+}
+
+export class OpenArrowEdgeView extends LineEdgeView {
+
     override renderAdditionals(edge: SEdgeImpl, segments: Point[], context: RenderingContext) {
         const last = segments.length - 1
         const p1 = segments[last - 1]

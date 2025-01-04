@@ -18,8 +18,10 @@
 import { computed, onMounted, ref, Ref } from 'vue';
 import { JsonUncertainty } from '../model/Uncertainty';
 import UncertaintyPanel from './UncertaintyPanel.vue';
-import { categoryOrder } from '../model/Uncertainty/Category';
+import { CategoryList, categoryOrder } from '../model/Uncertainty/Category';
 import { categoryOptions } from '../model/Uncertainty/option/CategoryOption';
+import { TypeRegistry } from '../model/TypeRegistry';
+import { ArchitecturalElementTypeOptionList } from '../model/Uncertainty/option/ArchitecturalElementTypeOptions';
 
 const fetchStatus: Ref<'pending'|'loaded'|'error'> = ref('pending');
 const data: Ref<JsonUncertainty[]> = ref([]);
@@ -57,6 +59,10 @@ onMounted(() => {
     .then(json => {
       data.value = json.sort((a, b) => a.id - b.id);
       fetchStatus.value = 'loaded';
+      const typeRegistry = TypeRegistry.getInstance();
+      for (const uncertainty of data.value) {
+        typeRegistry.registerUncertainty(uncertainty.id, uncertainty.classes[CategoryList.ARCHITECTURAL_ELEMENT_TYPE] as ArchitecturalElementTypeOptionList);
+      }
     })
     .catch(error => {
       console.error('Error:', error);

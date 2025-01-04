@@ -3,6 +3,7 @@ import 'sprotty/css/sprotty.css'
 import './diagramElements/elementStyles.css'
 import { Container, ContainerModule } from 'inversify'
 import {
+    ActionDispatcher,
     configureViewerOptions,
     type IActionDispatcher,
     loadDefaultModules,
@@ -17,6 +18,8 @@ import { diagramModule } from './diagramElements/di.config'
 import { nodeModule } from './diagramElements/nodes/di.config'
 import { edgeModule } from './diagramElements/edges/di.config'
 import { portModule } from './diagramElements/ports/di.config'
+import { selectionModule } from './selection/di.config'
+import { SelectionManager } from '@/model/SelectionManager'
 
 let container: Container| undefined
 
@@ -24,7 +27,8 @@ export function init() {
     container = new Container()
     loadDefaultModules(container)
     container.load(elkLayoutModule)
-    container.load(unbindHookModule, autoLayoutModule, diagramModule, nodeModule, edgeModule, portModule)
+    container.load(unbindHookModule, autoLayoutModule, diagramModule, nodeModule, edgeModule, portModule, selectionModule)
+    SelectionManager.getInstance().dispatcher = container.get<ActionDispatcher>(TYPES.IActionDispatcher)
 }
 
 export function load(content: SGraph) {

@@ -6,7 +6,7 @@ import { AssemblyContextView } from "./AssemblyContext"
 import { ResourceContainerView } from "./ResourceContainer"
 import { SystemView } from "./System"
 import { NODES } from "."
-import { StartNodeView, StopNodeView } from "./CircularNodes"
+import { CircularNodeImpl, StartNodeView, StopNodeView } from "./CircularNodes"
 import { ScenarioBehaviourView } from "./ScenarioBehaviour"
 import { UsageScenarioView } from "./UsageScenario"
 import { SignnatureNodeImpl } from "./SignatureNode"
@@ -20,8 +20,8 @@ export const nodeModule = new ContainerModule((bind, unbind, isBound, rebind) =>
     configureModelElement(context, NODES.ASSEMBLY_CONTEXT, BaseNodeImpl, AssemblyContextView)
     configureModelElement(context, NODES.RESOURCE_CONTAINER, BaseNodeImpl, ResourceContainerView)
     configureModelElement(context, NODES.SYSTEM, BaseNodeImpl, SystemView)
-    configureModelElement(context, NODES.START, SNodeImpl, StartNodeView)
-    configureModelElement(context, NODES.STOP, SNodeImpl, StopNodeView)
+    configureModelElement(context, NODES.START, CircularNodeImpl, StartNodeView)
+    configureModelElement(context, NODES.STOP, CircularNodeImpl, StopNodeView)
     configureModelElement(context, NODES.SCENARIO_BEHAVIOUR, BaseNodeImpl, ScenarioBehaviourView)
     configureModelElement(context, NODES.USAGE_SCENARIO, BaseNodeImpl, UsageScenarioView)
     configureModelElement(context, NODES.INTERFACE, SignnatureNodeImpl, InterfaceView)

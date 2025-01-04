@@ -1,5 +1,8 @@
 <template>
-  <div class="uncertainty-panel tooltip-container" ref="container">
+  <div class="uncertainty-panel tooltip-container" ref="container" :style="{
+    borderColor: selectedUncertainty === uncertainty.id ? 'var(--color-valid)' : 'var(--color-background)',
+    opacity: (selectedUncertainty && selectedUncertainty !== uncertainty.id) || (selectedComponentType && selectedComponentType !== uncertainty.classes[CategoryList.ARCHITECTURAL_ELEMENT_TYPE]) ? 0.5 : 1
+  }">
     <div class="header">#{{ uncertainty.id }} - {{ uncertainty.name }}</div>
     <div class="icon-list">
       <span v-for="category of categoryOrder" :key="category" class="fa-solid" :class="categoryOptions[category][uncertainty.classes[category]].icon" :style="{ 'color': categoryOptions[category][uncertainty.classes[category]].color[500] }"></span>
@@ -21,8 +24,11 @@
 <script setup lang="ts">
 import { computed, onMounted, PropType, ref } from 'vue';
 import { JsonUncertainty } from '../model/Uncertainty';
-import { categoryOrder } from '../model/Uncertainty/Category';
+import { CategoryList, categoryOrder } from '../model/Uncertainty/Category';
 import { categoryOptions } from '../model/Uncertainty/option/CategoryOption';
+import { SelectionManager } from '../model/SelectionManager';
+import { ArchitecturalElementTypeOptionList } from '../model/Uncertainty/option/ArchitecturalElementTypeOptions';
+import { TypeRegistry } from '../model/TypeRegistry';
 
 const props = defineProps({
   uncertainty: {
@@ -39,6 +45,20 @@ const props = defineProps({
 const container = ref<HTMLElement | null>(null);
 const tooltip = ref<HTMLElement | null>(null);
 const offset = ref(0);
+const selectionManager = SelectionManager.getInstance();
+const typeRegistry = TypeRegistry.getInstance()
+const selectedUncertainty = ref<number|null>(null);
+const selectedComponentType = ref<ArchitecturalElementTypeOptionList|null>(null)
+selectionManager.addSelectUncertaintyListener((id) => {
+  selectedUncertainty.value = id;
+})
+selectionManager.addSelectComponentListener((id) => {
+  if (id !== null) {
+    selectedComponentType.value = typeRegistry.getComponent(id)
+  } else {
+    selectedComponentType.value = null
+  }
+})
 
 const toolTipYOffset = computed(() => {
   if (!container.value || !tooltip.value) {
@@ -49,6 +69,9 @@ const toolTipYOffset = computed(() => {
 
 onMounted(() => {
   offset.value = container.value?.offsetTop ?? 0;
+  container.value?.addEventListener('click', () => {
+    selectionManager.selectUncertainty(props.uncertainty.id);
+  })
 })
 </script>
 

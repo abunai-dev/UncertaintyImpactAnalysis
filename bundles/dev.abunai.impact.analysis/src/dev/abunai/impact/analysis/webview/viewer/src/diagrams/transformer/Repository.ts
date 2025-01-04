@@ -5,6 +5,8 @@ import { NODES } from "../diagramElements/nodes";
 import { EDGES } from "../diagramElements/edges";
 import { buildSignatureNode } from "../diagramElements/nodes/schemes/SignatureNode";
 import { buildBasicComponent } from "../diagramElements/nodes/schemes/BasicComponent";
+import { TypeRegistry } from "@/model/TypeRegistry";
+import { ArchitecturalElementTypeOptionList } from "@/model/Uncertainty/option/ArchitecturalElementTypeOptions";
 
 namespace Json {
   export interface Repository extends JsonBase {
@@ -50,10 +52,12 @@ export type RepositoryFileContent = Json.Repository[]
 export class RepositoryTransformer extends FlatMapTransformer<Json.Repository> {
 
   protected transformSingle(o: Json.Repository): SModelElement[] {
+    const typeRegistry = TypeRegistry.getInstance()
     const content: (SNode|SEdge)[] = []
     const seffTransformer = new SeffTransformer()
 
     for (const interfac of getOfType<Json.Interface>(o.contents, 'Interface')) {
+      typeRegistry.registerComponent(interfac.id, ArchitecturalElementTypeOptionList.INTERFACE)
       content.push(buildSignatureNode(
         interfac.id,
         NODES.INTERFACE,
@@ -70,7 +74,7 @@ export class RepositoryTransformer extends FlatMapTransformer<Json.Repository> {
         'CompositeDataType',
         dataType.signatures
       ))
-      /** Todo: label and fix export */
+      /** Todo: label */
       for (const contained of dataType.contained)
       content.push({
         type: EDGES.ARROW_OPEN,

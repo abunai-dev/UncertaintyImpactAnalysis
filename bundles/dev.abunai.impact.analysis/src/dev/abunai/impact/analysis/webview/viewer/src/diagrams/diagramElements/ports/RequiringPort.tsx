@@ -4,6 +4,7 @@ import { type IViewArgs, ShapeView, svg, type RenderingContext } from 'sprotty'
 import type { VNode } from 'snabbdom'
 import { AssemblyPortImpl } from './Port'
 import { Bounds } from 'sprotty-protocol'
+import { SelectionModes } from '@/diagrams/selection/SelectionModes'
 
 
 export class RequiringAssemblyPortImpl extends AssemblyPortImpl {
@@ -47,7 +48,7 @@ class RequiringAssemblyPortView extends ShapeView {
         const textX = model.sideFactor.x == 0 ? 0 : 5;
         const textY = model.sideFactor.y == 0 ? -4 : model.sideFactor.y * -32;
         return (
-            <g class-sprotty-port={true}>
+            <g class-sprotty-port={true} class-selected-component={model.getSelection == SelectionModes.SELECTED} class-other-selected={model.getSelection == SelectionModes.OTHER}>
                 <text x={textX} y={textY}>{model.name}</text>
                 <line x1={model.sideFactor.x == 0 ? 2*model.sideFactor.y : 0} 
                 y1={model.sideFactor.y == 0 ? 2*model.sideFactor.x : 0} x2={lineX} y2={lineY}></line>

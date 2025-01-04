@@ -12,19 +12,6 @@ export interface BaseUncertainty {
 }
 
 /**
- * Elaborated information about an uncertainty
- */
-export interface Uncertainty extends BaseUncertainty {
-  description: string
-  exampleText: string
-  exampleImages: string[]
-  relatedUncertainties: BaseUncertainty[]
-  children: BaseUncertainty[]
-  parent?: BaseUncertainty
-  sourceReferenceLink?: string
-}
-
-/**
  * Uncertainty format from ARC3N
  */
 export interface JsonUncertainty extends BaseUncertainty {

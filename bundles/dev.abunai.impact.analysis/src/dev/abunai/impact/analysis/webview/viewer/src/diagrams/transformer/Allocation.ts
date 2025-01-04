@@ -1,6 +1,8 @@
 import { type BaseNode, buildBaseNode } from "../diagramElements/nodes/schemes/BaseNode";
 import { NODES } from "../diagramElements/nodes";
 import { FlatMapTransformer, type JsonBase } from "./base";
+import { ArchitecturalElementTypeOptionList } from "@/model/Uncertainty/option/ArchitecturalElementTypeOptions";
+import { TypeRegistry } from "@/model/TypeRegistry";
 
 namespace Json {
   export interface AssemblyContext extends JsonBase {
@@ -24,7 +26,9 @@ export type AllocationFileContent = Json.AllocationDiagram[]
 
 export class AllocationTransformer extends FlatMapTransformer<Json.AllocationDiagram> {
   transformSingle(diagram: Json.AllocationDiagram): BaseNode[] {
+    const typeRegistry = TypeRegistry.getInstance()
     return diagram.contents.map(container => {
+      typeRegistry.registerComponent(container.id, ArchitecturalElementTypeOptionList.EXTERNAL_RESOURCE)
       return buildBaseNode(
         container.id,
         NODES.RESOURCE_CONTAINER,

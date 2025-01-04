@@ -1,4 +1,5 @@
 /** @jsx svg */
+import { getSelectionMode } from '@/diagrams/selection/SelectionModes'
 import { isBoundsAware, moveFeature, SPortImpl } from 'sprotty'
 import { Bounds, type SPort } from 'sprotty-protocol'
 
@@ -27,5 +28,9 @@ export abstract class AssemblyPortImpl extends SPortImpl {
             return {x: 0, y: 1};
         }
         return {x: 0, y: -1};
+    }
+
+    get getSelection() {
+        return getSelectionMode(this.id)
     }
 }

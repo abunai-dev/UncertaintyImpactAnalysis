@@ -5,6 +5,8 @@ import { EDGES } from "../diagramElements/edges";
 import { buildBaseNode } from "../diagramElements/nodes/schemes/BaseNode";
 import { NODES } from "../diagramElements/nodes";
 import { layouter } from "../layouting/layouter";
+import { TypeRegistry } from "@/model/TypeRegistry";
+import { ArchitecturalElementTypeOptionList } from "@/model/Uncertainty/option/ArchitecturalElementTypeOptions";
 
 namespace Json {
 
@@ -47,6 +49,7 @@ export class SeffTransformer extends AbstractTransformer<Json.ActionBase> {
   transfromActions(actions: Json.ActionBase[]) {
     const filteredActions = actions.filter(a => a!=null)
     const contents: (SNode|SEdge)[] = []
+    const typeRegistry = TypeRegistry.getInstance()
 
     for (const start of getOfType<Json.StartNode>(filteredActions, 'Start')) {
       contents.push(buildStartNode(start.id))
@@ -55,6 +58,7 @@ export class SeffTransformer extends AbstractTransformer<Json.ActionBase> {
       contents.push(buildStopNode(stop.id))
     }
     for (const entryLevelSystemCall of getOfType<Json.EntryLevelSystemCall>(filteredActions, 'EntryLevelSystemCall')) {
+      typeRegistry.registerComponent(entryLevelSystemCall.id, ArchitecturalElementTypeOptionList.BEHAVIOR_DESCRIPTION)
       /** Todo: change */
       contents.push(buildBaseNode(
         entryLevelSystemCall.id,

@@ -9,11 +9,80 @@
     stroke-width: 1;
 }
 
+.sprotty-node text {
+    fill: var(--color-foreground)
+}
+
+.sprotty-node.selected-component > rect {
+    stroke: var(--color-valid) 
+}
+.sprotty-node.selected-component > circle {
+    stroke: var(--color-valid);
+}
+
+.sprotty-node.selected-component > .sprotty-symbol rect,
+.sprotty-node.selected-component > .sprotty-symbol circle,
+.sprotty-node.selected-component > .sprotty-symbol ellipse,
+.sprotty-node.selected-component > .sprotty-symbol polygon,
+.sprotty-node.selected-component > .sprotty-symbol path,
+.sprotty-node.selected-component > .sprotty-symbol line {
+    stroke: var(--color-valid);
+}
+
+.sprotty-node.selected-component > text {
+    fill: var(--color-valid)
+}
+
+
+.sprotty-node.other-selected > circle {
+    stroke-opacity: 0.5;
+    fill-opacity: 0.5;
+}
+
+.sprotty-node.other-selected > rect {
+    stroke-opacity: 0.5;
+}
+
+.sprotty-node.other-selected > .sprotty-symbol {
+    stroke-opacity: 0.5;
+    fill-opacity: 0.5;
+}
+
+.sprotty-node.other-selected > text {
+    fill-opacity: 0.5;
+}
+
 .sprotty-port circle,
-.sprotty-port path {
+.sprotty-port path,
+.sprotty-port line {
     stroke: var(--color-foreground);
     fill: none;
     stroke-width: 1;
+}
+
+.sprotty-port text {
+    font-size: 8pt;
+    fill: var(--color-foreground)
+}
+
+.sprotty-port.selected-component circle,
+.sprotty-port.selected-component path,
+.sprotty-port.selected-component line {
+    stroke: var(--color-valid);
+}
+
+.sprotty-port.selected-component text {
+    fill: var(--color-valid)
+}
+
+.sprotty-port.other-selected circle,
+.sprotty-port.other-selected path,
+.sprotty-port.other-selected line {
+    stroke-opacity: 0.5;
+}
+
+.sprotty-port.other-selected {
+    fill-opacity: 0.5;
 }
 
 .sprotty-node text {
@@ -29,8 +98,12 @@
     stroke-width: 1;
 }
 
-.sprotty-port text {
-    font-size: 8pt;
+.sprotty-edge.selected-component {
+    stroke: var(--color-valid);
+}
+
+.sprotty-edge.other-selected {
+    stroke-opacity: 0.5;
 }
 
 rect.do-fill,	
