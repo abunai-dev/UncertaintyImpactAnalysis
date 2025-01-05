@@ -52,6 +52,9 @@ export class CustomSelectCommand extends SelectCommand {
           if (this.action.selectedElementsIDs.length == 1) {
               SelectionManager.getInstance().selectComponent(this.action.selectedElementsIDs[0])
           }
+          if (this.action.selectedElementsIDs.length == 0 && this.action.deselectedElementsIDs.length == 1) {
+                SelectionManager.getInstance().selectComponent(null)
+            }
         return super.execute(context)
     }
 
