@@ -13,7 +13,8 @@
     fill: var(--color-foreground)
 }
 
-.sprotty-node.selected-component > rect {
+.sprotty-node.selected-component > rect,
+.sprotty-node.selected-component > line {
     stroke: var(--color-valid) 
 }
 .sprotty-node.selected-component > circle {
@@ -113,4 +114,19 @@ line.do-fill,
 path.do-fill,
 circle.do-fill {
     fill: var(--color-foreground);
+}
+
+
+.always-passive rect,
+.always-passive ellipse,
+.always-passive polygon,
+.always-passive line,
+.always-passive path,
+.always-passive circle {
+    stroke-opacity: 0.5;
+    fill-opacity: 0.5;
+}
+
+.always-passive text {
+    fill-opacity: 0.5;
 }

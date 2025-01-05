@@ -7,6 +7,7 @@ import { NODES } from "../diagramElements/nodes";
 import { layouter } from "../layouting/layouter";
 import { TypeRegistry } from "@/model/TypeRegistry";
 import { ArchitecturalElementTypeOptionList } from "@/model/Uncertainty/option/ArchitecturalElementTypeOptions";
+import { buildEntryLevelSystemCall, VariableUsage } from "../diagramElements/nodes/schemes/Seff";
 
 namespace Json {
 
@@ -23,6 +24,8 @@ namespace Json {
   }
 
   export interface EntryLevelSystemCall extends ActionBase {
+    inputParameterUsages: VariableUsage[],
+    outputParameterUsages: VariableUsage[],
     type: 'EntryLevelSystemCall',
     name: string,
   }
@@ -60,11 +63,13 @@ export class SeffTransformer extends AbstractTransformer<Json.ActionBase> {
     for (const entryLevelSystemCall of getOfType<Json.EntryLevelSystemCall>(filteredActions, 'EntryLevelSystemCall')) {
       typeRegistry.registerComponent(entryLevelSystemCall.id, ArchitecturalElementTypeOptionList.BEHAVIOR_DESCRIPTION)
       /** Todo: change */
-      contents.push(buildBaseNode(
+      contents.push(buildEntryLevelSystemCall(
         entryLevelSystemCall.id,
-        NODES.LINKING_RESOURCE,
+        NODES.ENTRY_LEVEL_SYSTEM_CALL,
         entryLevelSystemCall.name,
-        'EntryLevelSystemCall'
+        'EntryLevelSystemCall',
+        entryLevelSystemCall.inputParameterUsages.map(this.transformVariableUsage),
+        entryLevelSystemCall.outputParameterUsages.map(this.transformVariableUsage)
       ))
     }
 
@@ -81,5 +86,12 @@ export class SeffTransformer extends AbstractTransformer<Json.ActionBase> {
     }
 
     return contents
+  }
+
+  transformVariableUsage(variableUsage: Json.VariableUsage): VariableUsage {
+    return {
+      topText: variableUsage.referenceName,
+      bottomText: 'PlaceHolder'
+    }
   }
 }
