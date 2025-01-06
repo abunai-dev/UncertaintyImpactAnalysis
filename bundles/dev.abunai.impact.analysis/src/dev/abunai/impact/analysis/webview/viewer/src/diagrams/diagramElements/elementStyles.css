@@ -30,6 +30,10 @@
     stroke: var(--color-valid);
 }
 
+.sprotty-node.selected-component > .sprotty-symbol .do-fill {
+    fill: var(--color-valid);
+}
+
 .sprotty-node.selected-component > text {
     fill: var(--color-valid)
 }

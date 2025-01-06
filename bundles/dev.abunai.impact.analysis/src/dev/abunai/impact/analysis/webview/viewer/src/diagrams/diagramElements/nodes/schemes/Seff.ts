@@ -1,5 +1,5 @@
 import { NODES } from ".."
-import { BaseNode, buildBaseNode } from "./BaseNode"
+import { type BaseNode, buildBaseNode } from "./BaseNode"
 
 export interface EntryLevelSystemCallVariables {
   input: VariableUsage[]
