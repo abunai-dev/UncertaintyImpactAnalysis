@@ -7,7 +7,7 @@ import { NODES } from "../diagramElements/nodes";
 import { layouter } from "../layouting/layouter";
 import { TypeRegistry } from "@/model/TypeRegistry";
 import { ArchitecturalElementTypeOptionList } from "@/model/Uncertainty/option/ArchitecturalElementTypeOptions";
-import { buildEntryLevelSystemCall, VariableUsage } from "../diagramElements/nodes/schemes/Seff";
+import { buildEntryLevelSystemCall, type VariableUsage } from "../diagramElements/nodes/schemes/Seff";
 
 namespace Json {
 
@@ -30,6 +30,12 @@ namespace Json {
     name: string,
   }
 
+  export interface UnconcreteAction extends ActionBase {
+    type: 'AbstractAction',
+    typeName: string,
+    name: string
+  }
+
   export interface VariableUsage extends JsonBase {
     type: 'VariableUsage',
     referenceName: string
@@ -50,17 +56,16 @@ export class SeffTransformer extends AbstractTransformer<Json.ActionBase> {
   }
 
   transfromActions(actions: Json.ActionBase[]) {
-    const filteredActions = actions.filter(a => a!=null)
     const contents: (SNode|SEdge)[] = []
     const typeRegistry = TypeRegistry.getInstance()
 
-    for (const start of getOfType<Json.StartNode>(filteredActions, 'Start')) {
+    for (const start of getOfType<Json.StartNode>(actions, 'Start')) {
       contents.push(buildStartNode(start.id))
     }
-    for (const stop of getOfType<Json.StopNode>(filteredActions, 'Stop')) {
+    for (const stop of getOfType<Json.StopNode>(actions, 'Stop')) {
       contents.push(buildStopNode(stop.id))
     }
-    for (const entryLevelSystemCall of getOfType<Json.EntryLevelSystemCall>(filteredActions, 'EntryLevelSystemCall')) {
+    for (const entryLevelSystemCall of getOfType<Json.EntryLevelSystemCall>(actions, 'EntryLevelSystemCall')) {
       typeRegistry.registerComponent(entryLevelSystemCall.id, ArchitecturalElementTypeOptionList.BEHAVIOR_DESCRIPTION)
       /** Todo: change */
       contents.push(buildEntryLevelSystemCall(
@@ -73,8 +78,13 @@ export class SeffTransformer extends AbstractTransformer<Json.ActionBase> {
       ))
     }
 
+    for (const unconcreteAction of getOfType<Json.UnconcreteAction>(actions, 'AbstractAction')) {
+      typeRegistry.registerComponent(unconcreteAction.id, ArchitecturalElementTypeOptionList.BEHAVIOR_DESCRIPTION)
+      contents.push(buildBaseNode(unconcreteAction.id, NODES.UNCONCRETE_ACTION, unconcreteAction.name, unconcreteAction.typeName))
+    }
 
-    for (const action of filteredActions) {
+
+    for (const action of actions) {
       if (action.successor != null) {
         contents.push({
           id: action.id + action.successor,

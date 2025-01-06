@@ -11,4 +11,5 @@ export enum NODES {
   COMPOSITE_DATA_TYPE = 'node:composite_data_type',
   BASIC_COMPONENT = 'node:basic_component',
   ENTRY_LEVEL_SYSTEM_CALL = 'node:entry_level_system_call',
+  UNCONCRETE_ACTION = 'node:unconcrete_action',
 }

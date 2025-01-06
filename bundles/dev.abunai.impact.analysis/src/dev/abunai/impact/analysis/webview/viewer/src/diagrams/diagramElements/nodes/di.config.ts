@@ -14,6 +14,7 @@ import { InterfaceView } from "./Interface"
 import { CompositeDataTypeView } from "./CompositeDataType"
 import { BasicComponentImpl, BasicComponentView } from "./BasicComponent"
 import { EntryLevelSystemCallImpl, EntryLevelSystemCallView } from "./EntryLevelSystemCall"
+import { UnconcreteActionView } from "./UnconcreteAction"
 
 export const nodeModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     const context = { bind, unbind, isBound, rebind }
@@ -29,4 +30,5 @@ export const nodeModule = new ContainerModule((bind, unbind, isBound, rebind) =>
     configureModelElement(context, NODES.COMPOSITE_DATA_TYPE, SignnatureNodeImpl, CompositeDataTypeView)
     configureModelElement(context, NODES.BASIC_COMPONENT, BasicComponentImpl, BasicComponentView)
     configureModelElement(context, NODES.ENTRY_LEVEL_SYSTEM_CALL, EntryLevelSystemCallImpl, EntryLevelSystemCallView)
+    configureModelElement(context, NODES.UNCONCRETE_ACTION, BaseNodeImpl, UnconcreteActionView)
 })

@@ -27,10 +27,10 @@ public class Transformer {
 	}
 	
 	public void handle() throws IOException {
-		//exportTopLevelElement(SystemPackage.Literals.SYSTEM, new SystemTransformer(), "", "system");
-		//exportTopLevelElement(AllocationPackage.Literals.ALLOCATION, new AllocationTransformer(), "", "allocation");
-		//exportTopLevelElement(ResourceenvironmentPackage.Literals.RESOURCE_ENVIRONMENT, new ResourceEnvironmentTransformer(), "", "resourceEnvironment");
-		//exportTopLevelElement(UsagemodelPackage.Literals.USAGE_MODEL, new UsageModelTransformer(), "", "usageModel");
+		exportTopLevelElement(SystemPackage.Literals.SYSTEM, new SystemTransformer(), "", "system");
+		exportTopLevelElement(AllocationPackage.Literals.ALLOCATION, new AllocationTransformer(), "", "allocation");
+		exportTopLevelElement(ResourceenvironmentPackage.Literals.RESOURCE_ENVIRONMENT, new ResourceEnvironmentTransformer(), "", "resourceEnvironment");
+		exportTopLevelElement(UsagemodelPackage.Literals.USAGE_MODEL, new UsageModelTransformer(), "", "usageModel");
 		exportTopLevelElement(RepositoryPackage.Literals.REPOSITORY, new RepositoryTransformer(), "", "repository");
 	}
 	

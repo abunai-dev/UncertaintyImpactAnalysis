@@ -4,8 +4,10 @@ import java.util.List;
 
 import org.palladiosimulator.pcm.core.entity.Entity;
 import org.palladiosimulator.pcm.parameter.VariableUsage;
+import org.palladiosimulator.pcm.seff.AbstractAction;
 import org.palladiosimulator.pcm.seff.StartAction;
 import org.palladiosimulator.pcm.seff.StopAction;
+import org.palladiosimulator.pcm.usagemodel.AbstractUserAction;
 import org.palladiosimulator.pcm.usagemodel.EntryLevelSystemCall;
 import org.palladiosimulator.pcm.usagemodel.Start;
 import org.palladiosimulator.pcm.usagemodel.Stop;
@@ -35,8 +37,16 @@ public class SeffTransformer implements AbstractTransformer<Entity> {
 					node.getOutputParameterUsages_EntryLevelSystemCall().stream().map(v -> transformVariableUsage(v)).toList());
 			
 		}
-		return null;
-		//throw new RuntimeException("Could not identify type");
+		
+		if (action instanceof AbstractUserAction) {
+			AbstractUserAction node = (AbstractUserAction)action;
+			return new UnconcreteAction(node.getId(), getId(node.getSuccessor()), node.getEntityName(), node.getClass().getName());
+		}
+		if (action instanceof AbstractAction) {
+			AbstractAction node = (AbstractAction)action;
+			return new UnconcreteAction(node.getId(), getId(node.getSuccessor_AbstractAction()), node.getEntityName(), node.getClass().getName());
+		}
+		throw new RuntimeException("Could not identify type of action");
 	}
 	
 	String getId(Entity e) {
@@ -87,6 +97,17 @@ class StartActionJson extends ActionJson {
 		super(id, "Start", successor);
 	}
 	
+}
+
+class UnconcreteAction extends ActionJson {
+	public String typeName;
+	public String name;
+	
+	public UnconcreteAction(String id, String successor, String name, String typeName) {
+		super(id, "AbstractAction", successor);
+		this.name = name;
+		this.typeName = typeName;
+	}
 }
 
 abstract class ActionJson extends JsonObject {
