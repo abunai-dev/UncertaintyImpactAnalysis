@@ -8,7 +8,7 @@
       <div id="uncertainty-holder" ref="scrollContainer">
         <UncertaintyPanel v-for="uncertainty in filteredData" :key="uncertainty.id" :uncertainty="uncertainty" :scroll-offset-y="scrollOffsetY" />
       </div>
-      <a href="https://arc3n.abunai.dev/" target="_blank">Open ARC3N</a>
+      <a href="https://arc3n.abunai.dev/" target="_blank">Open ARC<sup>3</sup>N</a>
     </div>
   </div>
 </template>

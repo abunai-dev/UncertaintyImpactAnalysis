@@ -1,7 +1,6 @@
 <template>
-  <div class="uncertainty-panel tooltip-container" ref="container" :style="{
-    borderColor: selectedUncertainty === uncertainty.id ? 'var(--color-valid)' : 'var(--color-background)',
-    opacity: (selectedUncertainty && selectedUncertainty !== uncertainty.id) || (selectedComponentType && selectedComponentType !== uncertainty.classes[CategoryList.ARCHITECTURAL_ELEMENT_TYPE]) ? 0.5 : 1
+  <div class="uncertainty-panel tooltip-container" ref="container" :class="{'lowerOpacity': (selectedUncertainty && selectedUncertainty !== uncertainty.id) || (selectedComponentType && selectedComponentType !== uncertainty.classes[CategoryList.ARCHITECTURAL_ELEMENT_TYPE]) }" :style="{
+    borderColor: selectedUncertainty === uncertainty.id ? 'var(--color-valid)' : 'var(--color-background)'
   }">
     <div class="header">#{{ uncertainty.id }} - {{ uncertainty.name }}</div>
     <div class="icon-list">
@@ -90,6 +89,14 @@ onMounted(() => {
   border-radius: 0.25rem;
 }
 
+.uncertainty-panel.lowerOpacity .header {
+  opacity: 0.5;
+}
+
+.uncertainty-panel.lowerOpacity .icon-list {
+  opacity: 0.5;
+}
+
 .uncertainty-panel .header {
   font-weight: bold;
 }
@@ -122,6 +129,7 @@ onMounted(() => {
   position: absolute;
   left: 305px;
   background-color: rgba(0, 0, 0, 0.8);
+  color: white;
   padding: 0.5rem;
   border-radius: 0.25rem;
   font-size: 12px;

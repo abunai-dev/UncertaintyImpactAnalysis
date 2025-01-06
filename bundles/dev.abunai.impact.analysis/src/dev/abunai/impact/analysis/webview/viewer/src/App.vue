@@ -30,7 +30,8 @@ import UncertaintySideBar from './components/UncertaintySideBar.vue';
 }
 
 #sidebar-holder {
-  width: 400px;
+  width: 300px;
+  min-width: 300px;
   height: 100%;
 }
 </style>
