@@ -27,7 +27,7 @@ namespace Json {
 export type ResourceEnvironmentFileContent = Json.ResourceEnvironment[]
 
 export class ResourceEnvironmentTransformer extends FlatMapTransformer<Json.ResourceEnvironment> {
-  transformSingle(resourceEnvrironment: Json.ResourceEnvironment): SModelElement[] {
+  async transformSingle(resourceEnvrironment: Json.ResourceEnvironment): Promise<SModelElement[]> {
     const typeRegistry = TypeRegistry.getInstance()
     const contents: (BaseNode|SEdge)[] = []
   for (const resourceContainer of getOfType<Json.ResourceContainer>(resourceEnvrironment.contents, 'ResourceContainer')) {

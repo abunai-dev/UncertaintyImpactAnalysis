@@ -1,14 +1,13 @@
 /** @jsx svg */
-import { type IViewArgs, type RenderingContext, svg, ShapeView, SNodeImpl } from "sprotty";
+import { type IViewArgs, type RenderingContext, svg, ShapeView, SNodeImpl, SChildElementImpl, SLabelImpl, selectFeature } from "sprotty";
 import type { BaseNodeVariables } from "./schemes/BaseNode";
 import type { VNode } from "snabbdom";
-import type { BasicComponentVariables, Seff } from "./schemes/BasicComponent";
 import { getSelectionMode, SelectionModes } from "@/diagrams/selection/SelectionModes";
+import type { SGraph } from "sprotty-protocol";
 
 
 
-export class BasicComponentImpl extends SNodeImpl implements BaseNodeVariables, BasicComponentVariables {
-  seffs: Seff[];
+export class BasicComponentImpl extends SNodeImpl implements BaseNodeVariables {
   typeName: string;
   name: string; 
 
@@ -17,6 +16,16 @@ export class BasicComponentImpl extends SNodeImpl implements BaseNodeVariables, 
       }
 }
 
+export class SeffSignatureImpl extends SLabelImpl {
+  static readonly DEFAULT_FEATURES = [...SLabelImpl.DEFAULT_FEATURES, selectFeature];
+  graph: SGraph
+
+  get getSelection() {
+    return getSelectionMode(this.id)
+}
+}
+  
+
 export class BasicComponentView extends ShapeView {
 
   render(model: Readonly<BasicComponentImpl>, context: RenderingContext, args?: IViewArgs): VNode | undefined {
@@ -24,7 +33,7 @@ export class BasicComponentView extends ShapeView {
       return undefined
     }
 
-    const lastSeffY = 93 + (model.seffs.length - 1) * 18
+    const lastSeffY = 93 + (model.children.length - 1) * 18
 
     return <g class-sprotty-node={true} x={model.bounds.x} y={model.bounds.y} class-selected-component={model.getSelection == SelectionModes.SELECTED} class-other-selected={model.getSelection == SelectionModes.OTHER}>
         <rect width={model.bounds.width} height={model.bounds.height}></rect>
@@ -39,23 +48,7 @@ export class BasicComponentView extends ShapeView {
         <text x="8" y="65">SEFFCompartment</text>
         <line x1="0" y1="73" x2={model.bounds.width} y2="73"></line>
 
-        {
-          model.seffs.map((signature, index) => {
-            return <g transform={`translate(0, ${93 + index * 18})`}>
-              <g>
-                <polygon points="16,-9 13,-1 8,-1 8,-7"></polygon>
-                <ellipse cx="7" cy="-8.5" rx="1" ry="1.5"></ellipse>
-                <circle cx="17" cy="-10" r="1" class-do-fill></circle>
-                <circle cx="13" cy="-1" r="1" class-do-fill></circle>
-                <circle cx="8" cy="-1" r="1" class-do-fill></circle>
-                <circle cx="9" cy="-6" r="1" class-do-fill></circle>
-              </g>
-              <text x="22">
-                  {signature.signature}
-              </text>
-            </g>
-          })
-        }
+        {context.renderChildren(model)}
 
         <line x1="0" x2={model.bounds.width} y1={lastSeffY + 8} y2={lastSeffY+8}></line>
         <text x="8" y={lastSeffY+28}>PassiveResourcesCompartment</text>
@@ -72,6 +65,24 @@ export class BasicComponentView extends ShapeView {
           <rect x="11" y="22" width="8" height="4"></rect>
         </g>
     </g>
+  }
+}
+
+export class SeffSignatureView extends ShapeView {
+  render(model: Readonly<SeffSignatureImpl>, context: RenderingContext, args?: IViewArgs): VNode | undefined {
+    return <g class-sprotty-node={true} class-selected-component={model.getSelection == SelectionModes.SELECTED} class-other-selected={model.getSelection == SelectionModes.OTHER}>
+              <g class-sprotty-symbol={true}>
+                <polygon points="16,-9 13,-1 8,-1 8,-7"></polygon>
+                <ellipse cx="7" cy="-8.5" rx="1" ry="1.5"></ellipse>
+                <circle cx="17" cy="-10" r="1" class-do-fill></circle>
+                <circle cx="13" cy="-1" r="1" class-do-fill></circle>
+                <circle cx="8" cy="-1" r="1" class-do-fill></circle>
+                <circle cx="9" cy="-6" r="1" class-do-fill></circle>
+              </g>
+              <text x="22">
+                  {model.text}
+              </text>
+            </g>
   }
 
 }

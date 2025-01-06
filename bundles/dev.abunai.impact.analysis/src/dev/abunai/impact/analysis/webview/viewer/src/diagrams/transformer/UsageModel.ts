@@ -27,7 +27,7 @@ export type UsageModelFileContent = Json.UsageModel[]
 
 export class UsageModelTransformer extends FlatMapTransformer<Json.UsageModel> {
 
-  protected transformSingle(usageModel: Json.UsageModel): SModelElement[] {
+  protected async transformSingle(usageModel: Json.UsageModel): Promise<SModelElement[]> {
     const seffTransformer = new SeffTransformer()
     return usageModel.contents.map(usageScenario => buildBaseNode(
         usageScenario.id,

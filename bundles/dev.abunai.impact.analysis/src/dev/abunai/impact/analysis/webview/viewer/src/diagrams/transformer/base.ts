@@ -14,26 +14,29 @@ export abstract class AbstractTransformer<S extends JsonBase> {
 
 export abstract class MapTransformer<S extends JsonBase> extends AbstractTransformer<S> {
   async transform(o: S[]): Promise<SGraph> {
+    const children = await Promise.all(o.map(this.transformSingle))
     return await layouter.layout({
       id: 'root',
       type: 'graph',
-      children: o.map(this.transformSingle)
+      children
     })
   }
 
-  abstract transformSingle(o: S): SModelElement
+  abstract transformSingle(o: S): Promise<SModelElement>
 }
 
 export abstract class FlatMapTransformer<S extends JsonBase> extends AbstractTransformer<S> {
   async transform(o: S[]): Promise<SGraph> {
+    const all = await Promise.all(o.map(this.transformSingle))
+    const children = all.flat()
     return await layouter.layout({
       id: 'root',
       type: 'graph',
-      children: o.flatMap(this.transformSingle)
+      children
     })
   }
 
-  protected abstract transformSingle(o: S): SModelElement[]
+  protected abstract transformSingle(o: S): Promise<SModelElement[]>
 }
 
 export function getOfType<T extends { type: string }>(arr: (T | { type: string })[], type: string): T[] {

@@ -12,4 +12,5 @@ export enum NODES {
   BASIC_COMPONENT = 'node:basic_component',
   ENTRY_LEVEL_SYSTEM_CALL = 'node:entry_level_system_call',
   UNCONCRETE_ACTION = 'node:unconcrete_action',
+  SEFF_SIGNATURE_LABEL = 'label:seff_signature',
 }

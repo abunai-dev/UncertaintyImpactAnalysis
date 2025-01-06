@@ -25,7 +25,7 @@ namespace Json {
 export type AllocationFileContent = Json.AllocationDiagram[]
 
 export class AllocationTransformer extends FlatMapTransformer<Json.AllocationDiagram> {
-  transformSingle(diagram: Json.AllocationDiagram): BaseNode[] {
+  async transformSingle(diagram: Json.AllocationDiagram): Promise<BaseNode[]> {
     const typeRegistry = TypeRegistry.getInstance()
     return diagram.contents.map(container => {
       typeRegistry.registerComponent(container.id, ArchitecturalElementTypeOptionList.EXTERNAL_RESOURCE)

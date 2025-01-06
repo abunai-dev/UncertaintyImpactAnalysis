@@ -41,7 +41,7 @@ export type AssemblyFileContent = Json.System[]
 
 export class AssemblyTransformer extends MapTransformer<Json.System> {
 
-  transformSingle(system: Json.System): BaseNode {
+  async transformSingle(system: Json.System): Promise<BaseNode> {
     const typeRegistry = TypeRegistry.getInstance()
     const assemblyContexts: Record<ID, BaseNode> = {}
         const edges: SEdge[] = []

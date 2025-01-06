@@ -12,7 +12,7 @@ import { UsageScenarioView } from "./UsageScenario"
 import { SignnatureNodeImpl } from "./SignatureNode"
 import { InterfaceView } from "./Interface"
 import { CompositeDataTypeView } from "./CompositeDataType"
-import { BasicComponentImpl, BasicComponentView } from "./BasicComponent"
+import { BasicComponentImpl, BasicComponentView, SeffSignatureImpl, SeffSignatureView } from "./BasicComponent"
 import { EntryLevelSystemCallImpl, EntryLevelSystemCallView } from "./EntryLevelSystemCall"
 import { UnconcreteActionView } from "./UnconcreteAction"
 
@@ -31,4 +31,5 @@ export const nodeModule = new ContainerModule((bind, unbind, isBound, rebind) =>
     configureModelElement(context, NODES.BASIC_COMPONENT, BasicComponentImpl, BasicComponentView)
     configureModelElement(context, NODES.ENTRY_LEVEL_SYSTEM_CALL, EntryLevelSystemCallImpl, EntryLevelSystemCallView)
     configureModelElement(context, NODES.UNCONCRETE_ACTION, BaseNodeImpl, UnconcreteActionView)
+    configureModelElement(context, NODES.SEFF_SIGNATURE_LABEL, SeffSignatureImpl, SeffSignatureView)
 })

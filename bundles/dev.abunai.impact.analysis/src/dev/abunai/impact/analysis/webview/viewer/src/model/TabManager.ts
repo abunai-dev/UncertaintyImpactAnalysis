@@ -96,6 +96,16 @@ export class TabManager {
     
   }
 
+  public selectTab(uuid: string) {
+    let idx = this.tabs.findIndex(tab => tab.uuid == uuid)
+    if (idx != -1) {
+      this.setIndex(idx)
+      this.indexChangeListeners.forEach(listener => {
+        listener(this.tabIndex, idx)
+      })
+    }
+  }
+
   public addIndexChangeListener(listener: ChangeIndexListener) {
     this.indexChangeListeners.push(listener)
   }

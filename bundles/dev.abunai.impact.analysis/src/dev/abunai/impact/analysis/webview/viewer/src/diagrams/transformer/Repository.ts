@@ -51,7 +51,7 @@ export type RepositoryFileContent = Json.Repository[]
 
 export class RepositoryTransformer extends FlatMapTransformer<Json.Repository> {
 
-  protected transformSingle(o: Json.Repository): SModelElement[] {
+  protected async transformSingle(o: Json.Repository): Promise<SModelElement[]> {
     const typeRegistry = TypeRegistry.getInstance()
     const content: (SNode|SEdge)[] = []
     const seffTransformer = new SeffTransformer()
@@ -84,17 +84,20 @@ export class RepositoryTransformer extends FlatMapTransformer<Json.Repository> {
       })
     }
     for (const component of getOfType<Json.BasicComponent>(o.contents, 'BasicComponent')) {
+      const seffs = await Promise.all(component.seffs.map(async seff => {
+        typeRegistry.registerComponent(seff.id, ArchitecturalElementTypeOptionList.BEHAVIOR_DESCRIPTION)
+        return {
+          id: seff.id,
+          signature: seff.signature,
+          graph: await seffTransformer.transform(seff.actions)
+        }
+      }))
       content.push(buildBasicComponent(
         component.id,
         NODES.BASIC_COMPONENT,
         component.name,
         'BasicComponent',
-        component.seffs.map(seff => {
-          return {
-            signature: seff.signature,
-            actions: seffTransformer.transfromActions(seff.actions)
-          }
-        })
+        seffs
       ))
       /** Todo: add labels */
       for (const r of component.required) {
