@@ -54,7 +54,7 @@ const scrollContainer = ref<HTMLElement | null>(null);
 const scrollOffsetY = ref(0);
 
 onMounted(() => {
-  fetch('data.json')
+  fetch('https://arc3n.abunai.dev/data.json')
     .then(response => response.json() as Promise<JsonUncertainty[]>)
     .then(json => {
       data.value = json.sort((a, b) => a.id - b.id);
