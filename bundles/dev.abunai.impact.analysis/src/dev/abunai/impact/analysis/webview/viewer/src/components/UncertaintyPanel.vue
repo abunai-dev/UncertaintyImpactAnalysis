@@ -11,10 +11,12 @@
 
     <span class="tooltip" ref="tooltip" :style="{ top: toolTipYOffset + 'px' }">
       <div class="header">#{{ uncertainty.id }} - {{ uncertainty.name }}</div>
-      <div v-for="[index, category] of categoryOrder.entries()" :key="category" class="category" :style="{ gridRow: index + 2}">
+      <div class="text">{{ uncertainty.description }}</div>
+      <div class="text"><b>Example:</b> {{ uncertainty.exampleText }}</div>
+      <div v-for="[index, category] of categoryOrder.entries()" :key="category" class="category" :style="{ gridRow: index + 4}">
         {{ category }}
       </div>
-      <div v-for="[index, category] of categoryOrder.entries()" :key="category" class="category-item" :style="{ gridRow: index + 2}">
+      <div v-for="[index, category] of categoryOrder.entries()" :key="category" class="category-item" :style="{ gridRow: index + 4}">
         <span class="fa-solid" :class="categoryOptions[category][uncertainty.classes[category]].icon" :style="{color: categoryOptions[category][uncertainty.classes[category]].color[500]}"></span> {{ categoryOptions[category][uncertainty.classes[category]].name }}
       </div>
     </span>
@@ -115,10 +117,7 @@ onMounted(() => {
   border-radius: 0.25rem;
 }
 
-.uncertainty-panel.lowerOpacity .header {
-  opacity: 0.5;
-}
-
+.uncertainty-panel.lowerOpacity > .header,
 .uncertainty-panel.lowerOpacity .icon-list {
   opacity: 0.5;
 }
@@ -154,7 +153,7 @@ onMounted(() => {
   display: none;
   position: absolute;
   left: 305px;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.95);
   color: white;
   padding: 0.5rem;
   border-radius: 0.25rem;
@@ -184,5 +183,12 @@ onMounted(() => {
 
 .tooltip .category-item .fa-solid {
   width: 16px;
+}
+
+.tooltip .text {
+  grid-column-start: 1;
+  grid-column-end: 3;
+  max-width: 700px;
+  padding-bottom: 0.25rem;
 }
 </style>
