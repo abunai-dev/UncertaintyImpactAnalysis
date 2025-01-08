@@ -1,10 +1,11 @@
 <template>
-  <div class="uncertainty-panel tooltip-container" ref="container" :class="{'lowerOpacity': (selectedUncertainty && selectedUncertainty !== uncertainty.id) || (selectedComponentType && selectedComponentType !== uncertainty.classes[CategoryList.ARCHITECTURAL_ELEMENT_TYPE]) }" :style="{
+  <div class="uncertainty-panel tooltip-container" ref="container" :class="{'lowerOpacity': displayNonSelectedStyle }" :style="{
     borderColor: selectedUncertainty === uncertainty.id ? 'var(--color-valid)' : 'var(--color-background)'
   }">
     <div class="header">#{{ uncertainty.id }} - {{ uncertainty.name }}</div>
     <div class="icon-list">
-      <span v-for="category of categoryOrder" :key="category" class="fa-solid" :class="categoryOptions[category][uncertainty.classes[category]].icon" :style="{ 'color': categoryOptions[category][uncertainty.classes[category]].color[500] }"></span>
+      <span v-for="category of categoryOrder" :key="category" class="fa-solid" :class="categoryOptions[category][uncertainty.classes[category]].icon" :style="{ 'color':  displayNonSelectedStyle ? colors.gray[500] :
+      categoryOptions[category][uncertainty.classes[category]].color[500] }"></span>
       <a :href="'https://arc3n.abunai.dev/uncertainty/' + uncertainty.id" target="_blank">More</a>
     </div>
 
@@ -28,7 +29,7 @@ import { categoryOptions } from '../model/Uncertainty/option/CategoryOption';
 import { SelectionManager } from '../model/SelectionManager';
 import { ArchitecturalElementTypeOptionList } from '../model/Uncertainty/option/ArchitecturalElementTypeOptions';
 import { TypeRegistry } from '../model/TypeRegistry';
-import { containsSome } from 'sprotty';
+import colors from 'tailwindcss/colors';
 
 const props = defineProps({
   uncertainty: {
@@ -63,6 +64,10 @@ selectionManager.addSelectComponentListener((id) => {
   } else {
     selectedComponentType.value = null
   }
+})
+
+const displayNonSelectedStyle = computed(() => {
+  return (selectedUncertainty.value && selectedUncertainty.value !== props.uncertainty.id) || (selectedComponentType.value && selectedComponentType.value !== props.uncertainty.classes[CategoryList.ARCHITECTURAL_ELEMENT_TYPE])
 })
 
 const toolTipYOffset = ref(0)
