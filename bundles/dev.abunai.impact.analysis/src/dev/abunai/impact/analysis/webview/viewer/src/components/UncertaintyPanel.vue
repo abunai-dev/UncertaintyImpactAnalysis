@@ -1,6 +1,6 @@
 <template>
   <div class="uncertainty-panel tooltip-container" ref="container" :class="{'lowerOpacity': displayNonSelectedStyle }" :style="{
-    borderColor: selectedUncertainty === uncertainty.id ? 'var(--color-valid)' : 'var(--color-background)'
+    borderColor: selectedUncertainty === uncertainty.id ? 'var(--color-selected)' : 'var(--color-background)'
   }">
     <div class="header">#{{ uncertainty.id }} - {{ uncertainty.name }}</div>
     <div class="icon-list">

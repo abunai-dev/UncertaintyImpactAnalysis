@@ -15,10 +15,10 @@
 
 .sprotty-node.selected-component > rect,
 .sprotty-node.selected-component > line {
-    stroke: var(--color-valid) 
+    stroke: var(--color-selected) 
 }
 .sprotty-node.selected-component > circle {
-    stroke: var(--color-valid);
+    stroke: var(--color-selected);
 }
 
 .sprotty-node.selected-component > .sprotty-symbol rect,
@@ -27,15 +27,15 @@
 .sprotty-node.selected-component > .sprotty-symbol polygon,
 .sprotty-node.selected-component > .sprotty-symbol path,
 .sprotty-node.selected-component > .sprotty-symbol line {
-    stroke: var(--color-valid);
+    stroke: var(--color-selected);
 }
 
 .sprotty-node.selected-component > .sprotty-symbol .do-fill {
-    fill: var(--color-valid);
+    fill: var(--color-selected);
 }
 
 .sprotty-node.selected-component > text {
-    fill: var(--color-valid)
+    fill: var(--color-selected)
 }
 
 
@@ -74,11 +74,11 @@
 .sprotty-port.selected-component circle,
 .sprotty-port.selected-component path,
 .sprotty-port.selected-component line {
-    stroke: var(--color-valid);
+    stroke: var(--color-selected);
 }
 
 .sprotty-port.selected-component text {
-    fill: var(--color-valid)
+    fill: var(--color-selected)
 }
 
 .sprotty-port.other-selected circle,
@@ -105,7 +105,7 @@
 }
 
 .sprotty-edge.selected-component {
-    stroke: var(--color-valid);
+    stroke: var(--color-selected);
 }
 
 .sprotty-edge.other-selected {
