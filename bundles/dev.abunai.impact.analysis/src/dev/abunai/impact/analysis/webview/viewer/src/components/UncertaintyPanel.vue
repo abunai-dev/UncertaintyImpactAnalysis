@@ -21,13 +21,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, PropType, ref } from 'vue';
+import { computed, nextTick, onMounted, PropType, ref, watch } from 'vue';
 import { JsonUncertainty } from '../model/Uncertainty';
 import { CategoryList, categoryOrder } from '../model/Uncertainty/Category';
 import { categoryOptions } from '../model/Uncertainty/option/CategoryOption';
 import { SelectionManager } from '../model/SelectionManager';
 import { ArchitecturalElementTypeOptionList } from '../model/Uncertainty/option/ArchitecturalElementTypeOptions';
 import { TypeRegistry } from '../model/TypeRegistry';
+import { containsSome } from 'sprotty';
 
 const props = defineProps({
   uncertainty: {
@@ -35,6 +36,11 @@ const props = defineProps({
     required: true
   },
   scrollOffsetY: {
+    type: Number,
+    required: false,
+    default: 0
+  },
+  index: {
     type: Number,
     required: false,
     default: 0
@@ -59,11 +65,25 @@ selectionManager.addSelectComponentListener((id) => {
   }
 })
 
-const toolTipYOffset = computed(() => {
+const toolTipYOffset = ref(0)
+
+function updateToolTipOffset() {
   if (!container.value || !tooltip.value) {
-    return 0
+    return
   }
-  return offset.value-props.scrollOffsetY;
+  const t = container.value.offsetTop
+  toolTipYOffset.value = t-props.scrollOffsetY;
+}
+
+watch(() => props.scrollOffsetY, () => {
+  nextTick(() => {
+    updateToolTipOffset()
+  })
+})
+watch(() => props.index, () => {
+  nextTick(() => {
+    updateToolTipOffset()
+  })
 })
 
 onMounted(() => {
@@ -71,6 +91,7 @@ onMounted(() => {
   container.value?.addEventListener('click', () => {
     selectionManager.selectUncertainty(props.uncertainty.id);
   })
+  updateToolTipOffset()
 })
 </script>
 

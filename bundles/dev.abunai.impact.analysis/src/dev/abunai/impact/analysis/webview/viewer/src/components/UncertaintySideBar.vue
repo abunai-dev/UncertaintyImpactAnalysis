@@ -6,7 +6,7 @@
         <input v-model="filter" placeholder="Filter/Search" />
       </div>
       <div id="uncertainty-holder" ref="scrollContainer">
-        <UncertaintyPanel v-for="uncertainty in filteredData" :key="uncertainty.id" :uncertainty="uncertainty" :scroll-offset-y="scrollOffsetY" />
+        <UncertaintyPanel v-for="[idx, uncertainty] in filteredData.entries()" :key="uncertainty.id" :uncertainty="uncertainty" :scroll-offset-y="scrollOffsetY" :index="idx" />
       </div>
       <a href="https://arc3n.abunai.dev/" target="_blank">Open ARC<sup>3</sup>N</a>
     </div>
@@ -22,6 +22,7 @@ import { CategoryList, categoryOrder } from '../model/Uncertainty/Category';
 import { categoryOptions } from '../model/Uncertainty/option/CategoryOption';
 import { TypeRegistry } from '../model/TypeRegistry';
 import { ArchitecturalElementTypeOptionList } from '../model/Uncertainty/option/ArchitecturalElementTypeOptions';
+import { SelectionManager } from '../model/SelectionManager';
 
 const fetchStatus: Ref<'pending'|'loaded'|'error'> = ref('pending');
 const data: Ref<JsonUncertainty[]> = ref([]);
@@ -50,6 +51,27 @@ function applyFilter(uncertainty: JsonUncertainty, filter: string): boolean {
   return false
 }
 
+const selectionManager = SelectionManager.getInstance();
+const typeRegistry = TypeRegistry.getInstance();
+selectionManager.addSelectComponentListener(v => {
+  if (v == null) {
+    data.value = data.value.sort((a, b) => a.id - b.id);
+  } else {
+    const selectedType = typeRegistry.getComponent(v);
+    data.value = data.value.sort((a, b) => {
+      const aType = a.classes[CategoryList.ARCHITECTURAL_ELEMENT_TYPE] as ArchitecturalElementTypeOptionList;
+      const bType = b.classes[CategoryList.ARCHITECTURAL_ELEMENT_TYPE] as ArchitecturalElementTypeOptionList;
+      if (aType === selectedType && bType !== selectedType) {
+        return -1;
+      } else if (aType !== selectedType && bType === selectedType) {
+        return 1;
+      } else {
+        return a.id - b.id;
+      }
+    });
+  }
+})
+
 const scrollContainer = ref<HTMLElement | null>(null);
 const scrollOffsetY = ref(0);
 
@@ -59,7 +81,6 @@ onMounted(() => {
     .then(json => {
       data.value = json.sort((a, b) => a.id - b.id);
       fetchStatus.value = 'loaded';
-      const typeRegistry = TypeRegistry.getInstance();
       for (const uncertainty of data.value) {
         typeRegistry.registerUncertainty(uncertainty.id, uncertainty.classes[CategoryList.ARCHITECTURAL_ELEMENT_TYPE] as ArchitecturalElementTypeOptionList);
       }
