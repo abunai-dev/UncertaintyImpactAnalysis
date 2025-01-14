@@ -4,7 +4,7 @@ import type { BaseNode, BaseNodeVariables } from "./schemes/BaseNode";
 import type { BranchTransitionVariables } from "./schemes/Seff";
 import type { VNode } from "snabbdom";
 import { getSelectionMode, SelectionModes } from "@/diagrams/selection/SelectionModes";
-import { BaseNodeView } from "./BaseNode";
+import { BaseNodeImpl, BaseNodeView } from "./BaseNode";
 
 export class BranchView extends BaseNodeView {
     renderSymbol(): VNode {
@@ -12,10 +12,16 @@ export class BranchView extends BaseNodeView {
     }
 }
 
-export class BranchTransitionImpl extends SNodeImpl implements BaseNodeVariables, BranchTransitionVariables {
+export class BranchTransitionImpl extends BaseNodeImpl implements BranchTransitionVariables {
     bottomText: string;
     typeName: string;
     name: string;
+
+    get bounds() {
+        const bounds = super.bounds
+        bounds.height += 30
+        return bounds
+    }
 
     get getSelection() {
         return getSelectionMode(this.id)
@@ -51,7 +57,7 @@ abstract class BaseBranchTransitionView extends ShapeView {
 
 export class ProbabilisticBranchTransitionView extends BaseBranchTransitionView {
     renderBottomText(model: Readonly<BranchTransitionImpl>): VNode {
-        return <text x="40" y={model.bounds.height-10}>model.bottomText</text>
+        return <text x="40" y={model.bounds.height-10}>{model.bottomText}</text>
     }
     renderSymbol(): VNode {
         return <g class-sprotty-symbol={true}></g>
@@ -60,7 +66,7 @@ export class ProbabilisticBranchTransitionView extends BaseBranchTransitionView 
 
 export class GuardedBranchTransitionView extends BaseBranchTransitionView {
     renderBottomText(model: Readonly<BranchTransitionImpl>): VNode {
-        return <text x="40" y={model.bounds.height-10}>model.bottomText</text>
+        return <text x="12" y={model.bounds.height-10}>Cond: {model.bottomText}</text>
     }
     renderSymbol(): VNode {
         return <g class-sprotty-symbol={true}></g>

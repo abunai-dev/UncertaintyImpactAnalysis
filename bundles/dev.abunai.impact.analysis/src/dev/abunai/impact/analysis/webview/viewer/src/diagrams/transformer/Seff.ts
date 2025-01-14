@@ -163,7 +163,7 @@ export class SeffTransformer extends AbstractTransformer<Json.ActionBase> {
     let type = NODES.UNCONCRETE_ACTION
     let bottomText = ''
     if (transition.type === 'ProbabilisticBranchTransition') {
-      bottomText = (transition as Json.ProbabilisticTransition).probability.toPrecision(5)
+      bottomText = (Math.round((transition as Json.ProbabilisticTransition).probability * 1000) / 1000).toString()
       type = NODES.PROBABILISTIC_BRANCH_TRANSITION
     } else if (transition.type === 'GuardedBranchTransition') {
       bottomText = (transition as Json.GuardedTransition).condition

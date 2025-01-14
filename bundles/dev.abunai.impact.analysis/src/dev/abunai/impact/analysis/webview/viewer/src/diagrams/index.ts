@@ -12,7 +12,6 @@ import {
 } from 'sprotty'
 import { unbindHookModule } from './editMode/di.config'
 import { elkLayoutModule } from 'sprotty-elk'
-import { autoLayoutModule } from './layouting/di.config'
 import { type SGraph } from 'sprotty-protocol'
 import { diagramModule } from './diagramElements/di.config'
 import { nodeModule } from './diagramElements/nodes/di.config'
@@ -27,7 +26,7 @@ export function init() {
     container = new Container()
     loadDefaultModules(container)
     container.load(elkLayoutModule)
-    container.load(unbindHookModule, autoLayoutModule, diagramModule, nodeModule, edgeModule, portModule, selectionModule)
+    container.load(unbindHookModule, diagramModule, nodeModule, edgeModule, portModule, selectionModule)
     SelectionManager.getInstance().dispatcher = container.get<ActionDispatcher>(TYPES.IActionDispatcher)
 }
 

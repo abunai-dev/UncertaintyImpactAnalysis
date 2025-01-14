@@ -45,7 +45,7 @@ export function buildSetVariableAction(id: string, type: NODES, name: string, ty
 
 
 
-export function buildBranch(id: string, type: NODES, name: string, typeName: string, transitions: BaseNode[]): Branch {
+export function buildBranch(id: string, type: NODES, name: string, typeName: string, transitions: BaseNode[]): BaseNode {
   return {
     ...buildBaseNode(id, type, name, typeName, transitions),
   }

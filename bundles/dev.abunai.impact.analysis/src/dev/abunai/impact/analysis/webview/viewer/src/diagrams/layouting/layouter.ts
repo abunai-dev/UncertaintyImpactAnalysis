@@ -1,6 +1,6 @@
 import ElkConstructor, { type ElkExtendedEdge, type ElkNode, type ElkShape, type LayoutOptions } from 'elkjs'
 import { injectable } from 'inversify'
-import { DefaultLayoutConfigurator, ElkFactory, ElkLayoutEngine } from 'sprotty-elk'
+import { DefaultLayoutConfigurator, ElkFactory, ElkLayoutEngine, ILayoutPostprocessor } from 'sprotty-elk'
 import { type SEdge, type SGraph, type SModelElement, SModelIndex, type SShapeElement } from 'sprotty-protocol'
 
 @injectable() 
@@ -35,4 +35,27 @@ export class StraightEdgeLayoutEngine extends ElkLayoutEngine {
     }
 }
 
-export const layouter = new StraightEdgeLayoutEngine(elkFactory, undefined, new CustomLayoutConfigurator())
+export class MoveDownPostProcessor implements ILayoutPostprocessor {
+    postprocess(elkGraph: ElkNode, sgraph: SGraph, index: SModelIndex): void {
+        if (!elkGraph.children) return
+        for (const child of elkGraph.children) {
+            this.move(child)
+        }
+    }
+
+    private move(node: ElkNode) {
+        if (node.y) {
+            node.y = node.y + 40
+        } 
+        if (node.children) {
+            for (const child of node.children) {
+                this.move(child)
+            }
+        }
+    }
+
+}
+
+export const layouter = new StraightEdgeLayoutEngine(elkFactory, undefined, new CustomLayoutConfigurator(), undefined, new MoveDownPostProcessor())
+
+
