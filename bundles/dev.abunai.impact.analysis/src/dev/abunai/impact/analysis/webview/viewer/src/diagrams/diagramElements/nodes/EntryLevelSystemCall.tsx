@@ -54,7 +54,7 @@ export class EntryLevelSystemCallView extends ShapeView {
   }
 }
 
-function renderVariableUsage(variableUsage: VariableUsage, baseY: number, drawSeperatorLine: boolean, passive: boolean): VNode {
+export function renderVariableUsage(variableUsage: VariableUsage, baseY: number, drawSeperatorLine: boolean, passive: boolean): VNode {
   const width = Math.max(variableUsage.topText.length + 2, variableUsage.bottomText.length) * 9 + 16
   return <g class-always-passive={passive}>
     <rect x="8" y={baseY} width={width} height="50"></rect>

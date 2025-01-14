@@ -13,4 +13,8 @@ export enum NODES {
   ENTRY_LEVEL_SYSTEM_CALL = 'node:entry_level_system_call',
   UNCONCRETE_ACTION = 'node:unconcrete_action',
   SEFF_SIGNATURE_LABEL = 'label:seff_signature',
+  SET_VARIABLE = 'node:set_variable',
+  BRANCH = 'node:branch',
+  PROBABILISTIC_BRANCH_TRANSITION = 'node:probabilistic_branch_transition',
+  GUARDED_BRANCH_TRANSITION = 'node:guarded_branch_transition',
 }

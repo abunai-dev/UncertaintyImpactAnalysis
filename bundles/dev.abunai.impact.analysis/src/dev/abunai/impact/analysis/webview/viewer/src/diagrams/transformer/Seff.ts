@@ -2,12 +2,12 @@ import type { SEdge, SGraph, SNode } from "sprotty-protocol";
 import { AbstractTransformer, getOfType, type ID, type JsonBase } from "./base";
 import { buildStartNode, buildStopNode } from "../diagramElements/nodes/schemes/CircularNodes";
 import { EDGES } from "../diagramElements/edges";
-import { buildBaseNode } from "../diagramElements/nodes/schemes/BaseNode";
+import { buildBaseNode, type BaseNode } from "../diagramElements/nodes/schemes/BaseNode";
 import { NODES } from "../diagramElements/nodes";
 import { layouter } from "../layouting/layouter";
 import { TypeRegistry } from "@/model/TypeRegistry";
 import { ArchitecturalElementTypeOptionList } from "@/model/Uncertainty/option/ArchitecturalElementTypeOptions";
-import { buildEntryLevelSystemCall, type VariableUsage } from "../diagramElements/nodes/schemes/Seff";
+import { buildBranch, buildBranchTransition, buildEntryLevelSystemCall, buildSetVariableAction, type VariableUsage } from "../diagramElements/nodes/schemes/Seff";
 
 namespace Json {
 
@@ -30,6 +30,13 @@ namespace Json {
     name: string,
   }
 
+  export interface ExternalCall extends ActionBase {
+    inputParameterUsages: VariableUsage[],
+    outputParameterUsages: VariableUsage[],
+    type: 'ExternalCall',
+    name: string,
+  }
+
   export interface UnconcreteAction extends ActionBase {
     type: 'AbstractAction',
     typeName: string,
@@ -39,6 +46,33 @@ namespace Json {
   export interface VariableUsage extends JsonBase {
     type: 'VariableUsage',
     referenceName: string
+  }
+
+  export interface Branch extends ActionBase {
+    type: 'Branch',
+    name: string,
+    transitions: TransitionBranch[]
+  }
+
+  export interface TransitionBranch extends JsonBase {
+    name: string,
+    actions: ActionBase[]
+  }
+
+  export interface ProbabilisticTransition extends TransitionBranch {
+    type: 'ProbabilisticBranchTransition'
+    probability: number
+  }
+
+  export interface GuardedTransition extends TransitionBranch {
+    type: 'GuardedBranchTransition'
+    condition: string
+  }
+
+  export interface SetVariable extends ActionBase {
+    type: 'SetVariable',
+    name: string
+    variableUsages: VariableUsage[]
   }
 }
 
@@ -67,7 +101,6 @@ export class SeffTransformer extends AbstractTransformer<Json.ActionBase> {
     }
     for (const entryLevelSystemCall of getOfType<Json.EntryLevelSystemCall>(actions, 'EntryLevelSystemCall')) {
       typeRegistry.registerComponent(entryLevelSystemCall.id, ArchitecturalElementTypeOptionList.BEHAVIOR_DESCRIPTION)
-      /** Todo: change */
       contents.push(buildEntryLevelSystemCall(
         entryLevelSystemCall.id,
         NODES.ENTRY_LEVEL_SYSTEM_CALL,
@@ -77,10 +110,30 @@ export class SeffTransformer extends AbstractTransformer<Json.ActionBase> {
         entryLevelSystemCall.outputParameterUsages.map(this.transformVariableUsage)
       ))
     }
+    for (const externalCall of getOfType<Json.ExternalCall>(actions, 'ExternalCall')) {
+      typeRegistry.registerComponent(externalCall.id, ArchitecturalElementTypeOptionList.BEHAVIOR_DESCRIPTION)
+      contents.push(buildEntryLevelSystemCall(
+        externalCall.id,
+        NODES.ENTRY_LEVEL_SYSTEM_CALL,
+        externalCall.name,
+        'ExternalCallAction',
+        externalCall.inputParameterUsages.map(this.transformVariableUsage),
+        externalCall.outputParameterUsages.map(this.transformVariableUsage)
+      ))
+    }
+
+    for (const setVariable of getOfType<Json.SetVariable>(actions, 'SetVariable')) {
+      //typeRegistry.registerComponent(setVariable.id, ArchitecturalElementTypeOptionList.BEHAVIOR_DESCRIPTION)
+      contents.push(buildSetVariableAction(setVariable.id, NODES.SET_VARIABLE, setVariable.name, 'SetVariableAction', setVariable.variableUsages.map(this.transformVariableUsage)))
+    }
+
+    for (const branch of getOfType<Json.Branch>(actions, 'Branch')) {
+      contents.push(buildBranch(branch.id, NODES.BRANCH, branch.name, 'Branch', branch.transitions.map(this.transformBranchTransition)))
+    }
 
     for (const unconcreteAction of getOfType<Json.UnconcreteAction>(actions, 'AbstractAction')) {
       typeRegistry.registerComponent(unconcreteAction.id, ArchitecturalElementTypeOptionList.BEHAVIOR_DESCRIPTION)
-      contents.push(buildBaseNode(unconcreteAction.id, NODES.UNCONCRETE_ACTION, unconcreteAction.name, unconcreteAction.typeName))
+      contents.push(buildBaseNode(unconcreteAction.id, NODES.UNCONCRETE_ACTION, unconcreteAction.name, unconcreteAction.typeName.split('.').pop() ?? 'UnknownAction'))
     }
 
 
@@ -103,5 +156,22 @@ export class SeffTransformer extends AbstractTransformer<Json.ActionBase> {
       topText: variableUsage.referenceName,
       bottomText: 'PlaceHolder'
     }
+  }
+
+  transformBranchTransition(transition: Json.TransitionBranch): BaseNode {
+    const transformer = new SeffTransformer()
+    let type = NODES.UNCONCRETE_ACTION
+    let bottomText = ''
+    if (transition.type === 'ProbabilisticBranchTransition') {
+      bottomText = (transition as Json.ProbabilisticTransition).probability.toPrecision(5)
+      type = NODES.PROBABILISTIC_BRANCH_TRANSITION
+    } else if (transition.type === 'GuardedBranchTransition') {
+      bottomText = (transition as Json.GuardedTransition).condition
+      type = NODES.GUARDED_BRANCH_TRANSITION
+    } else {
+      throw new Error('Unknown transition type')
+    }
+
+    return buildBranchTransition(transition.id, type, transition.name, transition.type, transformer.transfromActions(transition.actions), bottomText)
   }
 }

@@ -1,5 +1,5 @@
 import { ContainerModule } from "inversify"
-import { configureModelElement, SNodeImpl } from "sprotty"
+import { configureModelElement } from "sprotty"
 import { BaseNodeImpl } from "./BaseNode"
 import { LinkingResourceView } from "./LinkingResource"
 import { AssemblyContextView } from "./AssemblyContext"
@@ -15,6 +15,8 @@ import { CompositeDataTypeView } from "./CompositeDataType"
 import { BasicComponentImpl, BasicComponentView, SeffSignatureImpl, SeffSignatureView } from "./BasicComponent"
 import { EntryLevelSystemCallImpl, EntryLevelSystemCallView } from "./EntryLevelSystemCall"
 import { UnconcreteActionView } from "./UnconcreteAction"
+import { SetVariableImpl, SetVariableView } from "./SetVariable"
+import { BranchTransitionImpl, BranchView, GuardedBranchTransitionView, ProbabilisticBranchTransitionView } from "./Branch"
 
 export const nodeModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     const context = { bind, unbind, isBound, rebind }
@@ -32,4 +34,8 @@ export const nodeModule = new ContainerModule((bind, unbind, isBound, rebind) =>
     configureModelElement(context, NODES.ENTRY_LEVEL_SYSTEM_CALL, EntryLevelSystemCallImpl, EntryLevelSystemCallView)
     configureModelElement(context, NODES.UNCONCRETE_ACTION, BaseNodeImpl, UnconcreteActionView)
     configureModelElement(context, NODES.SEFF_SIGNATURE_LABEL, SeffSignatureImpl, SeffSignatureView)
+    configureModelElement(context, NODES.SET_VARIABLE, SetVariableImpl, SetVariableView)
+    configureModelElement(context, NODES.BRANCH, BaseNodeImpl, BranchView)
+    configureModelElement(context, NODES.PROBABILISTIC_BRANCH_TRANSITION, BranchTransitionImpl, ProbabilisticBranchTransitionView)
+    configureModelElement(context, NODES.GUARDED_BRANCH_TRANSITION, BranchTransitionImpl, GuardedBranchTransitionView)
 })
