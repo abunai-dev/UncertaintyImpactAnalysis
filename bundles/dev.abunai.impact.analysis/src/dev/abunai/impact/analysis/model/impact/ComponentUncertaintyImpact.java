@@ -2,22 +2,21 @@ package dev.abunai.impact.analysis.model.impact;
 
 import java.util.List;
 
-import org.dataflowanalysis.analysis.core.ActionSequence;
-import org.dataflowanalysis.analysis.pcm.core.seff.SEFFActionSequenceElement;
+import org.dataflowanalysis.analysis.pcm.core.PCMTransposeFlowGraph;
+import org.dataflowanalysis.analysis.pcm.core.seff.SEFFPCMVertex;
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
-import org.palladiosimulator.pcm.seff.StartAction;
 
 import dev.abunai.impact.analysis.model.source.UncertaintySource;
 import dev.abunai.impact.analysis.util.PropagationHelper;
 
 public class ComponentUncertaintyImpact extends UncertaintyImpact<AssemblyContext> {
 
-	private final SEFFActionSequenceElement<StartAction> affectedElement;
+	private final SEFFPCMVertex<?> affectedElement;
 	private final UncertaintySource<AssemblyContext> origin;
 	private final PropagationHelper propagationHelper;
 
-	public ComponentUncertaintyImpact(SEFFActionSequenceElement<StartAction> affectedElement,
-			UncertaintySource<AssemblyContext> origin, PropagationHelper propagationHelper) {
+	public ComponentUncertaintyImpact(SEFFPCMVertex<?> affectedElement,
+									  UncertaintySource<AssemblyContext> origin, PropagationHelper propagationHelper) {
 		this.affectedElement = affectedElement;
 		this.origin = origin;
 		this.propagationHelper = propagationHelper;
@@ -29,12 +28,12 @@ public class ComponentUncertaintyImpact extends UncertaintyImpact<AssemblyContex
 	}
 
 	@Override
-	public SEFFActionSequenceElement<StartAction> getAffectedElement() {
+	public SEFFPCMVertex<?> getAffectedElement() {
 		return affectedElement;
 	}
 
 	@Override
-	public List<ActionSequence> getAffectedDataFlows() {
-		return propagationHelper.findActionSequencesWithElement(affectedElement);
+	public List<PCMTransposeFlowGraph> getAffectedDataFlows() {
+		return propagationHelper.findTransposeFlowGraphsWithElement(affectedElement);
 	}
 }

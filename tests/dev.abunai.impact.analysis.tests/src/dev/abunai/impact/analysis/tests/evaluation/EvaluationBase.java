@@ -3,7 +3,7 @@ package dev.abunai.impact.analysis.tests.evaluation;
 import java.util.List;
 import java.util.function.BiPredicate;
 
-import org.dataflowanalysis.analysis.pcm.core.PCMActionSequence;
+import org.dataflowanalysis.analysis.pcm.core.PCMTransposeFlowGraph;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -33,16 +33,16 @@ public abstract class EvaluationBase extends TestBase {
 		result.printResultsWithTitle(getScenarioName(), true);
 
 		// Do confidentiality analysis
-		var actionSequences = analysis.findAllSequences();
-		var evaluatedSequences = analysis.evaluateDataFlows(actionSequences);
+		var flowGraphs = analysis.findFlowGraphs();
+		flowGraphs.evaluate();
 
 		System.out.println("Confidentiality Violations: ");
-		for (int i = 0; i < evaluatedSequences.size(); i++) {
-			var violations = analysis.queryDataFlow(evaluatedSequences.get(i), it -> {
+		for (int i = 0; i < flowGraphs.getTransposeFlowGraphs().size(); i++) {
+			var violations = analysis.queryDataFlow(flowGraphs.getTransposeFlowGraphs().get(i), it -> {
 
-				List<String> dataLiterals = it.getAllDataFlowVariables().stream().map(e -> e.getAllCharacteristics())
+				List<String> dataLiterals = it.getAllDataCharacteristics().stream().map(e -> e.getAllCharacteristics())
 						.flatMap(List::stream).map(e -> e.getValueName()).toList();
-				List<String> nodeLiterals = it.getAllNodeCharacteristics().stream()
+				List<String> nodeLiterals = it.getAllVertexCharacteristics().stream()
 						.map(e -> e.getValueName()).toList();
 
 				return getConstraint().test(dataLiterals, nodeLiterals);
@@ -50,7 +50,7 @@ public abstract class EvaluationBase extends TestBase {
 
 			if (!violations.isEmpty()) {
 				System.out.println(
-						UncertaintyImpactCollection.formatDataFlow(i, new PCMActionSequence(violations), true));
+						UncertaintyImpactCollection.formatDataFlow(i, violations, true));
 			}
 		}
 	}
@@ -58,13 +58,13 @@ public abstract class EvaluationBase extends TestBase {
 	//@Disabled
 	@Test
 	public void printAllDataFlows() {
-		var actionSequences = analysis.findAllSequences();
+		var flowGraphs = analysis.findFlowGraphs();
 
 		System.out.println("All data flows:");
 
-		for (int i = 0; i < actionSequences.size(); i++) {
+		for (int i = 0; i < flowGraphs.getTransposeFlowGraphs().size(); i++) {
 			System.out.println(
-					UncertaintyImpactCollection.formatDataFlow(i, new PCMActionSequence(actionSequences.get(i)), true));
+					UncertaintyImpactCollection.formatDataFlow(i, (PCMTransposeFlowGraph) flowGraphs.getTransposeFlowGraphs().get(i), true));
 		}
 	}
 }
