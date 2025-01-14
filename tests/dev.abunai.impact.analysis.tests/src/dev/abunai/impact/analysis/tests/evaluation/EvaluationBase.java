@@ -203,22 +203,22 @@ public abstract class EvaluationBase extends TestBase {
 		double ratioImpactSet = (double) impactedUniqueElements / totalUniqueElements;
 
 		System.out.printf("""
-                ---------------  Metrics  ---------------
-                Impacted data flows:			%d
-                Total (unique) elements: 		%d (%d)
-                Impacted (unique) elements: 	%d (%d)
-                Violating (unique) elements: 	%d (%d)
-                -----------------------------------------
-                True Positives:					%d
-                False Positives:				%d
-                False Negatives:				%d
-                -----------------------------------------
-                Precision:						%.3f
-                Recall:							%.3f
-                F1-Score:						%.3f
-                -----------------------------------------
-                Ratio of violating elements:	%.3f
-                Ratio of impacted elements:		%.3f
+                ------------------  Metrics  ------------------
+                Impacted data flows:					%d
+                Total (unique) elements: 				%d (%d)
+                Impacted (unique) elements: 			%d (%d)
+                Violating (unique) elements: 			%d (%d)
+                -----------------------------------------------
+                True Positives:							%d
+                False Positives:						%d
+                False Negatives:						%d
+                -----------------------------------------------
+                Precision:								%.3f
+                Recall:									%.3f
+                F1-Score:								%.3f
+                -----------------------------------------------
+                Ratio of the actual impact set:			%.3f
+                Ratio of the uncertainty impact set:	%.3f
                 %n""", impactedDataFlows, totalElements, totalUniqueElements, impactedElements, impactedUniqueElements, violatingElements, violatingUniqueElements, truePositives, falsePositives, falseNegatives, precision, recall, f1Score, ratioAffectedSet, ratioImpactSet);
 	}
 }
