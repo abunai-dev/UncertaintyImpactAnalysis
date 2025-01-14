@@ -10,6 +10,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="module" module-name="org.dataflowanalysis.analysis" />
     <orderEntry type="module" module-name="org.dataflowanalysis.analysis.pcm" />
+    <orderEntry type="module" module-name="dev.abunai.impact.analysis.testmodels" />
     <orderEntry type="library" name="ECLIPSE" level="project" />
   </component>
 </module>
