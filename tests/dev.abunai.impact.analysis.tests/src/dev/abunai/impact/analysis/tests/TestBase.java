@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.nio.file.Paths;
 
+import org.eclipse.core.runtime.Plugin;
 import org.junit.jupiter.api.BeforeEach;
 
 import dev.abunai.impact.analysis.PCMUncertaintyImpactAnalysisBuilder;
@@ -12,13 +13,19 @@ import dev.abunai.impact.analysis.model.UncertaintyImpactCollection;
 import dev.abunai.impact.analysis.testmodels.Activator;
 
 public abstract class TestBase {
-
-	public static final String TEST_MODEL_PROJECT_NAME = "dev.abunai.impact.analysis.testmodels";
 	protected PCMUncertaintyImpactAnalysis analysis = null;
 
 	protected abstract String getFolderName();
 
 	protected abstract String getFilesName();
+	
+	protected String getModelProjectName() {
+		return "dev.abunai.impact.analysis.testmodels";
+	}
+	
+	protected Class<? extends Plugin> getActivator() {
+		return Activator.class;
+	}
 
 	protected String getBaseFolder() {
 		return "models";
@@ -33,8 +40,11 @@ public abstract class TestBase {
 		final var nodeCharacteristicsPath = Paths
 				.get(getBaseFolder(), getFolderName(), getFilesName() + ".nodecharacteristics").toString();
 
-		var builder = new PCMUncertaintyImpactAnalysisBuilder().standalone().modelProjectName(TEST_MODEL_PROJECT_NAME)
-				.usePluginActivator(Activator.class).useUsageModel(usageModelPath).useAllocationModel(allocationPath)
+		var builder = new PCMUncertaintyImpactAnalysisBuilder().standalone()
+				.modelProjectName(this.getModelProjectName())
+				.usePluginActivator(this.getActivator())
+				.useUsageModel(usageModelPath)
+				.useAllocationModel(allocationPath)
 				.useNodeCharacteristicsModel(nodeCharacteristicsPath);
 
 		var analysis = ((PCMUncertaintyImpactAnalysisBuilder) builder).build();

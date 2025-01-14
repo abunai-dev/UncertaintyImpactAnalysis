@@ -9,6 +9,8 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="module" module-name="dev.abunai.impact.analysis" />
     <orderEntry type="module" module-name="dev.abunai.impact.analysis.testmodels" />
+    <orderEntry type="module" module-name="dev.abunai.evaluationscenario.cwa" />
+    <orderEntry type="module" module-name="dev.abunai.evaluationscenario.maas" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="ECLIPSE" level="project" />
   </component>
