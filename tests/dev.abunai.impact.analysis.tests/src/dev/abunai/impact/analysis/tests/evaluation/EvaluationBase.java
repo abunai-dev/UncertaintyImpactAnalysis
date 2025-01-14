@@ -157,12 +157,12 @@ public abstract class EvaluationBase extends TestBase {
 				.map(AbstractTransposeFlowGraph::getVertices)
 				.mapToLong(List::size)
 				.sum();
-		long impactedUniqueElements = impactSet.stream()
+		var impactedUniqueElements = impactSet.stream()
 				.map(AbstractTransposeFlowGraph::getVertices)
 				.flatMap(List::stream)
 				.map(it -> (AbstractPCMVertex<?>) it)
 				.filter(distinctByKey(AbstractVertex::toString))
-				.count();
+				.toList();
 
 		long violatingElements = violationPerFlowGraph.entrySet().stream()
 				.filter((entry) -> !entry.getValue().isEmpty())
@@ -176,7 +176,7 @@ public abstract class EvaluationBase extends TestBase {
 				.map(AbstractTransposeFlowGraph::getVertices)
 				.mapToLong(List::size)
 				.sum();
-		long violatingUniqueElements = violationPerFlowGraph.entrySet().stream()
+		var violatingUniqueElements = violationPerFlowGraph.entrySet().stream()
 				.filter((entry) -> !entry.getValue().isEmpty())
 				.map(entry -> {
 					var tfg = (PCMTransposeFlowGraph) flowGraphs.getTransposeFlowGraphs().get(entry.getKey());
@@ -189,18 +189,23 @@ public abstract class EvaluationBase extends TestBase {
 				.flatMap(List::stream)
 				.map(it -> (AbstractPCMVertex<?>) it)
 				.filter(distinctByKey(AbstractVertex::toString))
-				.count();
+				.toList();
 
-		long truePositives = violatingUniqueElements;
-		long falsePositives = impactedUniqueElements - violatingUniqueElements;
-		long falseNegatives = 0; // Impacted elements are a superset of violating elements
+		long truePositives = violatingUniqueElements.size();
+		long falsePositives = impactedUniqueElements.size() - violatingUniqueElements.size();
+		long falseNegatives = violatingUniqueElements.stream()
+				.map(AbstractPCMVertex::getReferencedElement)
+				.filter(it -> impactedUniqueElements.stream()
+                        .map(AbstractPCMVertex::getReferencedElement)
+                        .noneMatch(el -> el.equals(it)))
+				.count();
 
 		double precision = (double) truePositives / (truePositives + falsePositives);
 		double recall = (double) truePositives / (truePositives + falseNegatives);
 		double f1Score = 2 * (precision * recall) / (precision + recall);
 
-		double ratioAffectedSet = (double) violatingUniqueElements / totalUniqueElements;
-		double ratioImpactSet = (double) impactedUniqueElements / totalUniqueElements;
+		double ratioAffectedSet = (double) violatingUniqueElements.size() / totalUniqueElements;
+		double ratioImpactSet = (double) impactedUniqueElements.size() / totalUniqueElements;
 
 		System.out.printf("""
                 ------------------  Metrics  ------------------
@@ -219,6 +224,6 @@ public abstract class EvaluationBase extends TestBase {
                 -----------------------------------------------
                 Ratio of the actual impact set:			%.3f
                 Ratio of the uncertainty impact set:	%.3f
-                %n""", impactedDataFlows, totalElements, totalUniqueElements, impactedElements, impactedUniqueElements, violatingElements, violatingUniqueElements, truePositives, falsePositives, falseNegatives, precision, recall, f1Score, ratioAffectedSet, ratioImpactSet);
+                %n""", impactedDataFlows, totalElements, totalUniqueElements, impactedElements, impactedUniqueElements.size(), violatingElements, violatingUniqueElements.size(), truePositives, falsePositives, falseNegatives, precision, recall, f1Score, ratioAffectedSet, ratioImpactSet);
 	}
 }
