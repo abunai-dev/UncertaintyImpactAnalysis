@@ -3,10 +3,19 @@
     borderColor: selectedUncertainty === uncertainty.id ? 'var(--color-selected)' : 'var(--color-background)'
   }">
     <div class="header">#{{ uncertainty.id }} - {{ uncertainty.name }}</div>
-    <div class="icon-list">
+    <div>
+
+    </div>
+    <div class="icon-list" v-if="mode === 'display'">
       <span v-for="category of categoryOrder" :key="category" class="fa-solid" :class="categoryOptions[category][uncertainty.classes[category]].icon" :style="{ 'color':  displayNonSelectedStyle ? colors.gray[500] :
       categoryOptions[category][uncertainty.classes[category]].color[500] }"></span>
       <a :href="'https://arc3n.abunai.dev/uncertainty/' + uncertainty.id" target="_blank">More</a>
+    </div>
+    <div v-else>
+      <div v-for="selection of selections" :key="selection" class="selection-label">
+        <span>{{ nameRegistry.getName(selection) ?? selection }}</span>
+        <button @click="e => {e.stopPropagation(); selectionManager.removeSelection(uncertainty.id, selection)}">-</button>
+      </div>
     </div>
 
     <span class="tooltip" ref="tooltip" :style="{ top: toolTipYOffset + 'px' }">
@@ -32,6 +41,7 @@ import { SelectionManager } from '../model/SelectionManager';
 import { ArchitecturalElementTypeOptionList } from '../model/Uncertainty/option/ArchitecturalElementTypeOptions';
 import { TypeRegistry } from '../model/TypeRegistry';
 import colors from 'tailwindcss/colors';
+import { NameRegistry } from '../model/NameRegistry';
 
 const props = defineProps({
   uncertainty: {
@@ -47,6 +57,10 @@ const props = defineProps({
     type: Number,
     required: false,
     default: 0
+  },
+  mode: {
+    type: String as PropType<'display'|'selection'>,
+    required: true
   }
 })
 
@@ -54,9 +68,14 @@ const container = ref<HTMLElement | null>(null);
 const tooltip = ref<HTMLElement | null>(null);
 const offset = ref(0);
 const selectionManager = SelectionManager.getInstance();
+const nameRegistry = NameRegistry.getInstance()
 const typeRegistry = TypeRegistry.getInstance()
 const selectedUncertainty = ref<number|null>(null);
 const selectedComponentType = ref<ArchitecturalElementTypeOptionList|null>(null)
+const selections = ref<string[]>([])
+SelectionManager.getInstance().addSelectionChangedListener((s) => {
+    selections.value = s.filter(s => s.uncertainty == props.uncertainty.id).map(s => s.component)
+})
 selectionManager.addSelectUncertaintyListener((id) => {
   selectedUncertainty.value = id;
 })
@@ -190,5 +209,22 @@ onMounted(() => {
   grid-column-end: 3;
   max-width: 700px;
   padding-bottom: 0.25rem;
+}
+
+.selection-label {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.selection-label span {
+  flex-grow: 1;
+}
+
+.selection-label button {
+  background-color: transparent;
+  color: var(--color-foreground);
+  border: none;
+  cursor: pointer;
 }
 </style>

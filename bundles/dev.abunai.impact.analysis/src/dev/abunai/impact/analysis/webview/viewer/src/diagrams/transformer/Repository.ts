@@ -7,6 +7,7 @@ import { buildSignatureNode } from "../diagramElements/nodes/schemes/SignatureNo
 import { buildBasicComponent } from "../diagramElements/nodes/schemes/BasicComponent";
 import { TypeRegistry } from "@/model/TypeRegistry";
 import { ArchitecturalElementTypeOptionList } from "@/model/Uncertainty/option/ArchitecturalElementTypeOptions";
+import { NameRegistry } from "@/model/NameRegistry";
 
 namespace Json {
   export interface Repository extends JsonBase {
@@ -53,11 +54,13 @@ export class RepositoryTransformer extends FlatMapTransformer<Json.Repository> {
 
   protected async transformSingle(o: Json.Repository): Promise<SModelElement[]> {
     const typeRegistry = TypeRegistry.getInstance()
+        const nameRegistry = NameRegistry.getInstance()
     const content: (SNode|SEdge)[] = []
     const seffTransformer = new SeffTransformer()
 
     for (const interfac of getOfType<Json.Interface>(o.contents, 'Interface')) {
       typeRegistry.registerComponent(interfac.id, ArchitecturalElementTypeOptionList.INTERFACE)
+      nameRegistry.addName(interfac.id, interfac.name)
       content.push(buildSignatureNode(
         interfac.id,
         NODES.INTERFACE,
@@ -86,6 +89,7 @@ export class RepositoryTransformer extends FlatMapTransformer<Json.Repository> {
     for (const component of getOfType<Json.BasicComponent>(o.contents, 'BasicComponent')) {
       const seffs = await Promise.all(component.seffs.map(async seff => {
         typeRegistry.registerComponent(seff.id, ArchitecturalElementTypeOptionList.BEHAVIOR_DESCRIPTION)
+        nameRegistry.addName(seff.id, seff.signature)
         return {
           id: seff.id,
           signature: seff.signature,

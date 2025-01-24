@@ -5,6 +5,7 @@ import { FlatMapTransformer, getOfType, type JsonBase } from "./base"
 import { NODES } from "../diagramElements/nodes"
 import { TypeRegistry } from "@/model/TypeRegistry"
 import { ArchitecturalElementTypeOptionList } from "@/model/Uncertainty/option/ArchitecturalElementTypeOptions"
+import { NameRegistry } from "@/model/NameRegistry"
 
 namespace Json {
   export interface ResourceEnvironment extends JsonBase {
@@ -29,9 +30,11 @@ export type ResourceEnvironmentFileContent = Json.ResourceEnvironment[]
 export class ResourceEnvironmentTransformer extends FlatMapTransformer<Json.ResourceEnvironment> {
   async transformSingle(resourceEnvrironment: Json.ResourceEnvironment): Promise<SModelElement[]> {
     const typeRegistry = TypeRegistry.getInstance()
+        const nameRegistry = NameRegistry.getInstance()
     const contents: (BaseNode|SEdge)[] = []
   for (const resourceContainer of getOfType<Json.ResourceContainer>(resourceEnvrironment.contents, 'ResourceContainer')) {
     typeRegistry.registerComponent(resourceContainer.id, ArchitecturalElementTypeOptionList.EXTERNAL_RESOURCE)
+    nameRegistry.addName(resourceContainer.id, resourceContainer.name)
     contents.push(buildBaseNode(
       resourceContainer.id,
       NODES.RESOURCE_CONTAINER,

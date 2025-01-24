@@ -7,6 +7,7 @@ import { PORTS } from "../diagramElements/ports"
 import { NODES } from "../diagramElements/nodes"
 import { TypeRegistry } from "@/model/TypeRegistry"
 import { ArchitecturalElementTypeOptionList } from "@/model/Uncertainty/option/ArchitecturalElementTypeOptions"
+import { NameRegistry } from "@/model/NameRegistry"
 
 namespace Json {
   export interface System extends JsonBase {
@@ -43,11 +44,13 @@ export class AssemblyTransformer extends MapTransformer<Json.System> {
 
   async transformSingle(system: Json.System): Promise<BaseNode> {
     const typeRegistry = TypeRegistry.getInstance()
+        const nameRegistry = NameRegistry.getInstance()
     const assemblyContexts: Record<ID, BaseNode> = {}
         const edges: SEdge[] = []
         const outsidePorts: AssemblyPort[] = []
         for (const child of getOfType<Json.AssemblyContext>(system.contents, 'AssemblyContext')) {
             typeRegistry.registerComponent(child.id, ArchitecturalElementTypeOptionList.COMPONENT)
+            nameRegistry.addName(child.id, child.name)
             assemblyContexts[child.id] = buildBaseNode(
                 child.id,
                 NODES.ASSEMBLY_CONTEXT,
@@ -78,6 +81,7 @@ export class AssemblyTransformer extends MapTransformer<Json.System> {
             assemblyContexts[edge.requiredAssembly].children!.push(requieringPort)
 
             typeRegistry.registerComponent(edge.id, ArchitecturalElementTypeOptionList.CONNECTOR)
+            nameRegistry.addName(edge.id, edge.id)
             edges.push({
                 type: EDGES.ARROW_OPEN,
                 id: edge.id,
@@ -87,6 +91,7 @@ export class AssemblyTransformer extends MapTransformer<Json.System> {
         }
         for (const edge of getOfType<Json.ProvidedDelegationConnector>(system.contents, 'ProvidedDelegationConnector')) {
             typeRegistry.registerComponent(edge.id + edge.assemblyContext, ArchitecturalElementTypeOptionList.CONNECTOR)
+            nameRegistry.addName(edge.id + edge.assemblyContext, 'PlaceHolderName')
             const providingPort: AssemblyPort = {
                 type: PORTS.PROVIDING,
                 id: edge.id + edge.assemblyContext,

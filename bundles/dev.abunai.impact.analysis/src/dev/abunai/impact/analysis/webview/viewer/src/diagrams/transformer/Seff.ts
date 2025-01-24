@@ -8,6 +8,7 @@ import { layouter } from "../layouting/layouter";
 import { TypeRegistry } from "@/model/TypeRegistry";
 import { ArchitecturalElementTypeOptionList } from "@/model/Uncertainty/option/ArchitecturalElementTypeOptions";
 import { buildBranch, buildBranchTransition, buildEntryLevelSystemCall, buildSetVariableAction, type VariableUsage } from "../diagramElements/nodes/schemes/Seff";
+import { NameRegistry } from "@/model/NameRegistry";
 
 namespace Json {
 
@@ -92,6 +93,7 @@ export class SeffTransformer extends AbstractTransformer<Json.ActionBase> {
   transfromActions(actions: Json.ActionBase[]) {
     const contents: (SNode|SEdge)[] = []
     const typeRegistry = TypeRegistry.getInstance()
+        const nameRegistry = NameRegistry.getInstance()
 
     for (const start of getOfType<Json.StartNode>(actions, 'Start')) {
       contents.push(buildStartNode(start.id))
@@ -101,6 +103,7 @@ export class SeffTransformer extends AbstractTransformer<Json.ActionBase> {
     }
     for (const entryLevelSystemCall of getOfType<Json.EntryLevelSystemCall>(actions, 'EntryLevelSystemCall')) {
       typeRegistry.registerComponent(entryLevelSystemCall.id, ArchitecturalElementTypeOptionList.BEHAVIOR_DESCRIPTION)
+      nameRegistry.addName(entryLevelSystemCall.id, entryLevelSystemCall.name)
       contents.push(buildEntryLevelSystemCall(
         entryLevelSystemCall.id,
         NODES.ENTRY_LEVEL_SYSTEM_CALL,
@@ -112,6 +115,7 @@ export class SeffTransformer extends AbstractTransformer<Json.ActionBase> {
     }
     for (const externalCall of getOfType<Json.ExternalCall>(actions, 'ExternalCall')) {
       typeRegistry.registerComponent(externalCall.id, ArchitecturalElementTypeOptionList.BEHAVIOR_DESCRIPTION)
+      nameRegistry.addName(externalCall.id, externalCall.name)
       contents.push(buildEntryLevelSystemCall(
         externalCall.id,
         NODES.ENTRY_LEVEL_SYSTEM_CALL,
@@ -123,16 +127,18 @@ export class SeffTransformer extends AbstractTransformer<Json.ActionBase> {
     }
 
     for (const setVariable of getOfType<Json.SetVariable>(actions, 'SetVariable')) {
-      //typeRegistry.registerComponent(setVariable.id, ArchitecturalElementTypeOptionList.BEHAVIOR_DESCRIPTION)
+      typeRegistry.registerComponent(setVariable.id, ArchitecturalElementTypeOptionList.BEHAVIOR_DESCRIPTION)
+      nameRegistry.addName(setVariable.id, setVariable.name)
       contents.push(buildSetVariableAction(setVariable.id, NODES.SET_VARIABLE, setVariable.name, 'SetVariableAction', setVariable.variableUsages.map(this.transformVariableUsage)))
     }
 
     for (const branch of getOfType<Json.Branch>(actions, 'Branch')) {
+      typeRegistry.registerComponent(branch.id, ArchitecturalElementTypeOptionList.BEHAVIOR_DESCRIPTION)
+      nameRegistry.addName(branch.id, branch.name)
       contents.push(buildBranch(branch.id, NODES.BRANCH, branch.name, 'Branch', branch.transitions.map(this.transformBranchTransition)))
     }
 
     for (const unconcreteAction of getOfType<Json.UnconcreteAction>(actions, 'AbstractAction')) {
-      typeRegistry.registerComponent(unconcreteAction.id, ArchitecturalElementTypeOptionList.BEHAVIOR_DESCRIPTION)
       contents.push(buildBaseNode(unconcreteAction.id, NODES.UNCONCRETE_ACTION, unconcreteAction.name, unconcreteAction.typeName.split('.').pop() ?? 'UnknownAction'))
     }
 

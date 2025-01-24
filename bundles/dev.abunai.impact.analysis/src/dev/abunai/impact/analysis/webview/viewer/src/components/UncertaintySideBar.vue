@@ -1,160 +1,81 @@
 <template>
   <div id="sidebar">
-    <div class="content">
-      <div class="input">
-        <span class="fa-solid fa-magnifying-glass"></span>
-        <input v-model="filter" placeholder="Filter/Search" />
+    <div id="tab-bar">
+      <div id="tab-list">
+        <button class="tab" @click="selected = 'Uncertainties'" :class="{ selected: selected === 'Uncertainties' }">
+          Uncertainties
+        </button> 
+        <button class="tab" @click="selected = 'Selected'" :class="{ selected: selected === 'Selected' }">
+          Selected
+        </button> 
       </div>
-      <div id="uncertainty-holder" ref="scrollContainer">
-        <UncertaintyPanel v-for="[idx, uncertainty] in filteredData.entries()" :key="uncertainty.id" :uncertainty="uncertainty" :scroll-offset-y="scrollOffsetY" :index="idx" />
-      </div>
-      <a href="https://arc3n.abunai.dev/" target="_blank">Open ARC<sup>3</sup>N</a>
+    </div>
+    <div id="tab-content">
+      <UncertaintySideBarSelector :mode="selected == 'Uncertainties' ? 'display':'selection'" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
+import UncertaintySideBarSelector from './UncertaintySideBarSelector.vue';
 
-import { computed, onMounted, ref, Ref } from 'vue';
-import { JsonUncertainty } from '../model/Uncertainty';
-import UncertaintyPanel from './UncertaintyPanel.vue';
-import { CategoryList, categoryOrder } from '../model/Uncertainty/Category';
-import { categoryOptions } from '../model/Uncertainty/option/CategoryOption';
-import { TypeRegistry } from '../model/TypeRegistry';
-import { ArchitecturalElementTypeOptionList } from '../model/Uncertainty/option/ArchitecturalElementTypeOptions';
-import { SelectionManager } from '../model/SelectionManager';
+const selected = ref<'Uncertainties'|'Selected'>('Uncertainties')
 
-const fetchStatus: Ref<'pending'|'loaded'|'error'> = ref('pending');
-const data: Ref<JsonUncertainty[]> = ref([]);
-
-const filter = ref('');
-
-const filteredData = computed(() => {
-  return data.value.filter(uncertainty => applyFilter(uncertainty, filter.value));
-});
-
-function applyFilter(uncertainty: JsonUncertainty, filter: string): boolean {
-  if(uncertainty.name.toLowerCase().includes(filter.toLowerCase())) {
-    return true;
-  }
-  if (uncertainty.id.toString().includes(filter) || ('#'+ uncertainty.id.toString()).includes(filter)) {
-    return true;
-  }
-
-  for (const category of categoryOrder) {
-    const valueOfUncertainty = categoryOptions[category][uncertainty.classes[category]].name.toLowerCase();
-    if (valueOfUncertainty.includes(filter.toLowerCase())) {
-      return true;
-    }
-  }
-
-  return false
-}
-
-const selectionManager = SelectionManager.getInstance();
-const typeRegistry = TypeRegistry.getInstance();
-selectionManager.addSelectComponentListener(v => {
-  if (v == null) {
-    data.value = data.value.sort((a, b) => a.id - b.id);
-  } else {
-    const selectedType = typeRegistry.getComponent(v);
-    data.value = data.value.sort((a, b) => {
-      const aType = a.classes[CategoryList.ARCHITECTURAL_ELEMENT_TYPE] as ArchitecturalElementTypeOptionList;
-      const bType = b.classes[CategoryList.ARCHITECTURAL_ELEMENT_TYPE] as ArchitecturalElementTypeOptionList;
-      if (aType === selectedType && bType !== selectedType) {
-        return -1;
-      } else if (aType !== selectedType && bType === selectedType) {
-        return 1;
-      } else {
-        return a.id - b.id;
-      }
-    });
-  }
-})
-
-const scrollContainer = ref<HTMLElement | null>(null);
-const scrollOffsetY = ref(0);
-
-onMounted(() => {
-  fetch('https://arc3n.abunai.dev/data.json')
-    .then(response => response.json() as Promise<JsonUncertainty[]>)
-    .then(json => {
-      data.value = json.sort((a, b) => a.id - b.id);
-      fetchStatus.value = 'loaded';
-      for (const uncertainty of data.value) {
-        typeRegistry.registerUncertainty(uncertainty.id, uncertainty.classes[CategoryList.ARCHITECTURAL_ELEMENT_TYPE] as ArchitecturalElementTypeOptionList);
-      }
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      fetchStatus.value = 'error';
-    });
-  scrollContainer.value?.addEventListener('scroll', () => {
-    scrollOffsetY.value = scrollContainer.value?.scrollTop ?? 0;
-  });
-});
 </script>
 
 <style scoped>
-
-
 #sidebar {
   width: 100%;
   height: 100%;
   background-color: var(--color-primary);
   overflow: hidden;
-}
-
-.content {
   display: flex;
   flex-direction: column;
-  overflow:hidden;
-  height: 100%;
-  gap: 0.5rem;
-  box-sizing: border-box;
-  padding: 0.5rem;
 }
 
-.content .input {
-  border: 1px solid var(--color-foreground);
-  background-color: var(--color-background);
-  color: var(--color-foreground);
-  padding: 0.25rem;
-  border-radius: 0.25rem;
+#tab-bar {
   display: flex;
-  gap: 0.25rem;
+  gap: 1rem;
+  background-color: var(--color-primary);
+  border-bottom: 2px solid var(--color-background);
+}
+
+#tab-list {
+  padding-left: 1rem;
+  padding-top: 0.5rem;
+  display: flex;
+  gap: 1rem;
+  flex-grow: 1;
+  overflow-x: auto;
+}
+
+#tab-bar-end {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  padding-right: 1rem;
+  display: center;
   align-items: center;
-}
-.input span {
-  font-size: 14px;
+  justify-content: center;
 }
 
-input {
-  border: none;
-  outline: none;
-  flex-grow: 1;
-  background-color: var(--color-background);
+.tab {
+  padding: 0.2rem 1rem;
+  background-color: var(--color-primary);
   color: var(--color-foreground);
-}
-
-#uncertainty-holder {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  overflow-x: scroll;
-  flex-grow: 1;
-}
-
-.content a {
-  padding: 0.5rem;
-  box-sizing: border-box;
-  border: 1px solid var(--color-foreground);
-  background-color: var(--color-background);
-  color: var(--color-foreground);
-  border-radius: 0.25rem;
-  text-decoration: none;
-  text-align: center;
-  font-family: sans-serif;
+  border: 2px solid var(--color-background);
+  border-bottom: none;
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
   cursor: pointer;
+}
+
+.tab.selected {
+  background-color: var(--color-background);
+}
+
+#tab-content {
+  flex-grow: 1;
+  overflow: hidden;
 }
 </style>

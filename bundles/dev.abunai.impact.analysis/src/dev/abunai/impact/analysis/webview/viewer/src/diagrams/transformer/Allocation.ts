@@ -3,6 +3,7 @@ import { NODES } from "../diagramElements/nodes";
 import { FlatMapTransformer, type JsonBase } from "./base";
 import { ArchitecturalElementTypeOptionList } from "@/model/Uncertainty/option/ArchitecturalElementTypeOptions";
 import { TypeRegistry } from "@/model/TypeRegistry";
+import { NameRegistry } from "@/model/NameRegistry";
 
 namespace Json {
   export interface AssemblyContext extends JsonBase {
@@ -27,8 +28,10 @@ export type AllocationFileContent = Json.AllocationDiagram[]
 export class AllocationTransformer extends FlatMapTransformer<Json.AllocationDiagram> {
   async transformSingle(diagram: Json.AllocationDiagram): Promise<BaseNode[]> {
     const typeRegistry = TypeRegistry.getInstance()
+    const nameRegistry = NameRegistry.getInstance()
     return diagram.contents.map(container => {
       typeRegistry.registerComponent(container.id, ArchitecturalElementTypeOptionList.EXTERNAL_RESOURCE)
+      nameRegistry.addName(container.id, container.name)
       return buildBaseNode(
         container.id,
         NODES.RESOURCE_CONTAINER,

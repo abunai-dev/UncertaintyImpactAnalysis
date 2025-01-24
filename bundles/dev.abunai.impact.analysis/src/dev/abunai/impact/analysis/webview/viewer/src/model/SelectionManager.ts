@@ -11,6 +11,8 @@ export class SelectionManager {
   private selectComponentListeners: UpdateListener<string|null>[] = []
   public dispatcher: ActionDispatcher|null = null
   private typeRegistry: TypeRegistry
+  private selections: Selection[] = []
+  private selectionChangedListeners: UpdateListener<Selection[]>[] = []
 
   private constructor() {
     this.typeRegistry = TypeRegistry.getInstance()
@@ -84,13 +86,27 @@ export class SelectionManager {
 
   private submit() {
     if (this.selectedUncertainty && this.selectedComponent) {
-      alert(`Selected uncertainty: ${this.selectedUncertainty}, selected component: ${this.selectedComponent}`)
+      this.selections.push({uncertainty: this.selectedUncertainty, component: this.selectedComponent})
+      this.selectionChangedListeners.forEach(listener => listener(this.selections))
       this.selectedUncertainty = null
       this.selectedComponent = null
       this.selectUncertaintyListeners.forEach(listener => listener(this.selectedUncertainty));
       this.selectComponentListeners.forEach(listener => listener(this.selectedComponent));
       this.triggerRerender();
     }
+  }
+
+  public getSelections(): Selection[] {
+    return this.selections
+  }
+
+  public addSelectionChangedListener(listener: UpdateListener<Selection[]>): void {
+    this.selectionChangedListeners.push(listener)
+  }
+
+  public removeSelection(uncertainty: number, component: string): void {
+    this.selections = this.selections.filter(selection => selection.uncertainty !== uncertainty || selection.component !== component)
+    this.selectionChangedListeners.forEach(listener => listener(this.selections))
   }
 
   private triggerRerender() {
@@ -101,3 +117,8 @@ export class SelectionManager {
 }
 
 type UpdateListener<T> = (newValue: T) => void
+
+export interface Selection {
+  uncertainty: number
+  component: string
+}
