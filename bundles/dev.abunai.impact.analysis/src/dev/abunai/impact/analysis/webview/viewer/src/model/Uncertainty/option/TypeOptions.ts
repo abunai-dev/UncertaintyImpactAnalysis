@@ -14,11 +14,7 @@ const typeOptions = {
   [TypeOptionList.SCENARIO_UNCERTAINTY]: { name: 'Scenario Uncertainty' },
   [TypeOptionList.RECOGNIZED_UNCERTAINTY]: { name: 'Recognized Uncertainty' }
 } as Record<TypeOptionList, CategoryOption>
-typeOptions[TypeOptionList.STATISTICAL_UNCERTAINTY].icon = 'fa-chart-simple'
-typeOptions[TypeOptionList.SCENARIO_UNCERTAINTY].icon = 'fa-list-ol'
-typeOptions[TypeOptionList.RECOGNIZED_UNCERTAINTY].icon = 'fa-seal-question'
-
-typeOptions[TypeOptionList.STATISTICAL_UNCERTAINTY].color = colors.lime
-typeOptions[TypeOptionList.SCENARIO_UNCERTAINTY].color = colors.indigo
-typeOptions[TypeOptionList.RECOGNIZED_UNCERTAINTY].color = colors.rose
+typeOptions[TypeOptionList.STATISTICAL_UNCERTAINTY].icon = 'icon-type-statistical'
+typeOptions[TypeOptionList.SCENARIO_UNCERTAINTY].icon = 'icon-type-scenario'
+typeOptions[TypeOptionList.RECOGNIZED_UNCERTAINTY].icon = 'icon-type-recognized'
 export { typeOptions }

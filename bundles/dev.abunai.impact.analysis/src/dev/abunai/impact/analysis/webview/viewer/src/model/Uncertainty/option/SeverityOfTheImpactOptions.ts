@@ -17,12 +17,7 @@ const severityOfTheImpactOptions = {
   SeverityOfTheImpactOptionList,
   CategoryOption
 >
-severityOfTheImpactOptions[SeverityOfTheImpactOptionList.HIGH].icon = 'fa-triangle-exclamation'
-severityOfTheImpactOptions[SeverityOfTheImpactOptionList.LOW].icon = 'fa-circle-exclamation'
-severityOfTheImpactOptions[SeverityOfTheImpactOptionList.NONE].icon = 'fa-circle'
-
-severityOfTheImpactOptions[SeverityOfTheImpactOptionList.HIGH].color = colors.red
-severityOfTheImpactOptions[SeverityOfTheImpactOptionList.LOW].color = colors.yellow
-severityOfTheImpactOptions[SeverityOfTheImpactOptionList.NONE].color = colors.green
-
+severityOfTheImpactOptions[SeverityOfTheImpactOptionList.HIGH].icon = 'icon-severity-high'
+severityOfTheImpactOptions[SeverityOfTheImpactOptionList.LOW].icon = 'icon-severity-low'
+severityOfTheImpactOptions[SeverityOfTheImpactOptionList.NONE].icon = 'icon-severity-none'
 export { severityOfTheImpactOptions }

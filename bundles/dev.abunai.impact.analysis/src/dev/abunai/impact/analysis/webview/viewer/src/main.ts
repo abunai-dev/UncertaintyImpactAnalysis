@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import './assets/page.css'
 import './assets/theme.css'
+import './assets/icons.css'
 import { TabManager } from './model/TabManager';
 import { RepositoryTransformer, type RepositoryFileContent } from './diagrams/transformer/Repository';
 import repositoryJson from './assets/json/repository.json'

@@ -1,7 +1,7 @@
 <template>
     <div class="content">
         <div class="input">
-            <span class="fa-solid fa-magnifying-glass"></span>
+            <img src="../assets/magnifying-glass-solid.svg"></img>
             <input v-model="filter" placeholder="Filter/Search" />
         </div>
         <div id="uncertainty-holder" ref="scrollContainer">
@@ -137,8 +137,10 @@ onMounted(() => {
     gap: 0.25rem;
     align-items: center;
 }
-.input span {
-    font-size: 14px;
+.input img {
+    height: 14px;
+    filter: invert(var(--dark-mode));
+    transition: filter .4s;    
 }
 
 input {

@@ -17,11 +17,8 @@ const manageabilityOptions = {
   ManageabilityOptionList,
   CategoryOption
 >
-manageabilityOptions[ManageabilityOptionList.IRREDUCIBLE].icon = 'fa-hand'
-manageabilityOptions[ManageabilityOptionList.PARTIALLY_REDUCIBLE].icon = 'fa-sliders'
-manageabilityOptions[ManageabilityOptionList.FULLY_REDUCIBLE].icon = 'fa-wand-magic-sparkles'
-
-manageabilityOptions[ManageabilityOptionList.FULLY_REDUCIBLE].color = colors.emerald
-manageabilityOptions[ManageabilityOptionList.PARTIALLY_REDUCIBLE].color = colors.cyan
-manageabilityOptions[ManageabilityOptionList.IRREDUCIBLE].color = colors.pink
+manageabilityOptions[ManageabilityOptionList.IRREDUCIBLE].icon = 'icon-manageability-irreducible'
+manageabilityOptions[ManageabilityOptionList.PARTIALLY_REDUCIBLE].icon =
+  'icon-manageability-partially'
+manageabilityOptions[ManageabilityOptionList.FULLY_REDUCIBLE].icon = 'icon-manageability-fully'
 export { manageabilityOptions }

@@ -23,7 +23,6 @@ import { typeOptions, type TypeOptionList } from './TypeOptions'
 export interface CategoryOption {
   name: string
   icon?: string
-  color?: { 500: string }
 }
 
 /** List of all possible values of options of any category can have */

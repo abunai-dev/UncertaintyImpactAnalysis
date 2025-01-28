@@ -7,8 +7,7 @@
 
     </div>
     <div class="icon-list" v-if="mode === 'display'">
-      <span v-for="category of categoryOrder" :key="category" class="fa-solid" :class="categoryOptions[category][uncertainty.classes[category]].icon" :style="{ 'color':  displayNonSelectedStyle ? colors.gray[500] :
-      categoryOptions[category][uncertainty.classes[category]].color[500] }"></span>
+      <span v-for="category of categoryOrder" :key="category" class="icon" :class="categoryOptions[category][uncertainty.classes[category]].icon"></span>
       <a :href="'https://arc3n.abunai.dev/uncertainty/' + uncertainty.id" target="_blank">More</a>
     </div>
     <div v-else>
@@ -26,7 +25,7 @@
         {{ category }}
       </div>
       <div v-for="[index, category] of categoryOrder.entries()" :key="category" class="category-item" :style="{ gridRow: index + 4}">
-        <span class="fa-solid" :class="categoryOptions[category][uncertainty.classes[category]].icon" :style="{color: categoryOptions[category][uncertainty.classes[category]].color[500]}"></span> {{ categoryOptions[category][uncertainty.classes[category]].name }}
+        <span class="icon" :class="categoryOptions[category][uncertainty.classes[category]].icon"></span> {{ categoryOptions[category][uncertainty.classes[category]].name }}
       </div>
     </span>
   </div>
@@ -151,7 +150,7 @@ onMounted(() => {
   font-size: 16px;
 }
 
-.icon-list .fa-solid {
+.icon-list .icon {
   width: 16px;
 }
 
@@ -200,7 +199,7 @@ onMounted(() => {
   grid-column-start: 2;
 }
 
-.tooltip .category-item .fa-solid {
+.tooltip .category-item .icon {
   width: 16px;
 }
 

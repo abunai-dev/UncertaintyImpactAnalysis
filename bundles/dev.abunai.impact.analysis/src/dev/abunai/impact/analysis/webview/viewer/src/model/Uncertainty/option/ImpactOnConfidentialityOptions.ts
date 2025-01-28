@@ -17,12 +17,8 @@ const impactOnConfidentialityOptions = {
   ImpactOnConfidentialityOptionList,
   CategoryOption
 >
-impactOnConfidentialityOptions[ImpactOnConfidentialityOptionList.DIRECT].icon =
-  'fa-shield-exclamation'
-impactOnConfidentialityOptions[ImpactOnConfidentialityOptionList.INDIRECT].icon = 'fa-shield-halved'
-impactOnConfidentialityOptions[ImpactOnConfidentialityOptionList.NONE].icon = 'fa-shield-check'
-
-impactOnConfidentialityOptions[ImpactOnConfidentialityOptionList.DIRECT].color = colors.rose
-impactOnConfidentialityOptions[ImpactOnConfidentialityOptionList.INDIRECT].color = colors.amber
-impactOnConfidentialityOptions[ImpactOnConfidentialityOptionList.NONE].color = colors.stone
+impactOnConfidentialityOptions[ImpactOnConfidentialityOptionList.DIRECT].icon = 'icon-impact-direct'
+impactOnConfidentialityOptions[ImpactOnConfidentialityOptionList.INDIRECT].icon =
+  'icon-impact-indirect'
+impactOnConfidentialityOptions[ImpactOnConfidentialityOptionList.NONE].icon = 'icon-impact-none'
 export { impactOnConfidentialityOptions }

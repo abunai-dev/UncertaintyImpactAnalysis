@@ -1,5 +1,4 @@
 import type { CategoryOption } from './CategoryOption'
-import colors from 'tailwindcss/colors'
 
 /** List of all options of the Category Architectural Element Type */
 export enum ArchitecturalElementTypeOptionList {
@@ -22,21 +21,13 @@ const architecturalElementTypeOptions = {
   CategoryOption
 >
 architecturalElementTypeOptions[ArchitecturalElementTypeOptionList.COMPONENT].icon =
-  'fa-puzzle-piece'
-architecturalElementTypeOptions[ArchitecturalElementTypeOptionList.COMPONENT].icon =
-  'fa-puzzle-piece'
-architecturalElementTypeOptions[ArchitecturalElementTypeOptionList.CONNECTOR].icon = 'fa-link'
-architecturalElementTypeOptions[ArchitecturalElementTypeOptionList.INTERFACE].icon = 'fa-webhook'
+  'icon-architectural-component'
+architecturalElementTypeOptions[ArchitecturalElementTypeOptionList.CONNECTOR].icon =
+  'icon-architectural-connector'
+architecturalElementTypeOptions[ArchitecturalElementTypeOptionList.INTERFACE].icon =
+  'icon-architectural-interface'
 architecturalElementTypeOptions[ArchitecturalElementTypeOptionList.EXTERNAL_RESOURCE].icon =
-  'fa-arrow-up-right-from-square'
+  'icon-architectural-external'
 architecturalElementTypeOptions[ArchitecturalElementTypeOptionList.BEHAVIOR_DESCRIPTION].icon =
-  'fa-gear'
-
-architecturalElementTypeOptions[ArchitecturalElementTypeOptionList.COMPONENT].color = colors.orange
-architecturalElementTypeOptions[ArchitecturalElementTypeOptionList.CONNECTOR].color = colors.teal
-architecturalElementTypeOptions[ArchitecturalElementTypeOptionList.INTERFACE].color = colors.amber
-architecturalElementTypeOptions[ArchitecturalElementTypeOptionList.EXTERNAL_RESOURCE].color =
-  colors.rose
-architecturalElementTypeOptions[ArchitecturalElementTypeOptionList.BEHAVIOR_DESCRIPTION].color =
-  colors.sky
+  'icon-architectural-behavior'
 export { architecturalElementTypeOptions }

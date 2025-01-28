@@ -19,13 +19,10 @@ const resolutionTimeOptions = {
   ResolutionTimeOptionList,
   CategoryOption
 >
-resolutionTimeOptions[ResolutionTimeOptionList.REQUIREMENTS_TIME].icon = 'fa-list'
-resolutionTimeOptions[ResolutionTimeOptionList.DESIGN_TIME].icon = 'fa-pen'
-resolutionTimeOptions[ResolutionTimeOptionList.REALIZATION_TIME].icon = 'fa-code-simple'
-resolutionTimeOptions[ResolutionTimeOptionList.RUNTIME].icon = 'fa-clock'
-
-resolutionTimeOptions[ResolutionTimeOptionList.REQUIREMENTS_TIME].color = colors.blue
-resolutionTimeOptions[ResolutionTimeOptionList.DESIGN_TIME].color = colors.teal
-resolutionTimeOptions[ResolutionTimeOptionList.REALIZATION_TIME].color = colors.orange
-resolutionTimeOptions[ResolutionTimeOptionList.RUNTIME].color = colors.violet
+resolutionTimeOptions[ResolutionTimeOptionList.REQUIREMENTS_TIME].icon =
+  'icon-resolution-requirements'
+resolutionTimeOptions[ResolutionTimeOptionList.DESIGN_TIME].icon = 'icon-resolution-design'
+resolutionTimeOptions[ResolutionTimeOptionList.REALIZATION_TIME].icon =
+  'icon-resolution-realization'
+resolutionTimeOptions[ResolutionTimeOptionList.RUNTIME].icon = 'icon-resolution-runtime'
 export { resolutionTimeOptions }
