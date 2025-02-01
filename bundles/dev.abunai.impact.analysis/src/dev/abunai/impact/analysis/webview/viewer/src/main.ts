@@ -5,56 +5,77 @@ import './assets/theme.css'
 import './assets/icons.css'
 import { TabManager } from './model/TabManager';
 import { RepositoryTransformer, type RepositoryFileContent } from './diagrams/transformer/Repository';
-import repositoryJson from './assets/json/repository.json'
 import { AllocationTransformer, type AllocationFileContent } from './diagrams/transformer/Allocation';
-import allocationJson from './assets/json/allocation.json'
 import { AssemblyTransformer, type AssemblyFileContent } from './diagrams/transformer/Assembly';
-import systemJson from './assets/json/system.json'
 import { ResourceEnvironmentTransformer, type ResourceEnvironmentFileContent } from './diagrams/transformer/ResourceEnvironment';
-import resourceJson from './assets/json/resourceEnvironment.json'
 import { UsageModelTransformer, type UsageModelFileContent } from './diagrams/transformer/UsageModel';
-import usageJson from './assets/json/usageModel.json'
 
+const url = import.meta.env.DEV ? window.location.href + 'testing/' : window.location.href
 
-new AllocationTransformer().transform(allocationJson as AllocationFileContent).then((graph) => {
-  TabManager.getInstance().addTab(
-    'Allocation',graph,
-    false,
-    false
-  )
-})
-new AssemblyTransformer().transform(systemJson as AssemblyFileContent).then((graph) => {
-  TabManager.getInstance().addTab(
-    'System',
-    graph,
-    false,
-    false
-  )
-})
-new RepositoryTransformer().transform(repositoryJson as RepositoryFileContent).then((graph) => {
-  TabManager.getInstance().addTab(
-    'Repository',
-    graph,
-    false,
-    false
-  )
-})
-new ResourceEnvironmentTransformer().transform(resourceJson as ResourceEnvironmentFileContent).then((graph) => {
-  TabManager.getInstance().addTab(
-    'Resource Environment',
-    graph,
-    false,
-    false
-  )
-})
-new UsageModelTransformer().transform(usageJson as UsageModelFileContent).then((graph) => {
-  TabManager.getInstance().addTab(
-    'Usage Model',
-    graph,
-    false,
-    false
-  )
-})
+fetch(url + 'allocation').then((response) => 
+  response.json().then((json) => {
+    new AllocationTransformer().transform(json as AllocationFileContent).then((graph) => {
+      TabManager.getInstance().addTab(
+        'Allocation',
+        graph,
+        false,
+        false
+      )
+    })
+  })
+)
+
+fetch(url + 'system').then((response) => 
+  response.json().then((json) => {
+    new AssemblyTransformer().transform(json as AssemblyFileContent).then((graph) => {
+      TabManager.getInstance().addTab(
+        'System',
+        graph,
+        false,
+        false
+      )
+    })
+  })
+)
+
+fetch(url + 'repository').then((response) => 
+  response.json().then((json) => {
+    new RepositoryTransformer().transform(json as RepositoryFileContent).then((graph) => {
+      TabManager.getInstance().addTab(
+        'Repository',
+        graph,
+        false,
+        false
+      )
+    })
+  })
+)
+
+fetch(url + 'resourceEnvironment').then((response) => 
+  response.json().then((json) => {
+    new ResourceEnvironmentTransformer().transform(json as ResourceEnvironmentFileContent).then((graph) => {
+      TabManager.getInstance().addTab(
+        'Resource Environment',
+        graph,
+        false,
+        false
+      )
+    })
+  })
+)
+
+fetch(url + 'usageModel').then((response) => 
+  response.json().then((json) => {
+    new UsageModelTransformer().transform(json as UsageModelFileContent).then((graph) => {
+      TabManager.getInstance().addTab(
+        'Usage Model',
+        graph,
+        false,
+        false
+      )
+    })
+  })
+)
 
 const app = createApp(App)
 app.mount('#app')

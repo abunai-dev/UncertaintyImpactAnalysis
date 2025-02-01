@@ -3,6 +3,8 @@ package dev.abunai.impact.analysis.webview;
 import dev.abunai.impact.analysis.PCMUncertaintyImpactAnalysis;
 
 import java.util.List;
+import java.util.Map;
+
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EClass;
 
@@ -27,26 +29,23 @@ public class Transformer {
 	}
 	
 	public void handle() throws IOException {
-		exportTopLevelElement(SystemPackage.Literals.SYSTEM, new SystemTransformer(), "", "system");
-		exportTopLevelElement(AllocationPackage.Literals.ALLOCATION, new AllocationTransformer(), "", "allocation");
-		exportTopLevelElement(ResourceenvironmentPackage.Literals.RESOURCE_ENVIRONMENT, new ResourceEnvironmentTransformer(), "", "resourceEnvironment");
-		exportTopLevelElement(UsagemodelPackage.Literals.USAGE_MODEL, new UsageModelTransformer(), "", "usageModel");
-		exportTopLevelElement(RepositoryPackage.Literals.REPOSITORY, new RepositoryTransformer(), "", "repository");
+		Map<String, byte[]> modelData = Map.of("system", exportTopLevelElement(SystemPackage.Literals.SYSTEM, new SystemTransformer()),
+		"allocation", exportTopLevelElement(AllocationPackage.Literals.ALLOCATION, new AllocationTransformer()),
+		"resourceEnvironment", exportTopLevelElement(ResourceenvironmentPackage.Literals.RESOURCE_ENVIRONMENT, new ResourceEnvironmentTransformer()),
+		"usageModel", exportTopLevelElement(UsagemodelPackage.Literals.USAGE_MODEL, new UsageModelTransformer()),
+		"repository", exportTopLevelElement(RepositoryPackage.Literals.REPOSITORY, new RepositoryTransformer()));
+		
+		Server server = new Server(modelData);
+		server.start();
+		System.out.println("Webview started at: http://localhost:" + Server.PORT + "/");
+		System.out.println("Press enter to stop server");
+		System.in.read();
 	}
 	
-	private <T extends EObject> void exportTopLevelElement(EClass elementClass, AbstractTransformer<T> transformer, String path, String fileName) throws IOException {
+	private <T extends EObject> byte[] exportTopLevelElement(EClass elementClass, AbstractTransformer<T> transformer) throws IOException {
 		List<T> elements = (List<T>) analysis.getResourceProvider().lookupToplevelElement(elementClass);
 		List<JsonObject> jsonData = elements.stream().map(e -> transformer.transform(e)).toList();
-		
-		if (!path.isEmpty() && !path.endsWith(File.separator)) {
-			path += File.separator;
-		}
-		File file = new File(path + fileName + ".json");
-		if (!file.exists()) {
-			file.createNewFile();
-		}
-		
-		new ObjectMapper().writeValue(file, jsonData);
-		
+	
+		return new ObjectMapper().writeValueAsBytes(jsonData);
 	}
 }
