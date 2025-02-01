@@ -71,7 +71,7 @@ const nameRegistry = NameRegistry.getInstance()
 const typeRegistry = TypeRegistry.getInstance()
 const selectedUncertainty = ref<number|null>(null);
 const selectedComponentType = ref<ArchitecturalElementTypeOptionList|null>(null)
-const selections = ref<string[]>([])
+const selections = ref<string[]>(selectionManager.getSelections().filter(s => s.uncertainty == props.uncertainty.id).map(s => s.component))
 SelectionManager.getInstance().addSelectionChangedListener((s) => {
     selections.value = s.filter(s => s.uncertainty == props.uncertainty.id).map(s => s.component)
 })

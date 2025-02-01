@@ -114,6 +114,16 @@ export class SelectionManager {
       this.dispatcher.dispatch({kind: 'redraw'})
     }
   }
+
+  public save() {
+    return JSON.stringify(this.selections)
+  }
+
+  public load(data: string) {
+    this.selections = JSON.parse(data)
+    console.log(this.selections)
+    this.selectionChangedListeners.forEach(listener => listener(this.selections))
+  }
 }
 
 type UpdateListener<T> = (newValue: T) => void

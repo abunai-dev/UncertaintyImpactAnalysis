@@ -15,7 +15,11 @@
             />
         </div>
         <a class="button" v-if="mode == 'display'" href="https://arc3n.abunai.dev/" target="_blank">Open ARC<sup>3</sup>N</a>
-        <div class="button" v-else>Get Json</div>
+        <div v-else class="button-holder">
+            <div class="button" @click="runAnalysis()"><img src="../assets/play-solid.svg"> Run Analysis</div>
+            <div class="button" @click="saveSelection()"><img src="../assets/floppy-disk-solid.svg"> Save Selection</div>
+            <div class="button" @click="loadSelection()"><img src="../assets/upload-solid.svg"> Load Selection</div>
+        </div>
     </div>
 </template>
 
@@ -89,6 +93,46 @@ selectionManager.addSelectComponentListener((v) => {
         })
     }
 })
+
+function saveSelection() {
+    const jsonContent = selectionManager.save()
+
+    const blob = new Blob([jsonContent], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'selection.json'
+    a.click()
+    URL.revokeObjectURL(url)
+}
+
+function loadSelection() {
+    const input = document.createElement('input')
+    input.type = 'file'
+    input.accept = '.json'
+    input.onchange = (e) => {
+        const file = (e.target as HTMLInputElement).files?.[0]
+        if (file) {
+            const reader = new FileReader()
+            reader.onload = (e) => {
+                const content = e.target?.result as string
+                selectionManager.load(content)
+            }
+            reader.readAsText(file)
+        }
+    }
+    input.click()
+}
+
+function runAnalysis() {
+    fetch(window.location.href + 'analysis', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(selections.value)
+    })
+}
 
 const scrollContainer = ref<HTMLElement | null>(null)
 const scrollOffsetY = ref(0)
@@ -170,5 +214,17 @@ input {
     text-align: center;
     font-family: sans-serif;
     cursor: pointer;
+}
+
+.button-holder {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.content .button img {
+    height: 14px;
+    filter: invert(var(--dark-mode));
+    transition: filter .4s;
 }
 </style>
