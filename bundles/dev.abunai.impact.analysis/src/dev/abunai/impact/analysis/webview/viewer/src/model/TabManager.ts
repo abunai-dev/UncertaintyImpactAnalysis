@@ -117,6 +117,10 @@ export class TabManager {
   private generateUuid() {
     return Math.random().toString(36).substring(7)
   }
+
+  public setSelectedContentNonChanging(content: SGraph) {
+    this.tabs[this.tabIndex].content = content
+  }
 }
 
 type ChangeIndexListener = (newIndex: number, oldIndex: number) => void

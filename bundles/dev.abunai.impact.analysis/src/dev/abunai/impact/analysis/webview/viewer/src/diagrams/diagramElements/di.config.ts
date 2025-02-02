@@ -3,6 +3,7 @@ import {
     configureModelElement,
     configureViewerOptions,
     LocalModelSource,
+    MoveCommand,
     SGraphImpl,
     SGraphView,
     SLabelImpl,
@@ -10,6 +11,7 @@ import {
     TYPES
 } from 'sprotty'
 import { TabOpenerMouseListener } from './TabOpener'
+import { MovementSaver } from './MovementSaver'
 
 export const diagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     const context = { bind, unbind, rebind, isBound }
@@ -21,4 +23,5 @@ export const diagramModule = new ContainerModule((bind, unbind, isBound, rebind)
         needsClientLayout: false,
         needsServerLayout: true
     })
+    rebind(MoveCommand).to(MovementSaver)
 })
