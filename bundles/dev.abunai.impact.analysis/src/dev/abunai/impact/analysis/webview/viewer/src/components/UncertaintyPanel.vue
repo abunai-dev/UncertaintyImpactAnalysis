@@ -13,7 +13,9 @@
     <div v-else>
       <div v-for="selection of selections" :key="selection" class="selection-label">
         <span>{{ nameRegistry.getName(selection) ?? selection }}</span>
-        <button @click="e => {e.stopPropagation(); selectionManager.removeSelection(uncertainty.id, selection)}">-</button>
+        <button @click="e => {e.stopPropagation(); selectionManager.removeSelection(uncertainty.id, selection)}">
+          <img src="../assets/trash-solid.svg" class="deleteIcon">
+        </button>
       </div>
     </div>
 
@@ -225,5 +227,10 @@ onMounted(() => {
   color: var(--color-foreground);
   border: none;
   cursor: pointer;
+}
+
+.deleteIcon {
+  height: 12px;
+  filter: invert(var(--dark-mode));
 }
 </style>
