@@ -104,11 +104,15 @@
     stroke-width: 1;
 }
 
-.sprotty-edge.selected-component {
+.sprotty-edge.selected-component path,
+.sprotty-edge.selected-component line,
+.sprotty-edge.selected-component polyline {
     stroke: var(--color-selected);
 }
 
-.sprotty-edge.other-selected {
+.sprotty-edge.other-selected path,
+.sprotty-edge.other-selected line,
+.sprotty-edge.other-selected polyline {
     stroke-opacity: 0.5;
 }
 
