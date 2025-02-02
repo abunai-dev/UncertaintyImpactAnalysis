@@ -2,16 +2,16 @@
   <div id="sidebar">
     <div id="tab-bar">
       <div id="tab-list">
-        <button class="tab" @click="selected = 'Uncertainties'" :class="{ selected: selected === 'Uncertainties' }">
-          Uncertainties
+        <button class="tab" @click="selected = 'Available'" :class="{ selected: selected === 'Available' }">
+          Available
         </button> 
-        <button class="tab" @click="selected = 'Selected'" :class="{ selected: selected === 'Selected' }">
-          Selected
+        <button class="tab" @click="selected = 'Annotated'" :class="{ selected: selected === 'Annotated' }">
+          Annotated
         </button> 
       </div>
     </div>
     <div id="tab-content">
-      <UncertaintySideBarSelector :mode="selected == 'Uncertainties' ? 'display':'selection'" />
+      <UncertaintySideBarSelector :mode="selected == 'Available' ? 'display':'selection'" />
     </div>
   </div>
 </template>
@@ -20,7 +20,7 @@
 import { ref } from 'vue';
 import UncertaintySideBarSelector from './UncertaintySideBarSelector.vue';
 
-const selected = ref<'Uncertainties'|'Selected'>('Uncertainties')
+const selected = ref<'Available'|'Annotated'>('Available')
 
 </script>
 
