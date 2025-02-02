@@ -125,12 +125,13 @@ function loadSelection() {
 }
 
 function runAnalysis() {
+    const content = selectionManager.save()
     fetch(window.location.href + 'analysis', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(selections.value)
+        body: content
     })
 }
 

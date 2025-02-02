@@ -8,15 +8,12 @@ import java.util.Map;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EClass;
 
-import java.io.File;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 
 import org.palladiosimulator.pcm.allocation.AllocationPackage;
 import org.palladiosimulator.pcm.repository.RepositoryPackage;
-import org.palladiosimulator.pcm.resourceenvironment.ResourceEnvironment;
 import org.palladiosimulator.pcm.resourceenvironment.ResourceenvironmentPackage;
 import org.palladiosimulator.pcm.system.SystemPackage;
 import org.palladiosimulator.pcm.usagemodel.UsagemodelPackage;
@@ -35,7 +32,7 @@ public class Transformer {
 		"usageModel", exportTopLevelElement(UsagemodelPackage.Literals.USAGE_MODEL, new UsageModelTransformer()),
 		"repository", exportTopLevelElement(RepositoryPackage.Literals.REPOSITORY, new RepositoryTransformer()));
 		
-		Server server = new Server(modelData);
+		Server server = new Server(modelData, new AnalysisHandler(analysis));
 		server.start();
 		System.out.println("Webview started at: http://localhost:" + Server.PORT + "/");
 		System.out.println("Press enter to stop server");

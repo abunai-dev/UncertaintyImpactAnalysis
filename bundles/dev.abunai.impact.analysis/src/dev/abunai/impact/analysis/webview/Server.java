@@ -4,12 +4,16 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -20,9 +24,11 @@ public class Server implements HttpHandler {
 	public static final int PORT = 8080;
 	private static final String BASE_FOLDER = Path.of("..", "..", "bundles", "dev.abunai.impact.analysis", "src", "dev", "abunai", "impact", "analysis", "webview", "viewer", "dist").toString();
 	private Map<String, byte[]> getMap;
+	private AnalysisHandler analysisHandler;
 
-	public Server(Map<String, byte[]> getMap) {
+	public Server(Map<String, byte[]> getMap, AnalysisHandler analysisHandler) {
 		this.getMap = getMap;
+		this.analysisHandler = analysisHandler;
 	}
 
 	public void start() throws IOException {
@@ -48,10 +54,31 @@ public class Server implements HttpHandler {
 		if ("GET".equalsIgnoreCase(exchange.getRequestMethod())) {
 			handleGet(exchange);
 		} else if ("POST".equalsIgnoreCase(exchange.getRequestMethod())) {
-
+			if (exchange.getRequestURI().getPath().equals("/analysis")) {
+				try {
+					analysisHandler.handle(geSelectiontBody(exchange));
+				} catch (IOException e) {
+					System.out.println(e);
+					answerWithText("400: Could not handle request", 400, exchange);
+					return;
+				}
+				answerWithText("200: Succes", 202, exchange);
+			} else {
+				answerWithText("404: Unknown endpoint", 404, exchange);
+			}
 		} else {
 			answerWithText("404: Method not supported!", 404, exchange);
 		}
+	}
+	
+	private List<SelectionData> geSelectiontBody(HttpExchange exchange) throws IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode json = mapper.readTree(exchange.getRequestBody());
+		exchange.getRequestBody().close();
+		ObjectReader reader = mapper.readerFor(new TypeReference<List<SelectionData>>(){});
+		List<SelectionData> a = reader.readValue(json);
+		System.out.println(a);
+		return a;
 	}
 
 	private void handleGet(HttpExchange exchange) throws IOException {
