@@ -81,7 +81,7 @@ export class AssemblyTransformer extends MapTransformer<Json.System> {
             assemblyContexts[edge.requiredAssembly].children!.push(requieringPort)
 
             typeRegistry.registerComponent(edge.id, ArchitecturalElementTypeOptionList.CONNECTOR)
-            nameRegistry.addName(edge.id, edge.id)
+            nameRegistry.addName(edge.id, edge.requiredRole + ' -> ' + edge.providingRole)
             edges.push({
                 type: EDGES.ARROW_OPEN,
                 id: edge.id,

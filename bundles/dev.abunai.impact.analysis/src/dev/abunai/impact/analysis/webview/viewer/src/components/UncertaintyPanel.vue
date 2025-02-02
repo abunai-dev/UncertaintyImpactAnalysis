@@ -220,6 +220,9 @@ onMounted(() => {
 
 .selection-label span {
   flex-grow: 1;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
 }
 
 .selection-label button {
