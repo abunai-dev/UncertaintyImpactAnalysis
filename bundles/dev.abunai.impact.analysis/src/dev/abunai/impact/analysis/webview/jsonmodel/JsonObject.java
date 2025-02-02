@@ -1,4 +1,4 @@
-package dev.abunai.impact.analysis.webview;
+package dev.abunai.impact.analysis.webview.jsonmodel;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

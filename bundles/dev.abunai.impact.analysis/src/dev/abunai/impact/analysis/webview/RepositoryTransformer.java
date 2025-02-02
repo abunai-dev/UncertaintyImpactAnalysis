@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import dev.abunai.impact.analysis.webview.jsonmodel.*;
 import org.palladiosimulator.pcm.core.entity.NamedElement;
 import org.palladiosimulator.pcm.repository.BasicComponent;
 import org.palladiosimulator.pcm.repository.CompositeDataType;
@@ -105,77 +106,4 @@ public class RepositoryTransformer implements AbstractTransformer<Repository> {
 		return "void";
 	}
 
-}
-
-class RepositoryJson extends JsonObject {
-	public List<JsonObject> contents;
-	
-	
-	public RepositoryJson(String id, List<JsonObject> contents) {
-		super(id, "Repository");
-		this.contents = contents;
-	}
-	
-}
-
-class SeffJson extends JsonObject {
-	public String signature;
-	public List<ActionJson> actions;
-	
-	public SeffJson(String id, String signature, List<ActionJson> actions) {
-		super(id, "Seff");
-		this.signature = signature;
-		this.actions = actions;
-	}
-	
-}
-
-class BasicComponentJson extends JsonObject {
-	public String name;
-	public List<SeffJson> seffs;
-	public List<ComponentInterfaceConnection> required;
-	public List<ComponentInterfaceConnection> provided;
-	
-	
-	public BasicComponentJson(String id, String name, List<SeffJson> seffs, List<ComponentInterfaceConnection> required, List<ComponentInterfaceConnection> provided) {
-		super(id, "BasicComponent");
-		this.name = name;
-		this.seffs = seffs;
-		this.required = required;
-		this.provided = provided;
-	}
-}
-
-class ComponentInterfaceConnection {
-	public String label;
-	public String goalInterface;
-	
-	public ComponentInterfaceConnection(String label, String goalInterface) {
-		this.label = label;
-		this.goalInterface = goalInterface;
-	}
-}
-
-class InterfaceJson extends JsonObject {
-	public String name;
-	public List<String> signatures;
-	
-	public InterfaceJson(String id, String name, List<String> signatures) {
-		super(id, "Interface");
-		this.name = name;
-		this.signatures = signatures;
-	}
-}
-
-class CompositeDataTypeJson extends JsonObject {
-	public String name;
-	public List<String> signatures;
-	public List<String> contained;
-	
-	protected CompositeDataTypeJson(String id, String name, List<String> signatures, List<String> contained) {
-		super(id, "CompositeDataType");
-		this.name = name;
-		this.signatures = signatures;
-		this.contained = contained;
-	}
 }

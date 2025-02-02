@@ -5,6 +5,7 @@ import dev.abunai.impact.analysis.PCMUncertaintyImpactAnalysis;
 import java.util.List;
 import java.util.Map;
 
+import dev.abunai.impact.analysis.webview.jsonmodel.JsonObject;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EClass;
 

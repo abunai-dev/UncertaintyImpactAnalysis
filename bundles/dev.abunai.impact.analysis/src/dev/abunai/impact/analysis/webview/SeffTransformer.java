@@ -1,7 +1,7 @@
 package dev.abunai.impact.analysis.webview;
 
-import java.util.List;
-
+import dev.abunai.impact.analysis.webview.jsonmodel.JsonObject;
+import dev.abunai.impact.analysis.webview.jsonmodel.seff.*;
 import org.palladiosimulator.pcm.core.entity.Entity;
 import org.palladiosimulator.pcm.parameter.VariableUsage;
 import org.palladiosimulator.pcm.seff.AbstractAction;
@@ -57,7 +57,7 @@ public class SeffTransformer implements AbstractTransformer<Entity> {
 		
 		if (action instanceof SetVariableAction) {
 			SetVariableAction node = (SetVariableAction)action;
-			return new SetVariableJson(node.getId(), getId(node.getSuccessor_AbstractAction()), node.getEntityName(), 
+			return new SetVariableJson(node.getId(), getId(node.getSuccessor_AbstractAction()), node.getEntityName(),
 					node.getLocalVariableUsages_SetVariableAction().stream().map(v -> transformVariableUsage(v)).toList());
 		}
 		
@@ -93,141 +93,11 @@ public class SeffTransformer implements AbstractTransformer<Entity> {
 		
 		if (transition instanceof GuardedBranchTransition) {
 			GuardedBranchTransition branchTransition = (GuardedBranchTransition)transition;
-			return new GuardedTransitionJson(branchTransition.getId(), branchTransition.getEntityName(), 
+			return new GuardedTransitionJson(branchTransition.getId(), branchTransition.getEntityName(),
 					branchTransition.getBranchCondition_GuardedBranchTransition().getExpression().toString(),
 					branchTransition.getBranchBehaviour_BranchTransition().getSteps_Behaviour().stream().map(a -> transform(a)).toList());
 		}
 		
 		throw new RuntimeException("Could not identify type of Branch Transition");
 	}
-}
-
-class TransitionJson extends JsonObject {
-	public String name;
-	public List<ActionJson> actions;
-	
-	protected TransitionJson(String id, String type, String name, List<ActionJson> actions) {
-		super(id, type);
-		this.name = name;
-		this.actions = actions;
-	}
-	
-}
-
-class ProbabilisticTransitionJson extends TransitionJson {
-	public double probability;
-
-	public ProbabilisticTransitionJson(String id, String name, double probability, List<ActionJson> actions) {
-		super(id, "ProbabilisticBranchTransition", name, actions);
-		this.probability = probability;
-		
-	}	
-}
-
-class GuardedTransitionJson extends TransitionJson {
-	public String condition;
-
-	public GuardedTransitionJson(String id, String name, String condition, List<ActionJson> actions) {
-		super(id, "GuardedBranchTransition", name, actions);
-		this.condition = condition;
-		
-	}	
-}
-
-class BranchJson extends ActionJson {
-	public String name;
-	public List<JsonObject> transitions;
-	
-	public BranchJson(String id, String successor, String name, List<JsonObject> transitions) {
-		super(id, "Branch", successor);
-		this.transitions = transitions;
-		this.name = name;
-	}
-}
-
-class VariableUsageJson extends JsonObject {
-	public String referenceName;
-	public VariableUsageJson(String id, String referenceName) {
-		super(id, "VariableUsage");
-		this.referenceName = referenceName;
-	}
-}
-
-class EntryLevelSystemCallJson extends ActionJson {
-	public String name;
-	public List<VariableUsageJson> inputParameterUsages;
-	public List<VariableUsageJson> outputParameterUsages;
-	
-	public EntryLevelSystemCallJson(String id, String successor, String name, List<VariableUsageJson> inputParameterUsages,
-			List<VariableUsageJson> outputParameterUsages) {
-		super(id, "EntryLevelSystemCall", successor);
-		this.name = name;
-		this.inputParameterUsages = inputParameterUsages;
-		this.outputParameterUsages = outputParameterUsages;
-	}
-}
-
-class ExternalCallJson extends ActionJson {
-	public String name;
-	public List<VariableUsageJson> inputParameterUsages;
-	public List<VariableUsageJson> outputParameterUsages;
-	
-	public ExternalCallJson(String id, String successor, String name, List<VariableUsageJson> inputParameterUsages,
-			List<VariableUsageJson> outputParameterUsages) {
-		super(id, "ExternalCall", successor);
-		this.name = name;
-		this.inputParameterUsages = inputParameterUsages;
-		this.outputParameterUsages = outputParameterUsages;
-	}
-}
-
-class SetVariableJson extends ActionJson {
-	public String name;
-	public List<VariableUsageJson> variableUsages;
-	
-	public SetVariableJson(String id, String successor, String name, List<VariableUsageJson> variableUsages) {
-		super(id, "SetVariable", successor);
-		this.name = name;
-		this.variableUsages = variableUsages;
-	}
-}
-
-class StopActionJson extends ActionJson {
-
-	public StopActionJson(String id, String successor) {
-		super(id, "Stop", successor);
-	}
-	
-}
-
-class StartActionJson extends ActionJson {
-
-	public StartActionJson(String id, String successor) {
-		super(id, "Start", successor);
-	}
-	
-}
-
-class UnconcreteAction extends ActionJson {
-	public String typeName;
-	public String name;
-	
-	public UnconcreteAction(String id, String successor, String name, String typeName) {
-		super(id, "AbstractAction", successor);
-		this.name = name;
-		this.typeName = typeName;
-	}
-}
-
-abstract class ActionJson extends JsonObject {
-
-	public String successor;
-	
-	protected ActionJson(String id, String type, String successor) {
-		super(id, type);
-		if (successor != null) {
-			this.successor = successor;
-		}
-	}
-	
 }
