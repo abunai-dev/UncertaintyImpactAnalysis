@@ -8,5 +8,5 @@ Bundle-Activator: dev.abunai.impact.analysis.testmodels.Activator
 Bundle-Vendor: Uncertainty Impact Analysis Test Models
 Require-Bundle: org.eclipse.core.runtime
 Bundle-RequiredExecutionEnvironment: JavaSE-17
-Automatic-Module-Name: edu.kit.kastel.dsis.uncertainty.impactanalysis.testmodels
+Automatic-Module-Name: dev.abunai.impact.analysis.testmodels
 Bundle-ActivationPolicy: lazy
