@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Testmodels
-Bundle-SymbolicName: edu.kit.kastel.dsis.uncertainty.impactanalysis.testmodels
+Bundle-SymbolicName: dev.abunai.impact.analysis.testmodels
 Bundle-Version: 1.0.0.qualifier
 Export-Package: dev.abunai.impact.analysis.testmodels
 Bundle-Activator: dev.abunai.impact.analysis.testmodels.Activator
