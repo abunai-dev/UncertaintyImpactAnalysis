@@ -1,5 +1,6 @@
 package dev.abunai.impact.analysis.tests.evaluation;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import dev.abunai.impact.analysis.tests.ImpactAnnotator;
 import org.dataflowanalysis.analysis.core.AbstractTransposeFlowGraph;
 import org.dataflowanalysis.analysis.core.AbstractVertex;
 import org.dataflowanalysis.analysis.core.CharacteristicValue;
@@ -49,19 +51,45 @@ public abstract class EvaluationBase extends TestBase {
 		for (int i = 0; i < flowGraphs.getTransposeFlowGraphs().size(); i++) {
 			var violations = analysis.queryDataFlow(flowGraphs.getTransposeFlowGraphs().get(i), it -> {
 
-				List<String> dataLiterals = it.getAllDataCharacteristics().stream().map(e -> e.getAllCharacteristics())
-						.flatMap(List::stream).map(e -> e.getValueName()).toList();
+				List<String> dataLiterals = it.getAllDataCharacteristics().stream()
+						.map(DataCharacteristic::getAllCharacteristics)
+						.flatMap(List::stream).map(CharacteristicValue::getValueName)
+						.toList();
 				List<String> nodeLiterals = it.getAllVertexCharacteristics().stream()
-						.map(e -> e.getValueName()).toList();
+						.map(CharacteristicValue::getValueName)
+						.toList();
 
 				return getConstraint().test(dataLiterals, nodeLiterals);
 			});
-
 			if (!violations.isEmpty()) {
 				System.out.println(
 						UncertaintyImpactCollection.formatDataFlow(i, violations, true));
 			}
 		}
+	}
+
+	@Test
+	public void storeAnnotatedResult() {
+		addUncertaintySources();
+
+		// Do uncertainty impact analysis
+		var result = analysis.propagate();
+		result.printResultsWithTitle(getScenarioName(), true);
+
+		// Do confidentiality analysis
+		var flowGraphs = analysis.findFlowGraphs();
+		flowGraphs.evaluate();
+
+		final var usageModelPath = Paths.get(getBaseFolder(), getFolderName(), getFilesName() + ".usagemodel")
+				.toString();
+		final var allocationPath = Paths.get(getBaseFolder(), getFolderName(), getFilesName() + ".allocation")
+				.toString();
+		final var nodeCharacteristicsPath = Paths
+				.get(getBaseFolder(), getFolderName(), getFilesName() + ".nodecharacteristics").toString();
+
+		var impactAnnotator = new ImpactAnnotator(analysis, result, this.getConstraint());
+		var resultWeb = impactAnnotator.getAnnotatedResult();
+		impactAnnotator.saveAnnotatedWebDFD(resultWeb, getFolderName() + ".json");
 	}
 
 	@Test

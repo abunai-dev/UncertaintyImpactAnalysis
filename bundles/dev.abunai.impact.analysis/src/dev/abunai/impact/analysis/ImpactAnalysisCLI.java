@@ -18,8 +18,11 @@ public class ImpactAnalysisCLI {
         final var nodeCharacteristicsPath = Paths
                 .get(MODEL_PATH + ".nodecharacteristics").toString();
 
-        var builder = new PCMUncertaintyImpactAnalysisBuilder().standalone().modelProjectName(TEST_MODEL_PROJECT_NAME)
-                .usePluginActivator(Activator.class).useUsageModel(usageModelPath).useAllocationModel(allocationPath)
+        var builder = new PCMUncertaintyImpactAnalysisBuilder().standalone()
+        		.modelProjectName(TEST_MODEL_PROJECT_NAME)
+                .usePluginActivator(Activator.class)
+                .useUsageModel(usageModelPath)
+                .useAllocationModel(allocationPath)
                 .useNodeCharacteristicsModel(nodeCharacteristicsPath);
 
         var analysis = ((PCMUncertaintyImpactAnalysisBuilder) builder).build();
