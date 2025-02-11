@@ -69,6 +69,14 @@ export class SelectionManager {
     this.submit()
   }
 
+  public deselect() {
+    this.selectedComponent = null
+    this.selectedUncertainty = null
+    this.selectComponentListeners.forEach(listener => listener(this.selectedComponent))
+    this.selectUncertaintyListeners.forEach(listener => listener(this.selectedUncertainty))
+    this.triggerRerender()
+  }
+
   public getSelectedComponentId(): string | null {
     return this.selectedComponent
   }

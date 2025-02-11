@@ -1,5 +1,5 @@
 <template>
-  <div id="main">
+  <div id="main" :style="{ cursor: hasSelectedUncertainty ? 'cell' : 'default' }">
     <div id="sidebar-holder">
       <UncertaintySideBar />
     </div>
@@ -10,8 +10,23 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
 import DiagramTabDisplay from './components/DiagramTabDisplay.vue';
 import UncertaintySideBar from './components/UncertaintySideBar.vue';
+import { SelectionManager } from './model/SelectionManager';
+
+const hasSelectedUncertainty = ref(false)
+
+SelectionManager.getInstance().addSelectUncertaintyListener((i: number) => {
+  hasSelectedUncertainty.value = i !== null;
+})
+
+document.onkeydown = (e: KeyboardEvent) => {
+  if (e.key === 'Escape') {
+    SelectionManager.getInstance().deselect();
+  }
+}
+
 </script>
 
 <style scoped>

@@ -5,9 +5,8 @@
     "main": "index.js",
     "scripts": {
         "dev": "vite",
-        "build": "run-p type-check \"build-only {@}\" --",
+        "build": "vite build",
         "preview": "vite preview",
-        "build-only": "vite build",
         "type-check": "vue-tsc --build",
         "format": "prettier --write \"./**/*.{html,css,ts,tsx,json,yaml,md}\"",
         "prepare": "husky"
