@@ -9,7 +9,7 @@ import org.palladiosimulator.pcm.core.composition.AssemblyContext;
 import org.palladiosimulator.pcm.core.composition.ProvidedDelegationConnector;
 import org.palladiosimulator.pcm.repository.OperationProvidedRole;
 
-public class SystemTransformer implements AbstractTransformer<org.palladiosimulator.pcm.system.System> {
+class SystemTransformer implements AbstractTransformer<org.palladiosimulator.pcm.system.System> {
 	
 	@Override
 	public JsonObject transform(org.palladiosimulator.pcm.system.System system) {

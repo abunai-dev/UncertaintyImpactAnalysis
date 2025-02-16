@@ -18,13 +18,20 @@ import org.palladiosimulator.pcm.usagemodel.UsageScenario;
 
 import dev.abunai.impact.analysis.PCMUncertaintyImpactAnalysis;
 
-public class AnalysisHandler {
+/**
+ * Handles the adding of uncertainties to the analysis
+ */
+class AnalysisHandler {
 	private final PCMUncertaintyImpactAnalysis analysis;
 
 	public AnalysisHandler(PCMUncertaintyImpactAnalysis analysis) {
 		this.analysis = analysis;
 	}
-	
+
+	/**
+	 * Adds uncertainties to the analysis and executes it
+	 * @param selections The selections made in the viewer
+	 */
 	public void handle(List<SelectionData> selections) {
 		for (SelectionData selection : selections) {
 			Optional<EObject> component = analysis.getResourceProvider().lookupElementWithId(selection.component);

@@ -11,7 +11,7 @@ import org.palladiosimulator.pcm.resourceenvironment.LinkingResource;
 import org.palladiosimulator.pcm.resourceenvironment.ResourceContainer;
 import org.palladiosimulator.pcm.resourceenvironment.ResourceEnvironment;
 
-public class ResourceEnvironmentTransformer implements AbstractTransformer<ResourceEnvironment> {
+class ResourceEnvironmentTransformer implements AbstractTransformer<ResourceEnvironment> {
 
 	@Override
 	public JsonObject transform(ResourceEnvironment resourceEnvironment) {

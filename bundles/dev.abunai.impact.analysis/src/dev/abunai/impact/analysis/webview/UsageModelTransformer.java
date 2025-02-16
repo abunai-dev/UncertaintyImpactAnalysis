@@ -11,7 +11,7 @@ import org.palladiosimulator.pcm.usagemodel.ScenarioBehaviour;
 import org.palladiosimulator.pcm.usagemodel.UsageModel;
 import org.palladiosimulator.pcm.usagemodel.UsageScenario;
 
-public class UsageModelTransformer implements AbstractTransformer<UsageModel> {
+class UsageModelTransformer implements AbstractTransformer<UsageModel> {
 
 	@Override
 	public JsonObject transform(UsageModel usageModel) {

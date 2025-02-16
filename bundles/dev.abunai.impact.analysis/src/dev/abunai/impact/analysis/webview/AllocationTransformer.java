@@ -13,7 +13,7 @@ import org.palladiosimulator.pcm.allocation.Allocation;
 import org.palladiosimulator.pcm.allocation.AllocationContext;
 
 
-public class AllocationTransformer implements AbstractTransformer<Allocation> {
+class AllocationTransformer implements AbstractTransformer<Allocation> {
 
 	@Override
 	public JsonObject transform(Allocation allocation) {

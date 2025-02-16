@@ -19,13 +19,19 @@ import org.palladiosimulator.pcm.resourceenvironment.ResourceenvironmentPackage;
 import org.palladiosimulator.pcm.system.SystemPackage;
 import org.palladiosimulator.pcm.usagemodel.UsagemodelPackage;
 
-public class Transformer {
+/**
+ * Transforms the sources of the analysis object into web usable data and starts the web viewer with them.
+ */
+public class WebViewer {
 	private final PCMUncertaintyImpactAnalysis analysis;
 
-	public Transformer(PCMUncertaintyImpactAnalysis analysis) {
+	public WebViewer(PCMUncertaintyImpactAnalysis analysis) {
 		this.analysis = analysis;
 	}
-	
+
+	/**
+	 * Executes the transformation and starts the server
+	 */
 	public void handle() throws IOException {
 		Map<String, byte[]> modelData = Map.of("system", exportTopLevelElement(SystemPackage.Literals.SYSTEM, new SystemTransformer()),
 		"allocation", exportTopLevelElement(AllocationPackage.Literals.ALLOCATION, new AllocationTransformer()),

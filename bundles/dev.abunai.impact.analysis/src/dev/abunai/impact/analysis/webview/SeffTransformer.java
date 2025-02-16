@@ -18,7 +18,7 @@ import org.palladiosimulator.pcm.usagemodel.EntryLevelSystemCall;
 import org.palladiosimulator.pcm.usagemodel.Start;
 import org.palladiosimulator.pcm.usagemodel.Stop;
 
-public class SeffTransformer implements AbstractTransformer<Entity> {
+class SeffTransformer implements AbstractTransformer<Entity> {
 
 	@Override
 	public ActionJson transform(Entity action) {

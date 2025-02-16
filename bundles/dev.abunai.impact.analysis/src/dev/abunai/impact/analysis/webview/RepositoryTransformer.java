@@ -20,7 +20,7 @@ import org.palladiosimulator.pcm.repository.Repository;
 import org.palladiosimulator.pcm.repository.RepositoryComponent;
 import org.palladiosimulator.pcm.seff.ResourceDemandingSEFF;
 
-public class RepositoryTransformer implements AbstractTransformer<Repository> {
+class RepositoryTransformer implements AbstractTransformer<Repository> {
 
 	@Override
 	public JsonObject transform(Repository repository) {

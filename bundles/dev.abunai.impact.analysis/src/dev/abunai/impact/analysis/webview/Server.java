@@ -18,7 +18,10 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
-public class Server implements HttpHandler {
+/**
+ * Manages the hosting of the web viewer
+ */
+class Server implements HttpHandler {
 
 	private HttpServer server;
 	public static final int PORT = 8080;
@@ -26,11 +29,20 @@ public class Server implements HttpHandler {
 	private Map<String, byte[]> getMap;
 	private AnalysisHandler analysisHandler;
 
+	/**
+	 * Creates a Server object
+	 * @param getMap Mapping of paths to data for GET requests
+	 * @param analysisHandler Handler for POST requests to add uncertainties
+	 */
 	public Server(Map<String, byte[]> getMap, AnalysisHandler analysisHandler) {
 		this.getMap = getMap;
 		this.analysisHandler = analysisHandler;
 	}
 
+	/**
+	 * Starts the web viewer on the default port
+	 * @throws IOException
+	 */
 	public void start() throws IOException {
 		if (server != null) {
             throw new IllegalStateException("Server already started");
@@ -45,6 +57,9 @@ public class Server implements HttpHandler {
         server.start();
 	}
 
+	/**
+	 * Stops the web viewer
+	 */
 	public void stop() {
 		server.stop(0);
 	}
