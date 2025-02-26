@@ -31,12 +31,8 @@ public class CWAEvaluationScenario1Test extends CWAEvaluationBase {
 			}
 
 			// S1_2
-			if (nodeLiterals.contains("IllegalDeploymentLocation")) {
-				return true;
-			}
-
-			return false;
-		};
+            return nodeLiterals.contains("IllegalDeploymentLocation");
+        };
 	}
 
 }

@@ -31,12 +31,8 @@ public class CWAEvaluationScenario4Test extends CWAEvaluationBase {
 			}
 
 			// S4_2
-			if (dataLiterals.contains("RetrievedConfidentialDetails")) {
-				return true;
-			}
-
-			return false;
-		};
+            return dataLiterals.contains("RetrievedConfidentialDetails");
+        };
 	}
 
 }

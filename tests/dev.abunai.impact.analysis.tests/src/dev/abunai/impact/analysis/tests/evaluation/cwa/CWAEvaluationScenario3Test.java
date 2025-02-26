@@ -31,12 +31,8 @@ public class CWAEvaluationScenario3Test extends CWAEvaluationBase {
 			}
 
 			// S3_2
-			if (dataLiterals.contains("ValidationFailed")) {
-				return true;
-			}
-
-			return false;
-		};
+            return dataLiterals.contains("ValidationFailed");
+        };
 	}
 
 }

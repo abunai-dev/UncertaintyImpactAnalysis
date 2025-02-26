@@ -30,11 +30,7 @@ public class MaaSEvaluationScenario5Test extends MaaSEvaluationBase {
 			if (dataLiterals.contains("Leaked")) {
 				return true;
 			}
-			if (nodeLiterals.contains("MaliciousActor")) {
-				return true;
-			}
-
-			return false;
-		};
+            return nodeLiterals.contains("MaliciousActor");
+        };
 	}
 }
