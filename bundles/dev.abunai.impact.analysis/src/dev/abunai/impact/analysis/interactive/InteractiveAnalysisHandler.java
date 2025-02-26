@@ -19,7 +19,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 
 public class InteractiveAnalysisHandler {
 	
-	private final String JSON_URL = "https://arc3n.abunai.dev/data.json";
+	private static final String JSON_URL = "https://arc3n.abunai.dev/data.json";
 	
 	private final PCMUncertaintyImpactAnalysis analysis;
 	private final Scanner scanner;
@@ -41,13 +41,13 @@ public class InteractiveAnalysisHandler {
 		
 		ArchitecturalElementType type = ArchitecturalElementType.getFromName(uncertainty.classes().architecturalElementType());
 		EntityLookup entityLookup = generateEntityLookUp(type);
-		System.out.println(""); // Spacer
+		System.out.println();
 		if(!selectElement(entityLookup)) {
 			scanner.close();
 			return;
 		}
 		scanner.close();
-		System.out.println(""); // Spacer
+		System.out.println();
 		
 		
 		analysis.propagate().printResults(true, true, true, false);
@@ -86,7 +86,7 @@ public class InteractiveAnalysisHandler {
 		System.out.println("Select one of these element.");
 		for (int i = 0; i < allEntities.size(); i++) {
 			Entity element = allEntities.get(i);
-			System.out.println(String.format("%d) %s (%s)", i + 1, element.getEntityName(), element.getId()));
+			System.out.printf("%d) %s (%s)%n", i + 1, element.getEntityName(), element.getId());
 		}
 		System.out.println("Enter line number:");
 		int index = getIntFromInput();
@@ -96,7 +96,7 @@ public class InteractiveAnalysisHandler {
 		try {
 			entityLookup.addToAnalysis(index - 1);
 		} catch (IllegalArgumentException e) {
-			System.out.println(""); // Spacer
+			System.out.println();
 			System.out.println("The selected entity is not part of any dataflow.");
 			System.out.println("No uncertainty with this entity found.");
 			return false;
@@ -105,13 +105,12 @@ public class InteractiveAnalysisHandler {
 	}
 	
 	private EntityLookup generateEntityLookUp(ArchitecturalElementType type) {
-		switch(type) {
-			case COMPONENT: return new ComponentEntityLookup(analysis);
-			case CONNECTOR: return new ConnectorEntityLookup(analysis);
-			case INTERFACE: return new InterfaceEntityLookup(analysis);
-			case BEHAVIOR_DESCRIPTION: return new BehaviorEntityLookup(analysis);
-			case EXTERNAL_RESOURCE: return new ExternalEntityLookup(analysis);
-		}
-		return null;
-	}
+        return switch (type) {
+            case COMPONENT -> new ComponentEntityLookup(analysis);
+            case CONNECTOR -> new ConnectorEntityLookup(analysis);
+            case INTERFACE -> new InterfaceEntityLookup(analysis);
+            case BEHAVIOR_DESCRIPTION -> new BehaviorEntityLookup(analysis);
+            case EXTERNAL_RESOURCE -> new ExternalEntityLookup(analysis);
+        };
+    }
 }

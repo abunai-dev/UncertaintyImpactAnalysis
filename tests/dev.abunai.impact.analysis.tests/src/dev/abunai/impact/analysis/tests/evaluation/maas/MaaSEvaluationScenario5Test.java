@@ -3,7 +3,7 @@ package dev.abunai.impact.analysis.tests.evaluation.maas;
 import java.util.List;
 import java.util.function.BiPredicate;
 
-public class MaaSEvaluationScenario5 extends MaaSEvaluationBase {
+public class MaaSEvaluationScenario5Test extends MaaSEvaluationBase {
 	@Override
 	protected String getFolderName() {
 		return "MaaS_UncertaintyScenario5";

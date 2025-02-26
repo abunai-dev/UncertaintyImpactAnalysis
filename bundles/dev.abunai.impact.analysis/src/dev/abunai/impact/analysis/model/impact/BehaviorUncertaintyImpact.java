@@ -9,12 +9,20 @@ import org.palladiosimulator.pcm.core.entity.Entity;
 import dev.abunai.impact.analysis.model.source.UncertaintySource;
 import dev.abunai.impact.analysis.util.PropagationHelper;
 
+/**
+ * Represents the uncertainty impact of an {@link dev.abunai.impact.analysis.model.source.BehaviorUncertaintySource}
+ */
 public class BehaviorUncertaintyImpact<T extends Entity> extends UncertaintyImpact<T> {
-
 	private final AbstractPCMVertex<?> affectedElement;
 	private final UncertaintySource<T> origin;
 	private final PropagationHelper propagationHelper;
 
+	/**
+	 * Creates a new {@link BehaviorUncertaintyImpact} with the given affected element and origin
+	 * @param affectedElement Affected element by the {@link dev.abunai.impact.analysis.model.source.BehaviorUncertaintySource}
+	 * @param origin {@link dev.abunai.impact.analysis.model.source.BehaviorUncertaintySource} that caused the {@link BehaviorUncertaintyImpact}
+	 * @param propagationHelper {@link PropagationHelper} used to find the affected data flows
+	 */
 	public BehaviorUncertaintyImpact(AbstractPCMVertex<?> affectedElement, UncertaintySource<T> origin,
 			PropagationHelper propagationHelper) {
 		this.affectedElement = affectedElement;

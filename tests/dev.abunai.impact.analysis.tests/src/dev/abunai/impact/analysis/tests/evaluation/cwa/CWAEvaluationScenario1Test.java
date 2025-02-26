@@ -3,7 +3,7 @@ package dev.abunai.impact.analysis.tests.evaluation.cwa;
 import java.util.List;
 import java.util.function.BiPredicate;
 
-public class CWAEvaluationScenario1 extends CWAEvaluationBase {
+public class CWAEvaluationScenario1Test extends CWAEvaluationBase {
 
 	@Override
 	protected String getFolderName() {

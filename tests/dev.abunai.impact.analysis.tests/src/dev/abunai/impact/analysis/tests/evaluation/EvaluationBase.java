@@ -1,6 +1,5 @@
 package dev.abunai.impact.analysis.tests.evaluation;
 
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -79,13 +78,6 @@ public abstract class EvaluationBase extends TestBase {
 		// Do confidentiality analysis
 		var flowGraphs = analysis.findFlowGraphs();
 		flowGraphs.evaluate();
-
-		final var usageModelPath = Paths.get(getBaseFolder(), getFolderName(), getFilesName() + ".usagemodel")
-				.toString();
-		final var allocationPath = Paths.get(getBaseFolder(), getFolderName(), getFilesName() + ".allocation")
-				.toString();
-		final var nodeCharacteristicsPath = Paths
-				.get(getBaseFolder(), getFolderName(), getFilesName() + ".nodecharacteristics").toString();
 
 		var impactAnnotator = new ImpactAnnotator(analysis, result, this.getConstraint());
 		var resultWeb = impactAnnotator.getAnnotatedResult();
