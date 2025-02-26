@@ -65,9 +65,8 @@ public class BehaviorEntityLookup extends EntityLookup {
 			return;
 		}
 		currentIndex -= setVariableActions.size();
-		
+
 		analysis.getUncertaintySources().addBehaviorUncertaintyInBranch(branchActions.get(currentIndex).getId());
-		
 	}
 
 }

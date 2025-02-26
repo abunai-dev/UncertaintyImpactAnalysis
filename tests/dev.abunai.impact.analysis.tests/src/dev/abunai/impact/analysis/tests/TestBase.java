@@ -13,7 +13,7 @@ import dev.abunai.impact.analysis.model.UncertaintyImpactCollection;
 import dev.abunai.impact.analysis.testmodels.Activator;
 
 public abstract class TestBase {
-	protected PCMUncertaintyImpactAnalysis analysis = null;
+	protected PCMUncertaintyImpactAnalysis analysis;
 
 	protected abstract String getFolderName();
 

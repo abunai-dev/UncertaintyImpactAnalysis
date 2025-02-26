@@ -31,7 +31,7 @@ public class ComponentEntityLookup extends EntityLookup {
 
 	@Override
 	public void addToAnalysis(int index) {
-		analysis.getUncertaintySources().addComponentUncertaintyInAssemblyContext(assemblyContexts.get(index).getId());
+		this.analysis.getUncertaintySources().addComponentUncertaintyInAssemblyContext(assemblyContexts.get(index).getId());
 	}
 
 }

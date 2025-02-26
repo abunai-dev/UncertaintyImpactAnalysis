@@ -7,12 +7,12 @@ import org.dataflowanalysis.analysis.utils.ResourceUtils;
 
 /**
  * Analysis Builder object used to create a {@link PCMUncertaintyImpactAnalysis}
+ * <b>Warning:</b> Cannot use custom resource providers
  */
 public class PCMUncertaintyImpactAnalysisBuilder extends PCMDataFlowConfidentialityAnalysisBuilder {
 
 	@Override
 	public PCMUncertaintyImpactAnalysis build() {
-		// Hint: Does not allow for custom resource providers
 		PCMResourceProvider resourceProvider = new PCMURIResourceProvider(
 				ResourceUtils.createRelativePluginURI(relativeUsageModelPath, modelProjectName),
 				ResourceUtils.createRelativePluginURI(relativeAllocationModelPath, modelProjectName),

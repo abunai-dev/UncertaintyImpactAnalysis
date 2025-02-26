@@ -17,18 +17,28 @@ import dev.abunai.impact.analysis.PCMUncertaintyImpactAnalysis;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
+/**
+ * Handles interactive input for the analysis
+ */
 public class InteractiveAnalysisHandler {
-	
 	private static final String JSON_URL = "https://arc3n.abunai.dev/data.json";
 	
 	private final PCMUncertaintyImpactAnalysis analysis;
 	private final Scanner scanner;
-	
+
+	/**
+	 * Creates a new handler for interactive input for the given analysis
+	 * @param analysis Given analysis to which the interactive input applies
+	 */
 	public InteractiveAnalysisHandler(PCMUncertaintyImpactAnalysis analysis) {
 		this.analysis = analysis;
 		scanner = new Scanner(System.in);
 	}
-	
+
+	/**
+	 * Handles an interaction via the command line with the analysis
+	 * @throws IOException Thrown when uncertainties cannot be loaded from json
+	 */
 	public void handle() throws IOException {
 		System.out.println("Enter an id of an uncertainty to check for:");
 		int id = getIntFromInput();
@@ -53,7 +63,12 @@ public class InteractiveAnalysisHandler {
 		analysis.propagate().printResults(true, true, true, false);
 		
 	}
-	
+
+	/**
+	 * Gets an Integer from input allowing for a leading "#"
+	 * @return Returns a Integer from system input
+	 * @throws IllegalArgumentException Thrown when the given input is not an integer
+	 */
 	private int getIntFromInput() {
 		String input = "";
 		try {
@@ -67,8 +82,13 @@ public class InteractiveAnalysisHandler {
 			throw new IllegalArgumentException(String.format("%s is not a valid number.", input));
 		}
 	}
-	
-	
+
+
+	/**
+	 * Receives all uncertainties from arc3n
+	 * @return Returns a list of {@link JsonUncertainty} retrieved from arc3n
+	 * @throws IOException thrown when the {@link JsonUncertainty} objects cannot be retrieved
+	 */
 	private List<JsonUncertainty> getAllUncertainties() throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		URL url = new URL(JSON_URL);
@@ -76,7 +96,13 @@ public class InteractiveAnalysisHandler {
 		ObjectReader reader = mapper.readerFor(new TypeReference<List<JsonUncertainty>>() {});
 		return reader.readValue(node);
 	}
-	
+
+	/**
+	 * Selects an element from the given {@link EntityLookup} object
+	 * @param entityLookup {@link EntityLookup} that is picked from
+	 * @return Returns true, if an uncertainty could be added.
+	 * Otherwise, the method returns false
+	 */
 	private boolean selectElement(EntityLookup entityLookup) {
 		List<Entity> allEntities = entityLookup.getEntities();
 		if (allEntities.isEmpty()) {
@@ -103,7 +129,12 @@ public class InteractiveAnalysisHandler {
 		}
 		return true;
 	}
-	
+
+	/**
+	 * Generates an {@link EntityLookup} for the given {@link ArchitecturalElementType}
+	 * @param type {@link ArchitecturalElementType} for which an {@link EntityLookup} should be created
+	 * @return Returns an {@link EntityLookup} for the correct {@link ArchitecturalElementType}
+	 */
 	private EntityLookup generateEntityLookUp(ArchitecturalElementType type) {
         return switch (type) {
             case COMPONENT -> new ComponentEntityLookup(analysis);
