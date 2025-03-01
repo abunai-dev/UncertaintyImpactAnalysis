@@ -1,4 +1,4 @@
-import type { SModelElement } from "sprotty-protocol"
+import type { SLabel, SModelElement, SShapeElement } from "sprotty-protocol"
 import { NODES } from ".."
 import { type BaseNode, buildBaseNode } from "./BaseNode"
 
@@ -46,8 +46,11 @@ export function buildSetVariableAction(id: string, type: NODES, name: string, ty
 
 
 export function buildBranch(id: string, type: NODES, name: string, typeName: string, transitions: BaseNode[]): BaseNode {
+
+  const childSizeSum = transitions.reduce((acc, transition) => acc + getHeight(transition) + 20, 0)
+
   return {
-    ...buildBaseNode(id, type, name, typeName, transitions),
+    ...buildBaseNode(id, type, name, typeName, [...transitions, buildSizeNode(id, 1, childSizeSum+70)]),
   }
 }
 
@@ -58,12 +61,50 @@ export interface BranchTransitionVariables {
 export interface BranchTransition extends BaseNode, BranchTransitionVariables {}
 
 export function buildBranchTransition(id: string, type: NODES, name: string, typeName: string, actions: SModelElement[], bottomText: string): BranchTransition {
+  const sumOfChildrenWidths = actions.reduce((acc, action) => acc + getWidth(action) + 10, 0)
+  const maxChildHeight = actions.reduce((acc, action) => Math.max(acc, (action as unknown as Sizable).size?.height ?? 0), 0)
+  const textWidth = Math.max(name.length, typeName.length, bottomText.length, 25) * 9 + 60
+  const maxWidth = Math.max(textWidth, sumOfChildrenWidths)
   return {
-    ...buildBaseNode(id, type, name, typeName, actions),
+    ...buildBaseNode(id, type, name, typeName, [...actions, buildSizeLabel(id, maxWidth), buildSizeNode(id, 1, 100)]),
     bottomText,
     size: {
-      width: Math.max(name.length, typeName.length, bottomText.length, 25) * 9 + 60,
-      height: 60
+      width: maxWidth,
+      height: maxChildHeight + 50
     },
+  }
+}
+
+function getWidth(m: SModelElement): number {
+  return (m as unknown as Sizable).size?.width ?? 0
+}
+
+function getHeight(m: SModelElement): number {
+  return (m as unknown as Sizable).size?.height ?? 0
+}
+
+function buildSizeLabel(id: string, width: number): SLabel {
+  return {
+    type: 'label:invisible',
+    id: id+'invisibleLabel',
+    text: Array.from({length: Math.ceil(width/9)}, () => '0').join(''),
+    position: {x: 0, y: 0},
+    size: {width, height: 0}
+  }
+}
+
+function buildSizeNode(id: string, width: number, height: number): SShapeElement {
+  return {
+    type: 'node:invisible',
+    id: id+'invisibleNode',
+    position: {x: 0, y: 0},
+    size: {width, height}
+  }
+}
+
+interface Sizable {
+  size?: {
+    width: number
+    height: number
   }
 }

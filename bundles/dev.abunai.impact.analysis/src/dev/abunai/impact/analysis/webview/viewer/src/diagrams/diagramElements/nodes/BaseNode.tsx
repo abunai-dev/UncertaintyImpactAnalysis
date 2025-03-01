@@ -25,6 +25,9 @@ export class BaseNodeImpl extends SNodeImpl implements BaseNodeVariables {
       if (!hasBounds(child)) {
         continue
       }
+      if (child.type.includes('invisible')) {
+        continue
+      }
       maxX = Math.max(maxX, child.bounds.x + child.bounds.width + 20)
       maxY = Math.max(maxY, child.bounds.y + child.bounds.height + 20)
     }
