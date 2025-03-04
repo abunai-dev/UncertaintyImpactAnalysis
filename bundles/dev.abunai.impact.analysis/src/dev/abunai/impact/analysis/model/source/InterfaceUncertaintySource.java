@@ -6,9 +6,6 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.dataflowanalysis.analysis.pcm.core.AbstractPCMVertex;
-import org.palladiosimulator.pcm.core.composition.AssemblyConnector;
-import org.palladiosimulator.pcm.core.composition.ProvidedDelegationConnector;
-import org.palladiosimulator.pcm.core.entity.Entity;
 import org.palladiosimulator.pcm.repository.OperationSignature;
 
 import dev.abunai.impact.analysis.model.impact.InterfaceUncertaintyImpact;
