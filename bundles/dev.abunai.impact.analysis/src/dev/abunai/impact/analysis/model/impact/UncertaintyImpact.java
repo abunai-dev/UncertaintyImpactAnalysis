@@ -4,32 +4,48 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.dataflowanalysis.analysis.core.AbstractVertex;
 import org.dataflowanalysis.analysis.pcm.core.AbstractPCMVertex;
-import org.dataflowanalysis.analysis.pcm.core.CallReturnBehavior;
 import org.dataflowanalysis.analysis.pcm.core.PCMTransposeFlowGraph;
-import org.dataflowanalysis.analysis.pcm.core.seff.CallingSEFFPCMVertex;
-import org.dataflowanalysis.analysis.pcm.core.seff.SEFFPCMVertex;
-import org.dataflowanalysis.analysis.pcm.core.user.CallingUserPCMVertex;
-import org.dataflowanalysis.analysis.pcm.core.user.UserPCMVertex;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.palladiosimulator.pcm.core.entity.Entity;
 
 import dev.abunai.impact.analysis.model.source.UncertaintySource;
 
+/**
+ * Represents of an uncertainty impact on a given element with type {@link T} caused by an uncertainty source
+ * @param <T> Type parameter of the affected element
+ */
 public abstract class UncertaintyImpact<T extends Entity> {
 
+	/**
+	 * Returns the {@link UncertaintySource} that caused the {@link UncertaintyImpact}.
+	 * The abstract type parameter of the {@link UncertaintySource} must be equal to the type parameter of the {@link UncertaintyImpact}
+	 * @return Returns the {@link UncertaintySource} that caused the {@link UncertaintyImpact}
+	 */
 	public abstract UncertaintySource<T> getOrigin();
 
+	/**
+	 * Returns the PCM element that is affected by the {@link UncertaintyImpact}
+	 * @return Returns the affected PCM element affected by the {@link UncertaintyImpact}
+	 */
 	public abstract AbstractPCMVertex<?> getAffectedElement();
 
+	/**
+	 * Returns the list of affected data flows caused by the {@link UncertaintyImpact}
+	 * @return Returns the list of affected transpose flow graphs that are affected by the {@link UncertaintyImpact}
+	 */
 	public abstract List<PCMTransposeFlowGraph> getAffectedDataFlows();
 
+	/**
+	 * Returns the affected data flow section of the given transpose flow graph.
+	 * It starts at the affected element towards the end of the transpose flow graph
+	 * @param dataflow Given transpose flow graph of which the section should be created
+	 * @return Returns the affected data flow section of the given transpose flow graph of the given {@link UncertaintyImpact}
+	 */
 	private PCMTransposeFlowGraph getAffectedDataFlowSectionOf(PCMTransposeFlowGraph dataflow) {
-
 		List<? extends AbstractPCMVertex<?>> affectedElements = dataflow.getVertices().stream()
 				.filter(AbstractPCMVertex.class::isInstance)
 				.map(it -> (AbstractPCMVertex<?>) it)
@@ -51,10 +67,15 @@ public abstract class UncertaintyImpact<T extends Entity> {
 		return result;
 	}
 
+	/**
+	 * Returns the affected data flow sections of all affected transpose flow graphs
+	 * @return Returns the affected data flow sections of affected transpose flow graphs of the given {@link UncertaintyImpact}
+	 */
 	public List<PCMTransposeFlowGraph> getAffectedDataFlowSections() {
 		var affectedDataFlows = this.getAffectedDataFlows();
-
-		return affectedDataFlows.stream().map(this::getAffectedDataFlowSectionOf).toList();
+		return affectedDataFlows.stream()
+				.map(this::getAffectedDataFlowSectionOf)
+				.toList();
 	}
 
 	@Override
@@ -65,7 +86,7 @@ public abstract class UncertaintyImpact<T extends Entity> {
 				this.getAffectedElement().getReferencedElement().getClass().getSimpleName());
 		var originInfo = String.format("Origin of this impact: %s", this.getOrigin().toString());
 
-		var dataFlowInfo = "";
+		StringBuilder dataFlowInfo = new StringBuilder();
 
 		for (var affectedDataFlow : this.getAffectedDataFlows()) {
 			var affectedDataFlowInfo = String.format("Affected Data Flows: %s",
@@ -77,10 +98,10 @@ public abstract class UncertaintyImpact<T extends Entity> {
 							.collect(Collectors.joining(", ")));
 			var emptyLine = "";
 
-			dataFlowInfo += String.join(affectedDataFlowInfo, affectedDataFlowElementIndex, affectedDataFlowSectionInfo,
-					emptyLine);
+			dataFlowInfo.append(String.join(affectedDataFlowInfo, affectedDataFlowElementIndex, affectedDataFlowSectionInfo,
+                    emptyLine));
 		}
 
-		return String.join(System.lineSeparator(), generalInfo, originInfo, dataFlowInfo);
+		return String.join(System.lineSeparator(), generalInfo, originInfo, dataFlowInfo.toString());
 	}
 }

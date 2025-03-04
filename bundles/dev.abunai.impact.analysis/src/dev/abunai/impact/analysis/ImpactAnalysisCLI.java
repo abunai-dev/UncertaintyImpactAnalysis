@@ -10,6 +10,11 @@ public class ImpactAnalysisCLI {
     private static final String MODEL_PATH = "models/BranchingOnlineShop/default";
     public static final String TEST_MODEL_PROJECT_NAME = "dev.abunai.impact.analysis.testmodels";
 
+    /**
+     * Main entry point of the interactive impact analysis command line interface
+     * @param args Arguments provided via the command line
+     * @throws IOException Thrown when the interactive analysis handler cannot handle I/O operations
+     */
     public static void main(String[] args) throws IOException {
         final var usageModelPath = Paths.get(MODEL_PATH + ".usagemodel")
                 .toString();

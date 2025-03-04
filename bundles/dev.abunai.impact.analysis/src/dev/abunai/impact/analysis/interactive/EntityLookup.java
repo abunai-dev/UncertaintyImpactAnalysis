@@ -21,7 +21,7 @@ abstract class EntityLookup {
 	public abstract void addToAnalysis(int index);
 	
 	protected <T extends Entity> List<T> findAllElementsOfType(EClass targetType, Class<T> targetClass) {
-		ArrayList<EObject> result = new ArrayList<EObject>();
+		ArrayList<EObject> result = new ArrayList<>();
 
 		while (true) {
 			var element = analysis.getResourceProvider()

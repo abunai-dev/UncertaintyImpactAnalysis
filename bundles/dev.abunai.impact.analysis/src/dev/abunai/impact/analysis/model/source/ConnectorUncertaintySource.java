@@ -9,17 +9,26 @@ import org.palladiosimulator.pcm.core.composition.AssemblyConnector;
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
 import org.palladiosimulator.pcm.core.composition.Connector;
 import org.palladiosimulator.pcm.core.composition.ProvidedDelegationConnector;
+import org.palladiosimulator.pcm.core.entity.Entity;
 import org.palladiosimulator.pcm.repository.OperationInterface;
 
 import dev.abunai.impact.analysis.model.impact.ConnectorUncertaintyImpact;
 import dev.abunai.impact.analysis.model.impact.UncertaintyImpact;
 import dev.abunai.impact.analysis.util.PropagationHelper;
 
+/**
+ * Represents a source of uncertainty on an {@link AssemblyConnector} or {@link ProvidedDelegationConnector}
+ * @param <T> Type parameter of the affected element
+ */
 public class ConnectorUncertaintySource<T extends Connector> extends UncertaintySource<T> {
-
 	private final T connector;
 	private final PropagationHelper propagationHelper;
 
+	/**
+	 * Create a new {@link ConnectorUncertaintySource} with the given affected connector element
+	 * @param connector Affected action {@link Entity} object
+	 * @param propagationHelper Propagation helper used to determine affected transpose flow graph elements
+	 */
 	private ConnectorUncertaintySource(T connector, PropagationHelper propagationHelper) {
 		Objects.requireNonNull(connector);
 		Objects.requireNonNull(propagationHelper);
@@ -27,29 +36,44 @@ public class ConnectorUncertaintySource<T extends Connector> extends Uncertainty
 		this.propagationHelper = propagationHelper;
 	}
 
+	/**
+	 * Create a new {@link ConnectorUncertaintySource} with the given affected action element
+	 * @param connector Affected action {@link Entity} object
+	 * @param propagationHelper Propagation helper used to determine affected transpose flow graph elements
+	 * @return Returns a new {@link ConnectorUncertaintySource} with the given connector {@link Entity}
+	 */
 	public static ConnectorUncertaintySource<? extends Connector> of(Connector connector,
 			PropagationHelper propagationHelper) {
 		if (connector instanceof AssemblyConnector) {
-			return new ConnectorUncertaintySource<AssemblyConnector>((AssemblyConnector) connector, propagationHelper);
+			return new ConnectorUncertaintySource<>((AssemblyConnector) connector, propagationHelper);
 		} else if (connector instanceof ProvidedDelegationConnector) {
-			return new ConnectorUncertaintySource<ProvidedDelegationConnector>((ProvidedDelegationConnector) connector,
-					propagationHelper);
+			return new ConnectorUncertaintySource<>((ProvidedDelegationConnector) connector,
+                    propagationHelper);
 		} else {
-			throw new IllegalStateException("Unrecognized connector type.");
+			throw new IllegalStateException("Unrecognized connector type");
 		}
 	}
 
+	/**
+	 * Determines the {@link OperationInterface} that the targeted connector targets
+	 * @return Returns the {@link OperationInterface} the affected connector targets
+	 */
 	private OperationInterface getConnectorInterface() {
-		if (connector instanceof AssemblyConnector castedConnector) {
+		if (this.connector instanceof AssemblyConnector castedConnector) {
 			return castedConnector.getProvidedRole_AssemblyConnector().getProvidedInterface__OperationProvidedRole();
-		} else if (connector instanceof ProvidedDelegationConnector castedConnector) {
+		} else if (this.connector instanceof ProvidedDelegationConnector castedConnector) {
 			return castedConnector.getInnerProvidedRole_ProvidedDelegationConnector()
 					.getProvidedInterface__OperationProvidedRole();
 		} else {
-			throw new IllegalStateException("Unrecognized connector type.");
+			throw new IllegalStateException("Unrecognized connector type");
 		}
 	}
 
+
+	/**
+	 * Determines the {@link AssemblyContext} that the targeted connector provides
+	 * @return Returns the providing {@link AssemblyContext} of the targeted connectors
+	 */
 	private AssemblyContext getConnectorProvidingContext() {
 		if (connector instanceof AssemblyConnector castedConnector) {
 			return castedConnector.getProvidingAssemblyContext_AssemblyConnector();

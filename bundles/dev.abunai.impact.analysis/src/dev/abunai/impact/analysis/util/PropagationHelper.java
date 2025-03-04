@@ -39,22 +39,39 @@ import org.palladiosimulator.pcm.usagemodel.UsageScenario;
 import org.dataflowanalysis.analysis.pcm.resource.PCMResourceProvider;
 import org.dataflowanalysis.analysis.pcm.utils.PCMQueryUtils;
 
+/**
+ * A utility class used for a {@link PCMFlowGraphCollection} to determine and find correct corresponding elements
+ */
 public class PropagationHelper {
-
 	private final PCMFlowGraphCollection flowGraphs;
 	private final PCMResourceProvider resourceProvider;
 
+	/**
+	 * Creates a new {@link PropagationHelper} with the given {@link PCMFlowGraphCollection}
+	 * @param flowGraphs {@link PCMFlowGraphCollection} that contains the elements searched in the analysis
+	 * @param resourceProvider Resource provider that supplements the data contained in the flow graph collection
+	 */
 	public PropagationHelper(PCMFlowGraphCollection flowGraphs, PCMResourceProvider resourceProvider) {
 		this.flowGraphs = flowGraphs;
 		this.resourceProvider = resourceProvider;
 	}
 
+	/**
+	 * Finds an {@link AssemblyContext} with the given ID
+	 * @param id Given ID the {@link AssemblyContext} must have
+	 * @return Returns an Optional containing the {@link AssemblyContext} if one can be found
+	 */
 	public Optional<AssemblyContext> findAssemblyContext(String id) {
 		List<Deque<AssemblyContext>> contexts = this.findAllAssemblyContexts();
 		List<AssemblyContext> allContexts = contexts.stream().flatMap(Collection::stream).toList();
 		return allContexts.stream().filter(it -> EcoreUtil.getID(it).equals(id)).findFirst();
 	}
 
+	/**
+	 * Finds an {@link Entity} with the given ID
+	 * @param id Given ID the {@link Entity} must have
+	 * @return Returns an Optional containing the {@link Entity} if one can be found
+	 */
 	public Optional<? extends Entity> findAction(String id) {
 		for (AbstractTransposeFlowGraph transposeFlowGraph : flowGraphs.getTransposeFlowGraphs()) {
 			var candidates = transposeFlowGraph.getVertices().stream()
@@ -71,6 +88,11 @@ public class PropagationHelper {
 		return Optional.empty();
 	}
 
+	/**
+	 * Finds an {@link OperationInterface} with the given ID
+	 * @param id Given ID the {@link OperationInterface} must have
+	 * @return Returns an Optional containing the {@link OperationInterface} if one can be found
+	 */
 	public Optional<OperationInterface> findInterface(String id) {
 		return this.lookupRepositoryModel().getInterfaces__Repository().stream()
 				.filter(it -> it.getId().equals(id))
@@ -79,6 +101,11 @@ public class PropagationHelper {
 				.findFirst();
 	}
 
+	/**
+	 * Finds an {@link OperationSignature} with the given ID
+	 * @param id Given ID the {@link OperationSignature} must have
+	 * @return Returns an Optional containing the {@link OperationSignature} if one can be found
+	 */
 	public Optional<OperationSignature> findSignature(String id) {
 		return this.lookupRepositoryModel().getInterfaces__Repository().stream()
 				.filter(OperationInterface.class::isInstance)
@@ -90,27 +117,46 @@ public class PropagationHelper {
 
 	}
 
+	/**
+	 * Finds an {@link Connector} with the given ID
+	 * @param id Given ID the {@link Connector} must have
+	 * @return Returns an Optional containing the {@link Connector} if one can be found
+	 */
 	public Optional<Connector> findConnector(String id) {
 		return this.lookupSystemModel().getConnectors__ComposedStructure().stream()
 				.filter(it -> it.getId().equals(id))
 				.findFirst();
 	}
 
+	/**
+	 * Finds an {@link ResourceContainer} with the given ID
+	 * @param id Given ID the {@link ResourceContainer} must have
+	 * @return Returns an Optional containing the {@link ResourceContainer} if one can be found
+	 */
 	public Optional<ResourceContainer> findResourceContainer(String id) {
 		return this.lookupResourceEnvironmentModel().getResourceContainer_ResourceEnvironment().stream()
 				.filter(it -> it.getId().equals(id))
 				.findFirst();
 	}
 
+	/**
+	 * Finds an {@link UsageScenario} with the given ID
+	 * @param id Given ID the {@link UsageScenario} must have
+	 * @return Returns an Optional containing the {@link UsageScenario} if one can be found
+	 */
 	public Optional<UsageScenario> findUsageScenario(String id) {
 		return this.lookupUsageModel().getUsageScenario_UsageModel().stream()
 				.filter(it -> it.getId().equals(id))
 				.findFirst();
 	}
 
+	/**
+	 * Finds all {@link SEFFPCMVertex} that are start actions in the given {@link AssemblyContext}
+	 * @param component {@link AssemblyContext} that must be started by the {@link SEFFPCMVertex} elements
+	 * @return Returns a list of all {@link SEFFPCMVertex} that begin the {@link AssemblyContext}
+	 */
 	public List<SEFFPCMVertex<?>> findStartActionsOfAssemblyContext(AssemblyContext component) {
 		List<SEFFPCMVertex<?>> matches = new ArrayList<>();
-
 		for (AbstractTransposeFlowGraph transposeFlowGraph : flowGraphs.getTransposeFlowGraphs()) {
 			var candidates = transposeFlowGraph.getVertices().stream().map(AbstractPCMVertex.class::cast)
 					.filter(it -> it instanceof SEFFPCMVertex<?>)
@@ -123,6 +169,11 @@ public class PropagationHelper {
 		return matches;
 	}
 
+	/**
+	 * Determines all vertices that have the given {@link Entity} as referenced element
+	 * @param action Given {@link Entity} that must be the referenced element of the vertex
+	 * @return Returns a list of vertices with the given referenced {@link Entity}
+	 */
 	public List<AbstractPCMVertex<?>> findProcessesWithAction(Entity action) {
 		List<AbstractPCMVertex<?>> matches = new ArrayList<>();
 		for (AbstractTransposeFlowGraph transposeFlowGraph : flowGraphs.getTransposeFlowGraphs()) {
@@ -137,14 +188,19 @@ public class PropagationHelper {
 		return matches;
 	}
 
-	public List<CallingUserPCMVertex> findEntryLevelSystemCallsViaInterface(OperationInterface interfaze) {
+	/**
+	 * Finds all {@link CallingUserPCMVertex} that call using the given {@link OperationInterface}
+	 * @param operationInterface {@link OperationInterface} that the {@link CallingUserPCMVertex} must call
+	 * @return Returns a list of {@link CallingUserPCMVertex} that call using the given {@link OperationInterface}
+	 */
+	public List<CallingUserPCMVertex> findEntryLevelSystemCallsViaInterface(OperationInterface operationInterface) {
 		List<CallingUserPCMVertex> matches = new ArrayList<>();
 		for (AbstractTransposeFlowGraph transposeFlowGraph : flowGraphs.getTransposeFlowGraphs()) {
 			var entryLevelSystemCalls = transposeFlowGraph.getVertices().stream()
 					.filter(CallingUserPCMVertex.class::isInstance)
 					.map(CallingUserPCMVertex.class::cast).toList();
 			var entryLevelSystemCallsCandidates = entryLevelSystemCalls.stream()
-					.filter(it -> interfaze.getSignatures__OperationInterface()
+					.filter(it -> operationInterface.getSignatures__OperationInterface()
 							.contains(it.getReferencedElement().getOperationSignature__EntryLevelSystemCall()))
 					.toList();
 			matches.addAll(entryLevelSystemCallsCandidates);
@@ -152,6 +208,11 @@ public class PropagationHelper {
 		return matches;
 	}
 
+	/**
+	 * Finds all {@link CallingUserPCMVertex} that call using the given {@link OperationSignature}
+	 * @param signature {@link OperationSignature} that the {@link CallingUserPCMVertex} must call
+	 * @return Returns a list of {@link CallingUserPCMVertex} that call using the given {@link OperationSignature}
+	 */
 	public List<CallingUserPCMVertex> findEntryLevelSystemCallsViaSignature(OperationSignature signature) {
 		var candidates = findEntryLevelSystemCallsViaInterface(signature.getInterface__OperationSignature());
 		return candidates.stream()
@@ -159,20 +220,30 @@ public class PropagationHelper {
 				.toList();
 	}
 
-	public List<CallingSEFFPCMVertex> findExternalCallsViaInterface(OperationInterface interfaze) {
+	/**
+	 * Finds all {@link CallingSEFFPCMVertex} that call using the given {@link OperationInterface}
+	 * @param operationInterface {@link OperationInterface} that the {@link CallingSEFFPCMVertex} must call
+	 * @return Returns a list of {@link CallingSEFFPCMVertex} that call using the given {@link OperationInterface}
+	 */
+	public List<CallingSEFFPCMVertex> findExternalCallsViaInterface(OperationInterface operationInterface) {
 		List<CallingSEFFPCMVertex> matches = new ArrayList<>();
 		for (AbstractTransposeFlowGraph transposeFlowGraph : flowGraphs.getTransposeFlowGraphs()) {
 			var externalCalls = transposeFlowGraph.getVertices().stream()
 					.filter(CallingSEFFPCMVertex.class::isInstance)
 					.map(CallingSEFFPCMVertex.class::cast).toList();
 			var externalCallCandidates = externalCalls.stream()
-					.filter(it -> interfaze.getSignatures__OperationInterface().contains(it.getReferencedElement().getCalledService_ExternalService()))
+					.filter(it -> operationInterface.getSignatures__OperationInterface().contains(it.getReferencedElement().getCalledService_ExternalService()))
 					.toList();
 			matches.addAll(externalCallCandidates);
 		}
 		return matches;
 	}
 
+	/**
+	 * Finds all {@link CallingSEFFPCMVertex} that call using the given {@link OperationSignature}
+	 * @param signature {@link OperationSignature} that the {@link CallingSEFFPCMVertex} must call
+	 * @return Returns a list of {@link CallingSEFFPCMVertex} that call using the given {@link OperationSignature}
+	 */
 	public List<CallingSEFFPCMVertex> findExternalCallsViaSignature(OperationSignature signature) {
 		var candidates = this.findExternalCallsViaInterface(signature.getInterface__OperationSignature());
 		return candidates.stream()
@@ -180,8 +251,13 @@ public class PropagationHelper {
 				.toList();
 	}
 
+	/**
+	 * Finds all the {@link SEFFPCMVertex} elements that are start actions of SEFFs that implement the given {@link OperationInterface}
+	 * @param operationInterface {@link OperationInterface} the {@link SEFFPCMVertex} elements must start
+	 * @return Returns all {@link SEFFPCMVertex} that are {@link StartAction} elements which start the implementation of the given {@link OperationInterface}
+	 */
 	public List<SEFFPCMVertex<?>> findStartActionsOfSEFFsThatImplement(
-			OperationInterface interfaze) {
+			OperationInterface operationInterface) {
 		List<SEFFPCMVertex<?>> matches = new ArrayList<>();
 		for (AbstractTransposeFlowGraph transposeFlowGraph : flowGraphs.getTransposeFlowGraphs()) {
 			var startActions = transposeFlowGraph.getVertices().stream()
@@ -198,7 +274,7 @@ public class PropagationHelper {
 				if (!(seff.getDescribedService__SEFF() instanceof OperationSignature operationSignature)) {
 					continue;
 				}
-				if (interfaze.getSignatures__OperationInterface().contains(operationSignature)) {
+				if (operationInterface.getSignatures__OperationInterface().contains(operationSignature)) {
 					matches.add(action);
 				}
 			}
@@ -206,6 +282,11 @@ public class PropagationHelper {
 		return matches;
 	}
 
+	/**
+	 * Finds all the {@link SEFFPCMVertex} elements that are start actions of SEFFs that implement the given {@link OperationSignature}
+	 * @param signature {@link OperationSignature} the {@link SEFFPCMVertex} elements must start
+	 * @return Returns all {@link SEFFPCMVertex} that are {@link StartAction} elements which start the implementation of the given {@link OperationSignature}
+	 */
 	public List<SEFFPCMVertex<?>> findStartActionsOfSEFFsThatImplement(
 			OperationSignature signature) {
 		var actionsThatImplementInterface = this
@@ -221,6 +302,11 @@ public class PropagationHelper {
 		return matches;
 	}
 
+	/**
+	 * Returns a list of {@link PCMTransposeFlowGraph} that contain the given {@link AbstractPCMVertex}
+	 * @param element {@link AbstractPCMVertex} that must be contained in the {@link PCMTransposeFlowGraph}
+	 * @return Returns a list of all {@link PCMTransposeFlowGraph} that must contain the {@link AbstractPCMVertex}
+	 */
 	public List<PCMTransposeFlowGraph> findTransposeFlowGraphsWithElement(AbstractPCMVertex<?> element) {
 		return flowGraphs.getTransposeFlowGraphs().stream()
 				.filter(PCMTransposeFlowGraph.class::isInstance)
@@ -229,6 +315,10 @@ public class PropagationHelper {
 				.toList();
 	}
 
+	/**
+	 * Determines a list of all possible {@link AssemblyContext} states that occur in all transpose flow graphs
+	 * @return Returns a collection containing all {@link AssemblyContext} states in the transpose flow graphs
+	 */
 	private List<Deque<AssemblyContext>> findAllAssemblyContexts() {
 		List<Deque<AssemblyContext>> allContexts = new ArrayList<>();
 		for (AbstractTransposeFlowGraph transposeFlowGraph : flowGraphs.getTransposeFlowGraphs()) {
@@ -242,6 +332,11 @@ public class PropagationHelper {
 		return allContexts;
 	}
 
+	/**
+	 * Finds a list of {@link AbstractPCMVertex} that match the given {@link UsageScenario} or {@link ResourceContainer}
+	 * @param actor {@link UsageScenario} or {@link ResourceContainer} the {@link AbstractPCMVertex} must match
+	 * @return Returns a list of {@link AbstractPCMVertex} that match the given {@link UsageScenario} or {@link ResourceContainer}
+	 */
 	public List<? extends AbstractPCMVertex<?>> findProcessesThatRepresentResourceContainerOrUsageScenario(
 			Entity actor) {
 		if (actor instanceof UsageScenario usageScenario) {
@@ -276,6 +371,14 @@ public class PropagationHelper {
 		}
 	}
 
+	/**
+	 * Looks up a given PCM model with the required {@link EClass} and of type {@link T}
+	 * @param eclazz {@link EClass} of the PCM model
+	 * @param clazz Class of the PCM model element
+	 * @return Returns a PCM model element of the given class
+	 * @throws IllegalStateException Thrown if the specified model cannot be found
+	 * @param <T> Type parameter that describes the class of the returned element
+	 */
 	private <T extends NamedElement> T lookupPCMModel(EClass eclazz, Class<T> clazz) {
 		Objects.requireNonNull(eclazz);
 		Objects.requireNonNull(clazz);
@@ -290,26 +393,51 @@ public class PropagationHelper {
 		}
 	}
 
+	/**
+	 * Returns the {@link Repository} model of the contained elements
+	 * @return Returns the {@link Repository} model of the contained elements
+	 */
 	private Repository lookupRepositoryModel() {
 		return this.lookupPCMModel(RepositoryPackage.eINSTANCE.getRepository(), Repository.class);
 	}
 
+	/**
+	 * Returns the {@link System} model of the contained elements
+	 * @return Returns the {@link System} model of the contained elements
+	 */
 	private System lookupSystemModel() {
 		return this.lookupPCMModel(SystemPackage.eINSTANCE.getSystem(), System.class);
 	}
 
+	/**
+	 * Returns the {@link ResourceEnvironment} model of the contained elements
+	 * @return Returns the {@link ResourceEnvironment} model of the contained elements
+	 */
 	private ResourceEnvironment lookupResourceEnvironmentModel() {
 		return this.lookupPCMModel(ResourceenvironmentPackage.eINSTANCE.getResourceEnvironment(), ResourceEnvironment.class);
 	}
 
+	/**
+	 * Returns the {@link Allocation} model of the contained elements
+	 * @return Returns the {@link Allocation} model of the contained elements
+	 */
 	private Allocation lookupAllocationModel() {
 		return this.resourceProvider.getAllocation();
 	}
 
+	/**
+	 * Returns the {@link UsageModel} of the contained elements
+	 * @return Returns the {@link UsageModel} of the contained elements
+	 */
 	private UsageModel lookupUsageModel() {
 		return this.resourceProvider.getUsageModel();
 	}
 
+	/**
+	 * Finds a list of {@link StartAction} elements of an {@link BranchAction} with the given ID
+	 * @param id ID of the {@link BranchAction}
+	 * @return Returns a list of {@link StartAction} elements with a parent {@link BranchAction} with the required ID
+	 */
 	public List<StartAction> findStartActionsOfBranchAction(String id) {
 		List<StartAction> matches = new ArrayList<>();
 

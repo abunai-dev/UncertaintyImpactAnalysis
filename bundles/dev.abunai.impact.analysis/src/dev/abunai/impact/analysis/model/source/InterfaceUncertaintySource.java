@@ -11,11 +11,18 @@ import org.palladiosimulator.pcm.repository.OperationSignature;
 import dev.abunai.impact.analysis.model.impact.InterfaceUncertaintyImpact;
 import dev.abunai.impact.analysis.util.PropagationHelper;
 
+/**
+ * Represents a source of uncertainty on an {@link OperationSignature}
+ */
 public class InterfaceUncertaintySource extends UncertaintySource<OperationSignature> {
-
 	private final OperationSignature signature;
 	private final PropagationHelper propagationHelper;
 
+	/**
+	 * Create a new {@link InterfaceUncertaintySource} with the given affected action element
+	 * @param signature Affected {@link OperationSignature}
+	 * @param propagationHelper Propagation helper used to determine affected transpose flow graph elements
+	 */
 	public InterfaceUncertaintySource(OperationSignature signature, PropagationHelper propagationHelper) {
 		Objects.requireNonNull(signature);
 		Objects.requireNonNull(propagationHelper);
@@ -30,19 +37,22 @@ public class InterfaceUncertaintySource extends UncertaintySource<OperationSigna
 
 	@Override
 	public List<InterfaceUncertaintyImpact> propagate() {
-		var startNodes = propagationHelper.findStartActionsOfSEFFsThatImplement(this.signature);
-		var systemCallNodes = propagationHelper.findEntryLevelSystemCallsViaSignature(this.signature);
-		var externalCallNodes = propagationHelper.findExternalCallsViaSignature(this.signature);
+		var startNodes = this.propagationHelper.findStartActionsOfSEFFsThatImplement(this.signature);
+		var systemCallNodes = this.propagationHelper.findEntryLevelSystemCallsViaSignature(this.signature);
+		var externalCallNodes = this.propagationHelper.findExternalCallsViaSignature(this.signature);
 
 		List<? extends AbstractPCMVertex<?>> allNodes = Stream
-				.of(startNodes, systemCallNodes, externalCallNodes).flatMap(Collection::stream).toList();
+				.of(startNodes, systemCallNodes, externalCallNodes)
+				.flatMap(Collection::stream)
+				.toList();
 
-		return allNodes.stream().map(it -> new InterfaceUncertaintyImpact(it, this, propagationHelper)).toList();
+		return allNodes.stream()
+				.map(it -> new InterfaceUncertaintyImpact(it, this, propagationHelper))
+				.toList();
 	}
 
 	@Override
 	public String getUncertaintyType() {
 		return "Interface";
 	}
-
 }

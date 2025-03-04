@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.nio.file.Paths;
 
-import dev.abunai.impact.analysis.PCMUncertaintyImpactAnalysisBuilder;
 import org.apache.log4j.Logger;
 import org.dataflowanalysis.analysis.utils.ResourceUtils;
 import org.eclipse.core.runtime.Plugin;

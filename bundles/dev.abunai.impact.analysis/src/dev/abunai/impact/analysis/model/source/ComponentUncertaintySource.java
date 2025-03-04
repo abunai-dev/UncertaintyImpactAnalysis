@@ -5,16 +5,22 @@ import java.util.Objects;
 
 import org.dataflowanalysis.analysis.pcm.core.seff.SEFFPCMVertex;
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
-import org.palladiosimulator.pcm.seff.StartAction;
 
 import dev.abunai.impact.analysis.model.impact.ComponentUncertaintyImpact;
 import dev.abunai.impact.analysis.util.PropagationHelper;
 
+/**
+ * Represents a source of uncertainty on an {@link AssemblyContext}
+ */
 public class ComponentUncertaintySource extends UncertaintySource<AssemblyContext> {
-
 	private final AssemblyContext component;
 	private final PropagationHelper propagationHelper;
 
+	/**
+	 * Create a new {@link ComponentUncertaintySource} with the given affected assembly context
+	 * @param component Affected {@link AssemblyContext}
+	 * @param propagationHelper Propagation helper used to determine affected transpose flow graph elements
+	 */
 	public ComponentUncertaintySource(AssemblyContext component, PropagationHelper propagationHelper) {
 		Objects.requireNonNull(component);
 		Objects.requireNonNull(propagationHelper);
@@ -31,7 +37,9 @@ public class ComponentUncertaintySource extends UncertaintySource<AssemblyContex
 	public List<ComponentUncertaintyImpact> propagate() {
 		List<SEFFPCMVertex<?>> startActions = this.propagationHelper
 				.findStartActionsOfAssemblyContext(this.component);
-		return startActions.stream().map(it -> new ComponentUncertaintyImpact(it, this, propagationHelper)).toList();
+		return startActions.stream()
+				.map(it -> new ComponentUncertaintyImpact(it, this, propagationHelper))
+				.toList();
 	}
 
 	@Override
