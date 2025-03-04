@@ -3,7 +3,7 @@ package dev.abunai.impact.analysis.tests.evaluation.cwa;
 import java.util.List;
 import java.util.function.BiPredicate;
 
-public class CWAEvaluationScenario2 extends CWAEvaluationBase {
+public class CWAEvaluationScenario2Test extends CWAEvaluationBase {
 
 	@Override
 	protected String getFolderName() {
@@ -31,12 +31,8 @@ public class CWAEvaluationScenario2 extends CWAEvaluationBase {
 			}
 
 			// S2_2
-			if (dataLiterals.contains("ConfidentialDataNotExpected")) {
-				return true;
-			}
-
-			return false;
-		};
+            return dataLiterals.contains("ConfidentialDataNotExpected");
+        };
 	}
 
 }

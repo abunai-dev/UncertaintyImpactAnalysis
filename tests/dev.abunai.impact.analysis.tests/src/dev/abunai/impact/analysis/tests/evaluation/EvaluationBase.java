@@ -1,6 +1,5 @@
 package dev.abunai.impact.analysis.tests.evaluation;
 
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -79,13 +78,6 @@ public abstract class EvaluationBase extends TestBase {
 		// Do confidentiality analysis
 		var flowGraphs = analysis.findFlowGraphs();
 		flowGraphs.evaluate();
-
-		final var usageModelPath = Paths.get(getBaseFolder(), getFolderName(), getFilesName() + ".usagemodel")
-				.toString();
-		final var allocationPath = Paths.get(getBaseFolder(), getFolderName(), getFilesName() + ".allocation")
-				.toString();
-		final var nodeCharacteristicsPath = Paths
-				.get(getBaseFolder(), getFolderName(), getFilesName() + ".nodecharacteristics").toString();
 
 		var impactAnnotator = new ImpactAnnotator(analysis, result, this.getConstraint());
 		var resultWeb = impactAnnotator.getAnnotatedResult();
@@ -237,21 +229,21 @@ public abstract class EvaluationBase extends TestBase {
 
 		System.out.printf("""
                 ------------------  Metrics  ------------------
-                Impacted data flows:					%d
-                Total (unique) elements: 				%d (%d)
-                Impacted (unique) elements: 			%d (%d)
-                Violating (unique) elements: 			%d (%d)
+                Impacted data flows:                    %d
+                Total (unique) elements:                %d (%d)
+                Impacted (unique) elements:             %d (%d)
+                Violating (unique) elements:            %d (%d)
                 -----------------------------------------------
-                True Positives:							%d
-                False Positives:						%d
-                False Negatives:						%d
+                True Positives:                         %d
+                False Positives:                        %d
+                False Negatives:                        %d
                 -----------------------------------------------
-                Precision:								%.3f
-                Recall:									%.3f
-                F1-Score:								%.3f
+                Precision:                              %.3f
+                Recall:                                 %.3f
+                F1-Score:                               %.3f
                 -----------------------------------------------
-                Ratio of the actual impact set:			%.3f
-                Ratio of the uncertainty impact set:	%.3f
+                Ratio of the actual impact set:         %.3f
+                Ratio of the uncertainty impact set:    %.3f
                 %n""", impactedDataFlows, totalElements, totalUniqueElements, impactedElements, impactedUniqueElements.size(), violatingElements, violatingUniqueElements.size(), truePositives, falsePositives, falseNegatives, precision, recall, f1Score, ratioAffectedSet, ratioImpactSet);
 	}
 }

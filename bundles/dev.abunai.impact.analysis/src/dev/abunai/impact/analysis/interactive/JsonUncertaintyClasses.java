@@ -2,6 +2,9 @@ package dev.abunai.impact.analysis.interactive;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * Represents an uncertainty class from the arc3n json
+ */
 record JsonUncertaintyClasses(@JsonProperty("ArchitecturalElementType")String architecturalElementType,
 	@JsonProperty("Location")String location,
 	@JsonProperty("Type")String type,

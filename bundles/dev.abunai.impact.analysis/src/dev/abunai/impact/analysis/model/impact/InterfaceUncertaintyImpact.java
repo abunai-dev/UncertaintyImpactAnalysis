@@ -9,12 +9,20 @@ import org.palladiosimulator.pcm.repository.OperationSignature;
 import dev.abunai.impact.analysis.model.source.UncertaintySource;
 import dev.abunai.impact.analysis.util.PropagationHelper;
 
+/**
+ * Represents the uncertainty impact of an {@link dev.abunai.impact.analysis.model.source.InterfaceUncertaintySource}
+ */
 public class InterfaceUncertaintyImpact extends UncertaintyImpact<OperationSignature> {
-
 	private final AbstractPCMVertex<?> affectedElement;
 	private final UncertaintySource<OperationSignature> origin;
 	private final PropagationHelper propagationHelper;
 
+	/**
+	 * Creates a new {@link InterfaceUncertaintyImpact} with the given affected element and origin
+	 * @param affectedElement Affected element by the {@link dev.abunai.impact.analysis.model.source.InterfaceUncertaintySource}
+	 * @param origin {@link dev.abunai.impact.analysis.model.source.InterfaceUncertaintySource} that caused the {@link InterfaceUncertaintyImpact}
+	 * @param propagationHelper {@link PropagationHelper} used to find the affected data flows
+	 */
 	public InterfaceUncertaintyImpact(AbstractPCMVertex<?> affectedElement,
 			UncertaintySource<OperationSignature> origin, PropagationHelper propagationHelper) {
 		this.affectedElement = affectedElement;
@@ -34,7 +42,7 @@ public class InterfaceUncertaintyImpact extends UncertaintyImpact<OperationSigna
 
 	@Override
 	public List<PCMTransposeFlowGraph> getAffectedDataFlows() {
-		return propagationHelper.findTransposeFlowGraphsWithElement(affectedElement);
+		return propagationHelper.findTransposeFlowGraphsWithElement(this.affectedElement);
 	}
 
 }

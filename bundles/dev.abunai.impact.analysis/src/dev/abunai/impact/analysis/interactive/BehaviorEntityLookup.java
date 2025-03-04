@@ -13,20 +13,26 @@ import org.palladiosimulator.pcm.usagemodel.UsagemodelPackage;
 
 import dev.abunai.impact.analysis.PCMUncertaintyImpactAnalysis;
 
+/**
+ * Looks up elements relevant for the behavior {@link ArchitecturalElementType}
+ */
 public class BehaviorEntityLookup extends EntityLookup {
-
 	private final List<ExternalCallAction> externalCalls;
 	private final List<EntryLevelSystemCall> entryLevelSystemCalls;
 	private final List<SetVariableAction> setVariableActions;
 	private final List<BranchAction> branchActions;
-	
+
+	/**
+	 * Create a new {@link BehaviorEntityLookup} with the given impact analysis.
+	 * It looks up the elements relevant for the behavior {@link ArchitecturalElementType}
+	 * @param analysis PCM Impact analysis used to lookup elements
+	 */
 	public BehaviorEntityLookup(PCMUncertaintyImpactAnalysis analysis) {
 		super(analysis);
-		
-		externalCalls = findAllElementsOfType(SeffPackage.eINSTANCE.getExternalCallAction(), ExternalCallAction.class);
-		entryLevelSystemCalls = findAllElementsOfType(UsagemodelPackage.eINSTANCE.getEntryLevelSystemCall(), EntryLevelSystemCall.class);
-		setVariableActions = findAllElementsOfType(SeffPackage.eINSTANCE.getSetVariableAction(), SetVariableAction.class);
-		branchActions = findAllElementsOfType(SeffPackage.eINSTANCE.getBranchAction(), BranchAction.class);
+		this.externalCalls = this.findAllElementsOfType(SeffPackage.eINSTANCE.getExternalCallAction(), ExternalCallAction.class);
+		this.entryLevelSystemCalls = this.findAllElementsOfType(UsagemodelPackage.eINSTANCE.getEntryLevelSystemCall(), EntryLevelSystemCall.class);
+		this.setVariableActions = this.findAllElementsOfType(SeffPackage.eINSTANCE.getSetVariableAction(), SetVariableAction.class);
+		this.branchActions = this.findAllElementsOfType(SeffPackage.eINSTANCE.getBranchAction(), BranchAction.class);
 	}
 
 	@Override
@@ -59,9 +65,8 @@ public class BehaviorEntityLookup extends EntityLookup {
 			return;
 		}
 		currentIndex -= setVariableActions.size();
-		
+
 		analysis.getUncertaintySources().addBehaviorUncertaintyInBranch(branchActions.get(currentIndex).getId());
-		
 	}
 
 }

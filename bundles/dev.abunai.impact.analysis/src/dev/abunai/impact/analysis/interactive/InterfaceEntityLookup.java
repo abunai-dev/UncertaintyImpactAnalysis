@@ -10,32 +10,38 @@ import org.palladiosimulator.pcm.repository.RepositoryPackage;
 
 import dev.abunai.impact.analysis.PCMUncertaintyImpactAnalysis;
 
+/**
+ * Looks up elements relevant for the interface {@link ArchitecturalElementType}
+ */
 public class InterfaceEntityLookup extends EntityLookup {
-
 	private final List<OperationSignature> operationSignatures;
 	private final List<Interface> interfaces;
-	
+
+	/**
+	 * Create a new {@link InterfaceEntityLookup} with the given impact analysis.
+	 * It looks up the elements relevant for the interface {@link ArchitecturalElementType}
+	 * @param analysis PCM Impact analysis used to lookup elements
+	 */
 	public InterfaceEntityLookup(PCMUncertaintyImpactAnalysis analysis) {
 		super(analysis);
-		
-		operationSignatures = findAllElementsOfType(RepositoryPackage.eINSTANCE.getOperationSignature(), OperationSignature.class);
-		interfaces = findAllElementsOfType(RepositoryPackage.eINSTANCE.getInterface(), Interface.class);
+		this.operationSignatures = this.findAllElementsOfType(RepositoryPackage.eINSTANCE.getOperationSignature(), OperationSignature.class);
+		this.interfaces = this.findAllElementsOfType(RepositoryPackage.eINSTANCE.getInterface(), Interface.class);
 	}
 
 	@Override
 	public List<Entity> getEntities() {
 		List<Entity> result = new ArrayList<>();
-		result.addAll(operationSignatures);
-		result.addAll(interfaces);
+		result.addAll(this.operationSignatures);
+		result.addAll(this.interfaces);
 		return result;
 	}
 
 	@Override
 	public void addToAnalysis(int index) {
 		if (index < operationSignatures.size()) {
-			analysis.getUncertaintySources().addActorUncertaintyInResourceContainer(operationSignatures.get(index).getId());
+			analysis.getUncertaintySources().addActorUncertaintyInResourceContainer(this.operationSignatures.get(index).getId());
 		} else {
-			analysis.getUncertaintySources().addActorUncertaintyInResourceContainer(interfaces.get(index - operationSignatures.size()).getId());
+			analysis.getUncertaintySources().addActorUncertaintyInResourceContainer(this.interfaces.get(index - operationSignatures.size()).getId());
 		}
 	}
 
