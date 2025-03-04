@@ -8,7 +8,18 @@ import { BaseNodeImpl, BaseNodeView } from "./BaseNode";
 
 export class BranchView extends BaseNodeView {
     renderSymbol(): VNode {
-        return <g></g>
+        return <g class-sprotty-symbol={true}>
+            <line x1="15" x2="22" y1="22" y2="15"></line>
+            <line x1="29" x2="22" y2="15" y1="22"></line>
+            <line x1="29" x2="22" y2="29" y1="22"></line>
+            <line x1="15" x2="22" y2="29" y1="22"></line>
+
+            <line x1="22" x2="22" y1="15" y2="10"></line>
+            <line x1="25.5" y1="25.5" x2="30" y2="30"></line>
+            <line x1="18.5" y1="25.5" x2="14" y2="30"></line>
+
+            <text x="19" y="25" font-size="9">?</text>
+        </g>
     }
 }
 
@@ -60,7 +71,23 @@ export class ProbabilisticBranchTransitionView extends BaseBranchTransitionView 
         return <text x="40" y={model.bounds.height-10}>{model.bottomText}</text>
     }
     renderSymbol(): VNode {
-        return <g class-sprotty-symbol={true}></g>
+        return <g class-sprotty-symbol={true}>
+            <line y1="10" x1="22" y2="15" x2="14"></line>
+            <line y1="10" x1="22" y2="15" x2="30"></line>
+            <line y1="15" x1="14" x2="22" y2="20"></line>
+            <line y1="15" x1="30" y2="20" x2="22"></line>
+
+            <line y1="15" x1="14" x2="14" y2="25"></line>
+            <line y1="15" x1="30" x2="30" y2="25"></line>
+
+            <line y1="25" x1="14" y2="30" x2="22"></line>
+            <line y1="25" x1="30" y2="30" x2="22"></line>
+
+            <line y1="20" x1="22" x2="22" y2="30"></line>
+
+            <line y1="27" y2="32" x1="18" x2="13"></line>
+            <line y1="27" y2="32" x1="26" x2="31"></line>
+        </g>
     }
 }
 

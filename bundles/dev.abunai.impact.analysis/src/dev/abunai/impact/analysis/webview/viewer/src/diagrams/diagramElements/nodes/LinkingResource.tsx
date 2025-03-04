@@ -28,5 +28,3 @@ export class LinkingResourceView extends BaseNodeView {
   }
 
 } 
-
-// <rect x="10" y="10" width="24" height="24"></rect>
