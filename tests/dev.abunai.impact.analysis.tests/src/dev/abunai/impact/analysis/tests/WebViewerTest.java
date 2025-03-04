@@ -6,10 +6,10 @@ import org.junit.jupiter.api.Test;
 
 import dev.abunai.impact.analysis.webview.WebViewer;
 
-public class Temp extends TestBase {
+public class WebViewerTest extends TestBase {
 
 	@Test
-	public void executeInteractiveAnalysis() throws IOException {
+	public void executeWebViewerAnalysis() throws IOException {
 		new WebViewer(analysis).handle();
 	}
 
@@ -22,16 +22,5 @@ public class Temp extends TestBase {
 	protected String getFilesName() {
 		return "default";
 	}
-	/*
-	@Override
-	protected String getBaseFolder() {
-		return "casestudies/CaseStudy-CoronaWarnApp";
-	}
-	
-	@Override
-	protected String getFolderName() {
-		return "CoronaWarnApp";
-	}
-	//*/
 
 }
