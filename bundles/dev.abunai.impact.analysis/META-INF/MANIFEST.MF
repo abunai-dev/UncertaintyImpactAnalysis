@@ -1,9 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Uncertainty Impact Analysis
-Bundle-SymbolicName: edu.kit.kastel.dsis.uncertainty.impactanalysis
+Bundle-SymbolicName: dev.abunai.impact.analysis
 Bundle-Version: 1.0.0.qualifier
 Export-Package: dev.abunai.impact.analysis,
+ dev.abunai.impact.analysis.interactive,
  dev.abunai.impact.analysis.webview,
  dev.abunai.impact.analysis.model,
  dev.abunai.impact.analysis.model.impact,
@@ -13,8 +14,11 @@ Require-Bundle: org.eclipse.core.runtime,
  org.dataflowanalysis.analysis.pcm;bundle-version="1.0.0";visibility:=reexport,
  com.fasterxml.jackson.core.jackson-databind,
  com.fasterxml.jackson.core.jackson-core,
+ org.dataflowanalysis.pcm.extension.nodecharacteristics,
  com.fasterxml.jackson.core.jackson-annotations,
+ dev.abunai.impact.analysis.testmodels;bundle-version="1.0.0"
+ org.dataflowanalysis.analysis.pcm;bundle-version="1.0.0";visibility:=reexport,
  org.palladiosimulator.pcm
 Bundle-RequiredExecutionEnvironment: JavaSE-17
-Automatic-Module-Name: edu.kit.kastel.dsis.uncertainty.impactanalysis
+Automatic-Module-Name: dev.abunai.impact.analysis
 Bundle-ActivationPolicy: lazy
