@@ -129,7 +129,6 @@ export class SelectionManager {
 
   public load(data: string) {
     this.selections = JSON.parse(data)
-    console.log(this.selections)
     this.selectionChangedListeners.forEach(listener => listener(this.selections))
   }
 }

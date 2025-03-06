@@ -34,4 +34,5 @@ export function load(content: SGraph) {
     if (!container) return
     const localModelSource = container!.get<LocalModelSource>(TYPES.ModelSource)
     localModelSource.setModel(content)
+
 }

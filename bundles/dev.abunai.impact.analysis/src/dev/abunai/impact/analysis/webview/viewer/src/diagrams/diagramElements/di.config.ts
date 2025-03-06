@@ -4,6 +4,7 @@ import {
     configureViewerOptions,
     LocalModelSource,
     MoveCommand,
+    SetViewportCommand,
     SGraphImpl,
     SGraphView,
     SLabelImpl,
@@ -12,7 +13,7 @@ import {
     TYPES
 } from 'sprotty'
 import { TabOpenerMouseListener } from './TabOpener'
-import { MovementSaver } from './MovementSaver'
+import { MovementSaver, ZoomSaver } from './MovementSaver'
 import { InvisibleLabelImpl, InvisibleNodeImpl, InvisibleView } from './InvisibleLabel'
 
 export const diagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
@@ -28,4 +29,5 @@ export const diagramModule = new ContainerModule((bind, unbind, isBound, rebind)
         needsServerLayout: true
     })
     rebind(MoveCommand).to(MovementSaver)
+    rebind(SetViewportCommand).to(ZoomSaver)
 })

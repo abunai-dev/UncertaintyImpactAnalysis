@@ -48,7 +48,6 @@ export class CustomSelectCommand extends SelectCommand {
     }
     blockUntil?: ((action: Action) => boolean) | undefined;
     execute(context: CommandExecutionContext) {
-        console.log(this.action.selectedElementsIDs)
           if (this.action.selectedElementsIDs.length == 1) {
               SelectionManager.getInstance().selectComponent(this.action.selectedElementsIDs[0])
           }
