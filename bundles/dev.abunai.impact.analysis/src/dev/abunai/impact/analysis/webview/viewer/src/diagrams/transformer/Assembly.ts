@@ -101,7 +101,7 @@ export class AssemblyTransformer extends MapTransformer<Json.System> {
             edges.push({
                 type: EDGES.ARROW_OPEN,
                 id: edge.id,
-                targetId: edge.id + edge.assemblyContext + AbstractTransformer.generateRandomUUID(),
+                targetId: providingPort.id,
                 sourceId: edge.outerProvidedRole
             })
         }
