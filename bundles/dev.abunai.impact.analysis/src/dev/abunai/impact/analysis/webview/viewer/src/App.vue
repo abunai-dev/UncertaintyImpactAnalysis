@@ -35,13 +35,15 @@ document.onkeydown = (e: KeyboardEvent) => {
   flex-direction: row;
   background-color: var(--color-background);
   height: 100vh;
+  max-width: 100vw;
   width: 100vw;
+  overflow: hidden;
 }
 
 #diagram-tab-manager {
-  width: 100%;
   height: 100%;
   flex-grow: 1;
+  min-width: 0;
 }
 
 #sidebar-holder {

@@ -2,7 +2,7 @@
   <div id="tab-outer">
     <div id="tab-bar">
       <div id="tab-list">
-          <button @click="changeTab(idx)" class="tab" v-for="[idx, uuid] of uuids.entries()" :key="uuid + '-tab'" :class="{ selected: idx == index }">
+        <button @click="changeTab(idx)" class="tab" v-for="[idx, uuid] of uuids.entries()" :key="uuid + '-tab'" :class="{ selected: idx == index }">
           {{ tabManager.getTab(idx).name }}
           <span v-if="tabManager.getTab(idx).closable" @click="e => closeTab(idx, e)">X</span>
         </button> 
@@ -61,7 +61,9 @@ onMounted(() => {
 <style scoped>
 #tab-bar {
   display: flex;
+  overflow: hidden;
   gap: 1rem;
+  max-width: 100%;
   background-color: var(--color-primary);
 }
 
@@ -72,6 +74,10 @@ onMounted(() => {
   gap: 1rem;
   flex-grow: 1;
   overflow-x: auto;
+}
+
+#tab-list button {
+  white-space: nowrap;
 }
 
 #tab-bar-end {
@@ -102,7 +108,6 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   height: 100%;
-  width: 100%
 }
 
 #tab-content {
