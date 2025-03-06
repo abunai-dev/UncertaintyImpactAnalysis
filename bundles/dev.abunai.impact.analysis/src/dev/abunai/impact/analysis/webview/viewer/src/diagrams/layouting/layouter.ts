@@ -51,7 +51,7 @@ export class MoveDownPostProcessor implements ILayoutPostprocessor {
     private move(node: ElkNode) {
         if (node.y) {
             const sprottyNode = this.findMatching(node.id, this.graph!)
-            if (sprottyNode && !sprottyNode.type.toLocaleLowerCase().includes('transition')) {
+            if (sprottyNode && (!sprottyNode.type.toLocaleLowerCase().includes('transition') || sprottyNode.type == 'node:branch_transition')) {
                 node.y = node.y + 40
             } else {
                 return node.y - 80
@@ -62,10 +62,6 @@ export class MoveDownPostProcessor implements ILayoutPostprocessor {
                 this.move(child)
             }
         }
-    }
-
-    private getType(node: ElkNode) {
-
     }
 
     private findMatching(id: string, element: SModelElement): SModelElement | undefined {

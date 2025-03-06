@@ -1,4 +1,4 @@
-import type { SEdge, SGraph, SNode } from "sprotty-protocol";
+import type { SEdge, SGraph, SModelElement, SNode } from "sprotty-protocol";
 import { AbstractTransformer, getOfType, type ID, type JsonBase } from "./base";
 import { buildStartNode, buildStopNode } from "../diagramElements/nodes/schemes/CircularNodes";
 import { EDGES } from "../diagramElements/edges";
@@ -7,7 +7,7 @@ import { NODES } from "../diagramElements/nodes";
 import { layouter } from "../layouting/layouter";
 import { TypeRegistry } from "@/model/TypeRegistry";
 import { ArchitecturalElementTypeOptionList } from "@/model/Uncertainty/option/ArchitecturalElementTypeOptions";
-import { buildBranch, buildBranchTransition, buildEntryLevelSystemCall, buildSetVariableAction, type VariableUsage } from "../diagramElements/nodes/schemes/Seff";
+import { buildBranch, buildBranchTransition, buildBranchTransition2, buildEntryLevelSystemCall, buildSetVariableAction, type VariableUsage } from "../diagramElements/nodes/schemes/Seff";
 import { NameRegistry } from "@/model/NameRegistry";
 
 namespace Json {
@@ -52,7 +52,7 @@ namespace Json {
   export interface Branch extends ActionBase {
     type: 'Branch',
     name: string,
-    transitions: TransitionBranch[]
+    transitions: (TransitionBranch|BranchTransition)[]
   }
 
   export interface TransitionBranch extends JsonBase {
@@ -68,6 +68,19 @@ namespace Json {
   export interface GuardedTransition extends TransitionBranch {
     type: 'GuardedBranchTransition'
     condition: string
+  }
+
+  export interface BranchTransition extends JsonBase {
+    type: 'BranchTransition',
+    name: string,
+    behaviour: ScenarioBehaviour,
+    probability: number
+  }
+
+  export interface ScenarioBehaviour extends JsonBase {
+    type: 'ScenarioBehaviour',
+    name: '',
+    contents: ActionBase[]
   }
 
   export interface SetVariable extends ActionBase {
@@ -164,7 +177,7 @@ export class SeffTransformer extends AbstractTransformer<Json.ActionBase> {
     }
   }
 
-  transformBranchTransition(transition: Json.TransitionBranch): BaseNode {
+  transformBranchTransition(transition: Json.TransitionBranch|Json.BranchTransition): SModelElement {
     const transformer = new SeffTransformer()
     let type = NODES.UNCONCRETE_ACTION
     let bottomText = ''
@@ -174,7 +187,14 @@ export class SeffTransformer extends AbstractTransformer<Json.ActionBase> {
     } else if (transition.type === 'GuardedBranchTransition') {
       bottomText = (transition as Json.GuardedTransition).condition
       type = NODES.GUARDED_BRANCH_TRANSITION
-    } else {
+    } else if (transition.type === 'BranchTransition') {
+      console.log(transition)
+      const behaviour = (transition as Json.BranchTransition).behaviour
+      const a = buildBranchTransition2(transition.id, NODES.BRANCH_TRANSTION, (transition as Json.BranchTransition).probability, buildBaseNode(behaviour.id, NODES.SCENARIO_BEHAVIOUR, behaviour.name, '', transformer.transfromActions(behaviour.contents)))
+      console.log(a)
+      return a
+    } 
+    else {
       throw new Error('Unknown transition type')
     }
 

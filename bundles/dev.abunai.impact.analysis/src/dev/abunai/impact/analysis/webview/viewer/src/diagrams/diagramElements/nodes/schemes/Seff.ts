@@ -1,6 +1,6 @@
-import type { SLabel, SModelElement, SShapeElement } from "sprotty-protocol"
+import type { SLabel, SModelElement, SNode, SShapeElement } from "sprotty-protocol"
 import { NODES } from ".."
-import { type BaseNode, buildBaseNode } from "./BaseNode"
+import { type BaseNode, buildBaseNode, buildSizeLabel, buildSizeNode, getHeight, getWidth, type Sizable } from "./BaseNode"
 
 export interface EntryLevelSystemCallVariables {
   input: VariableUsage[]
@@ -45,12 +45,13 @@ export function buildSetVariableAction(id: string, type: NODES, name: string, ty
 
 
 
-export function buildBranch(id: string, type: NODES, name: string, typeName: string, transitions: BaseNode[]): BaseNode {
+export function buildBranch(id: string, type: NODES, name: string, typeName: string, transitions: SModelElement[]): BaseNode {
 
   const childSizeSum = transitions.reduce((acc, transition) => acc + getHeight(transition) + 20, 0)
+  const childSizeWidth = transitions.reduce((acc, transition) => acc + getWidth(transition) + 20, 0)
 
   return {
-    ...buildBaseNode(id, type, name, typeName, [...transitions, buildSizeNode(id, 1, childSizeSum+70)]),
+    ...buildBaseNode(id, type, name, typeName, [...transitions, buildSizeNode(id, 1, childSizeSum+70), buildSizeLabel(id, childSizeWidth)]),
   }
 }
 
@@ -75,36 +76,22 @@ export function buildBranchTransition(id: string, type: NODES, name: string, typ
   }
 }
 
-function getWidth(m: SModelElement): number {
-  return (m as unknown as Sizable).size?.width ?? 0
+export interface BranchTransition2Variables {
+  probability: number
 }
 
-function getHeight(m: SModelElement): number {
-  return (m as unknown as Sizable).size?.height ?? 0
-}
+export interface BranchTransition2 extends SNode, BranchTransition2Variables {}
 
-function buildSizeLabel(id: string, width: number): SLabel {
+export function buildBranchTransition2(id: string, type: NODES, probability: number, child: SModelElement): BranchTransition2 {
   return {
-    type: 'label:invisible',
-    id: id+'invisibleLabel',
-    text: Array.from({length: Math.ceil(width/9)}, () => '0').join(''),
-    position: {x: 0, y: 0},
-    size: {width, height: 0}
+    id,
+    type,
+    probability,
+    size: {
+      width: getWidth(child) + 20,
+      height: getHeight(child) + 60
+    },
+    children: [child]
   }
 }
 
-function buildSizeNode(id: string, width: number, height: number): SShapeElement {
-  return {
-    type: 'node:invisible',
-    id: id+'invisibleNode',
-    position: {x: 0, y: 0},
-    size: {width, height}
-  }
-}
-
-interface Sizable {
-  size?: {
-    width: number
-    height: number
-  }
-}

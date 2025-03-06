@@ -12,15 +12,47 @@ public class WebViewerTest extends TestBase {
 	public void executeWebViewerAnalysis() throws IOException {
 		new WebViewer(analysis).handle();
 	}
-
+/*
 	@Override
 	protected String getFolderName() {
 		return "BranchingOnlineShop";
 	}
-
+*/
 	@Override
 	protected String getFilesName() {
 		return "default";
 	}
+	
+	
+
+
+	@Override
+
+
+	protected String getBaseFolder() {
+
+
+		return "casestudies/CaseStudy-CoronaWarnApp";
+
+
+	}
+
+
+	
+
+
+	@Override
+
+
+	protected String getFolderName() {
+
+
+		return "CoronaWarnApp";
+
+
+	}
+
+
+	//
 
 }

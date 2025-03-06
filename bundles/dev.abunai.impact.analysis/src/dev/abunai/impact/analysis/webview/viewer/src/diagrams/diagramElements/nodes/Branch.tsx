@@ -1,7 +1,7 @@
 /** @jsx svg */
 import { ShapeView, SNodeImpl, type IViewArgs, type RenderingContext, svg } from "sprotty";
 import type { BaseNode, BaseNodeVariables } from "./schemes/BaseNode";
-import type { BranchTransitionVariables } from "./schemes/Seff";
+import type { BranchTransition2Variables, BranchTransitionVariables } from "./schemes/Seff";
 import type { VNode } from "snabbdom";
 import { getSelectionMode, SelectionModes } from "@/diagrams/selection/SelectionModes";
 import { BaseNodeImpl, BaseNodeView } from "./BaseNode";
@@ -97,5 +97,44 @@ export class GuardedBranchTransitionView extends BaseBranchTransitionView {
     }
     renderSymbol(): VNode {
         return <g class-sprotty-symbol={true}></g>
+    }
+}
+
+export class BranchTransition2Impl extends BaseNodeImpl implements BranchTransition2Variables {
+    probability: number;
+
+    get getSelection() {
+        return getSelectionMode(this.id)
+    }
+}
+
+export class BranchTransition2View extends ShapeView {
+    render(model: Readonly<BranchTransition2Impl>, context: RenderingContext, args?: IViewArgs): VNode | undefined {
+        if (!this.isVisible(model, context)) {
+            return undefined
+        }
+
+        return <g class-sprotty-node={true} class-selected-component={model.getSelection == SelectionModes.SELECTED} class-other-selected={model.getSelection == SelectionModes.OTHER}>
+            <rect width={model.bounds.width} height={model.bounds.height}></rect>
+            <text y="25" x="40">
+                { model.probability }
+            </text>
+            {this.renderSymbol()}
+            {context.renderChildren(model)}
+        </g>
+        
+    }
+
+    renderSymbol(): VNode {
+        return <g class-sprotty-symbol={true}>
+            <line x1="15" x2="22" y1="22" y2="15"></line>
+            <line x1="29" x2="22" y2="15" y1="22"></line>
+            <line x1="29" x2="22" y2="29" y1="22"></line>
+            <line x1="15" x2="22" y2="29" y1="22"></line>
+
+            <line x1="22" x2="22" y1="15" y2="10"></line>
+            <line x1="25.5" y1="25.5" x2="30" y2="30"></line>
+            <line x1="18.5" y1="25.5" x2="14" y2="30"></line>
+        </g>
     }
 }

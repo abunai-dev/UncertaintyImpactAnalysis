@@ -1,7 +1,9 @@
 package dev.abunai.impact.analysis.webview;
 
 import dev.abunai.impact.analysis.webview.jsonmodel.JsonObject;
+import dev.abunai.impact.analysis.webview.jsonmodel.ScenarioBehaviourJson;
 import dev.abunai.impact.analysis.webview.jsonmodel.seff.*;
+
 import org.palladiosimulator.pcm.core.entity.Entity;
 import org.palladiosimulator.pcm.parameter.VariableUsage;
 import org.palladiosimulator.pcm.seff.AbstractAction;
@@ -15,8 +17,11 @@ import org.palladiosimulator.pcm.seff.StartAction;
 import org.palladiosimulator.pcm.seff.StopAction;
 import org.palladiosimulator.pcm.usagemodel.AbstractUserAction;
 import org.palladiosimulator.pcm.usagemodel.EntryLevelSystemCall;
+import org.palladiosimulator.pcm.usagemodel.ScenarioBehaviour;
 import org.palladiosimulator.pcm.usagemodel.Start;
 import org.palladiosimulator.pcm.usagemodel.Stop;
+import org.palladiosimulator.pcm.usagemodel.Branch;
+import org.palladiosimulator.pcm.usagemodel.BranchTransition;
 
 class SeffTransformer implements AbstractTransformer<Entity> {
 
@@ -53,6 +58,11 @@ class SeffTransformer implements AbstractTransformer<Entity> {
 			BranchAction branchAction = (BranchAction)action;
 			return new BranchJson(branchAction.getId(), getId(branchAction.getSuccessor_AbstractAction()), branchAction.getEntityName(), 
 					branchAction.getBranches_Branch().stream().map(t -> transformBranchTransiton(t)).toList());
+		}
+		if (action instanceof Branch) {
+			Branch branch = (Branch)action;
+			return new BranchJson(branch.getId(), getId(branch.getSuccessor()), branch.getEntityName(), 
+					branch.getBranchTransitions_Branch().stream().map(t -> transformTransition(t)).toList());
 		}
 		
 		if (action instanceof SetVariableAction) {
@@ -99,5 +109,13 @@ class SeffTransformer implements AbstractTransformer<Entity> {
 		}
 		
 		throw new RuntimeException("Could not identify type of Branch Transition");
+	}
+	
+	private JsonObject transformTransition(BranchTransition transition) {
+		ScenarioBehaviour behaviour = transition.getBranchedBehaviour_BranchTransition();
+		ScenarioBehaviourJson behaviourJson = new ScenarioBehaviourJson(behaviour.getId(), "", 
+				behaviour.getActions_ScenarioBehaviour().stream().map(a -> transform(a)).toList());
+		
+		return new BranchTransitionJson(Util.generateUUID(), transition.getBranchProbability(), behaviourJson);
 	}
 }

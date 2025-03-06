@@ -1,10 +1,37 @@
 /** @jsx svg */
 import type { VNode } from "snabbdom";
-import { BaseNodeView } from "./BaseNode";
-import { svg } from "sprotty";
+import { BaseNodeImpl, BaseNodeView } from "./BaseNode";
+import { svg, type IViewArgs, type RenderingContext } from "sprotty";
+import { SelectionModes } from "@/diagrams/selection/SelectionModes";
 
 export class ScenarioBehaviourView extends BaseNodeView {
+  render(model: Readonly<BaseNodeImpl>, context: RenderingContext, args?: IViewArgs): VNode | undefined {
+      if (!this.isVisible(model, context)) {
+          return undefined
+      }
+      const symbol = this.renderSymbol()
+      symbol.data = {
+        ...symbol.data,
+        class: {
+          ...symbol.data?.class,
+          'sprotty-symbol': true
+        }
+      }
 
+      return <g class-sprotty-node={true} x={model.bounds.x} y={model.bounds.y} class-selected-component={model.getSelection == SelectionModes.SELECTED} class-other-selected={model.getSelection == SelectionModes.OTHER}>
+        <rect width={model.bounds.width} height={model.bounds.height}></rect>
+        { model.name !== '' ? [<text y="19" x="40">
+            {'<<' + model.typeName + '>>'}
+        </text>,
+        <text y="37" x="40">
+            {model.name}
+        </text>] : undefined}
+
+        {symbol}
+        {context.renderChildren(model)}
+    </g>
+  }
+  
   renderSymbol(): VNode {
     return <g>
         <polygon points="30,14 25,30 14,30 14,18"></polygon>

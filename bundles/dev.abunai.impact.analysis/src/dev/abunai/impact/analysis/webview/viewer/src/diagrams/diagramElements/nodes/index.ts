@@ -17,4 +17,5 @@ export enum NODES {
   BRANCH = 'node:branch',
   PROBABILISTIC_BRANCH_TRANSITION = 'node:probabilistic_branch_transition',
   GUARDED_BRANCH_TRANSITION = 'node:guarded_branch_transition',
+  BRANCH_TRANSTION = 'node:branch_transition',
 }

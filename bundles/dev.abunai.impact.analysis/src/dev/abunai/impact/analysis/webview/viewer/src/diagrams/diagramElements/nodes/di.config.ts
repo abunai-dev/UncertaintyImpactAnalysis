@@ -16,7 +16,7 @@ import { BasicComponentImpl, BasicComponentView, SeffSignatureImpl, SeffSignatur
 import { EntryLevelSystemCallImpl, EntryLevelSystemCallView } from "./EntryLevelSystemCall"
 import { UnconcreteActionView } from "./UnconcreteAction"
 import { SetVariableImpl, SetVariableView } from "./SetVariable"
-import { BranchTransitionImpl, BranchView, GuardedBranchTransitionView, ProbabilisticBranchTransitionView } from "./Branch"
+import { BranchTransition2Impl, BranchTransition2View, BranchTransitionImpl, BranchView, GuardedBranchTransitionView, ProbabilisticBranchTransitionView } from "./Branch"
 
 export const nodeModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     const context = { bind, unbind, isBound, rebind }
@@ -38,4 +38,5 @@ export const nodeModule = new ContainerModule((bind, unbind, isBound, rebind) =>
     configureModelElement(context, NODES.BRANCH, BaseNodeImpl, BranchView)
     configureModelElement(context, NODES.PROBABILISTIC_BRANCH_TRANSITION, BranchTransitionImpl, ProbabilisticBranchTransitionView)
     configureModelElement(context, NODES.GUARDED_BRANCH_TRANSITION, BranchTransitionImpl, GuardedBranchTransitionView)
+    configureModelElement(context, NODES.BRANCH_TRANSTION, BranchTransition2Impl, BranchTransition2View)
 })
