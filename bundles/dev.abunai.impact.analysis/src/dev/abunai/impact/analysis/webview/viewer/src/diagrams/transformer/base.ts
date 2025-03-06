@@ -10,6 +10,10 @@ export interface JsonBase {
 
 export abstract class AbstractTransformer<S extends JsonBase> {
   abstract transform(o: S[]): Promise<SGraph>
+
+  public static generateRandomUUID(): string {
+    return Math.random().toString(36).substring(0, 7)
+  }
 }
 
 export abstract class MapTransformer<S extends JsonBase> extends AbstractTransformer<S> {

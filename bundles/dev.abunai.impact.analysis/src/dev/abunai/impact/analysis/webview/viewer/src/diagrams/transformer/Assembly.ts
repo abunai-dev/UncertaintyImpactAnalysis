@@ -1,7 +1,7 @@
 import type { SEdge } from "sprotty-protocol"
 import { type BaseNode, buildBaseNode } from "../diagramElements/nodes/schemes/BaseNode"
 import type { AssemblyPort } from "../diagramElements/ports/Port"
-import { getOfType, type ID, type JsonBase, MapTransformer } from "./base"
+import { AbstractTransformer, getOfType, type ID, type JsonBase, MapTransformer } from "./base"
 import { EDGES } from "../diagramElements/edges"
 import { PORTS } from "../diagramElements/ports"
 import { NODES } from "../diagramElements/nodes"
@@ -69,12 +69,12 @@ export class AssemblyTransformer extends MapTransformer<Json.System> {
         for (const edge of getOfType<Json.AssemblyConnector>(system.contents, 'AssemblyConnector')) {
             const providingPort: AssemblyPort = {
                 type: PORTS.PROVIDING,
-                id: edge.providingAssebly + edge.id,
+                id: edge.providingAssebly + edge.id + AbstractTransformer.generateRandomUUID(),
                 name: edge.providingRole
             }
             const requieringPort: AssemblyPort = {
                 type: PORTS.REQUIRING,
-                id: edge.requiredAssembly + edge.id,
+                id: edge.requiredAssembly + edge.id + AbstractTransformer.generateRandomUUID(),
                 name: edge.requiredRole
             }
             assemblyContexts[edge.providingAssebly].children!.push(providingPort)
@@ -94,14 +94,14 @@ export class AssemblyTransformer extends MapTransformer<Json.System> {
             nameRegistry.addName(edge.id + edge.assemblyContext, 'PlaceHolderName')
             const providingPort: AssemblyPort = {
                 type: PORTS.PROVIDING,
-                id: edge.id + edge.assemblyContext,
+                id: edge.id + edge.assemblyContext + AbstractTransformer.generateRandomUUID(),
                 name: 'PlaceHolderName'
             }
             assemblyContexts[edge.assemblyContext].children!.push(providingPort)
             edges.push({
                 type: EDGES.ARROW_OPEN,
                 id: edge.id,
-                targetId: edge.id + edge.assemblyContext,
+                targetId: edge.id + edge.assemblyContext + AbstractTransformer.generateRandomUUID(),
                 sourceId: edge.outerProvidedRole
             })
         }

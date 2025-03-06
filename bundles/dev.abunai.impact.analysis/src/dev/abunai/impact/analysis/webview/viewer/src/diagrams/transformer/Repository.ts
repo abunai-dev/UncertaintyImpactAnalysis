@@ -1,5 +1,5 @@
 import type { SEdge, SModelElement, SNode } from "sprotty-protocol";
-import { FlatMapTransformer, getOfType, type ID, type JsonBase } from "./base";
+import { AbstractTransformer, FlatMapTransformer, getOfType, type ID, type JsonBase } from "./base";
 import { type ActionBase, SeffTransformer } from "./Seff";
 import { NODES } from "../diagramElements/nodes";
 import { EDGES } from "../diagramElements/edges";
@@ -77,13 +77,12 @@ export class RepositoryTransformer extends FlatMapTransformer<Json.Repository> {
         'CompositeDataType',
         dataType.signatures
       ))
-      /** Todo: label */
       for (const contained of dataType.contained)
       content.push({
         type: EDGES.ARROW_OPEN,
         sourceId: dataType.id,
         targetId: contained,
-        id: dataType.id + contained
+        id: dataType.id + contained + AbstractTransformer.generateRandomUUID()
       })
     }
     for (const component of getOfType<Json.BasicComponent>(o.contents, 'BasicComponent')) {
@@ -103,22 +102,20 @@ export class RepositoryTransformer extends FlatMapTransformer<Json.Repository> {
         'BasicComponent',
         seffs
       ))
-      /** Todo: add labels */
       for (const r of component.required) {
         content.push({
           type: EDGES.ARROW_OPEN,
           sourceId: component.id,
           targetId: r.goalInterface,
-          id: component.id + r.goalInterface + r.label
+          id: component.id + r.goalInterface + r.label + AbstractTransformer.generateRandomUUID()
         })
       }
-      /** Todo: add labels */
       for (const p of component.provided) {
         content.push({
           type: EDGES.ARROW_OPEN,
           sourceId: component.id,
           targetId: p.goalInterface,
-          id: component.id + p.goalInterface + p.label
+          id: component.id + p.goalInterface + p.label + AbstractTransformer.generateRandomUUID()
         })
       }
     }
