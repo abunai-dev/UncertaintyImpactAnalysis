@@ -18,7 +18,7 @@ export function buildBaseNode(id: string, type: NODES, name: string, typeName: s
       width: Math.max(name.length, typeName.length + 4) * 9 + 60,
       height: 80
     },
-    children: [...(children || []), buildSizeLabel(id, Math.max(name.length, typeName.length + 4) * 10 + 60)]
+    children
   }
 }
 
