@@ -1,0 +1,25 @@
+:root {
+    --color-foreground: #000;
+    --color-background: #fff;
+    --color-primary: #f5f5f5;
+    --color-error: #f00;
+    --color-selected: #000FB5;
+    --dark-mode: 0;
+}
+
+:root[data-theme="dark"] {
+    --color-foreground: #fff;
+    --color-background: #1d1c22;
+    --color-primary: #302e38;
+    --color-selected: #3A9CFF;
+    --dark-mode: 1;
+}
+
+#sprotty[data-theme='dark'] div {
+    /* Use default dark theme browser styles for scrollbars etc. inside all UI extensions */
+    color-scheme: dark;
+}
+
+* {
+    transition: background-color 0.4s, color 0.4s, fill 0.4s, stroke 0.4s, border-color 0.4s, opacity 0.4s;
+}

@@ -5,6 +5,7 @@ Bundle-SymbolicName: dev.abunai.impact.analysis
 Bundle-Version: 1.0.0.qualifier
 Export-Package: dev.abunai.impact.analysis,
  dev.abunai.impact.analysis.interactive,
+ dev.abunai.impact.analysis.webview,
  dev.abunai.impact.analysis.model,
  dev.abunai.impact.analysis.model.impact,
  dev.abunai.impact.analysis.util
@@ -15,7 +16,8 @@ Require-Bundle: org.eclipse.core.runtime,
  com.fasterxml.jackson.core.jackson-core,
  org.dataflowanalysis.pcm.extension.nodecharacteristics,
  com.fasterxml.jackson.core.jackson-annotations,
- dev.abunai.impact.analysis.testmodels;bundle-version="1.0.0"
+ dev.abunai.impact.analysis.testmodels;bundle-version="1.0.0",
+ org.palladiosimulator.pcm
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: dev.abunai.impact.analysis
 Bundle-ActivationPolicy: lazy

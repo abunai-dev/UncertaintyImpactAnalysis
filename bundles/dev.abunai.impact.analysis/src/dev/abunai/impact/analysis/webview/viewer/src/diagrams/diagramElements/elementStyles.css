@@ -1,0 +1,141 @@
+.sprotty-node rect,
+.sprotty-node ellipse,
+.sprotty-node polygon,
+.sprotty-node line,
+.sprotty-node path,
+.sprotty-node circle {
+    stroke: var(--color-foreground);
+    fill: var(--color-primary);
+    stroke-width: 1;
+}
+
+.sprotty-node text {
+    fill: var(--color-foreground)
+}
+
+.sprotty-node.selected-component > rect,
+.sprotty-node.selected-component > line {
+    stroke: var(--color-selected) 
+}
+.sprotty-node.selected-component > circle {
+    stroke: var(--color-selected);
+}
+
+.sprotty-node.selected-component > .sprotty-symbol rect,
+.sprotty-node.selected-component > .sprotty-symbol circle,
+.sprotty-node.selected-component > .sprotty-symbol ellipse,
+.sprotty-node.selected-component > .sprotty-symbol polygon,
+.sprotty-node.selected-component > .sprotty-symbol path,
+.sprotty-node.selected-component > .sprotty-symbol line {
+    stroke: var(--color-selected);
+}
+
+.sprotty-node.selected-component > .sprotty-symbol .do-fill {
+    fill: var(--color-selected);
+}
+
+.sprotty-node.selected-component > text {
+    fill: var(--color-selected)
+}
+
+
+.sprotty-node.other-selected > circle {
+    stroke-opacity: 0.5;
+    fill-opacity: 0.5;
+}
+
+.sprotty-node.other-selected > rect,
+.sprotty-node.other-selected > line {
+    stroke-opacity: 0.5;
+}
+
+.sprotty-node.other-selected > .sprotty-symbol {
+    stroke-opacity: 0.5;
+    fill-opacity: 0.5;
+}
+
+.sprotty-node.other-selected > text {
+    fill-opacity: 0.5;
+}
+
+.sprotty-port circle,
+.sprotty-port path,
+.sprotty-port line {
+    stroke: var(--color-foreground);
+    fill: none;
+    stroke-width: 1;
+}
+
+.sprotty-port text {
+    font-size: 8pt;
+    fill: var(--color-foreground)
+}
+
+.sprotty-port.selected-component circle,
+.sprotty-port.selected-component path,
+.sprotty-port.selected-component line {
+    stroke: var(--color-selected);
+}
+
+.sprotty-port.selected-component text {
+    fill: var(--color-selected)
+}
+
+.sprotty-port.other-selected circle,
+.sprotty-port.other-selected path,
+.sprotty-port.other-selected line {
+    stroke-opacity: 0.5;
+}
+
+.sprotty-port.other-selected {
+    fill-opacity: 0.5;
+}
+
+.sprotty-node text {
+    fill: var(--color-foreground);
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+}
+
+.sprotty-edge {
+    stroke: var(--color-foreground);
+    fill: none;
+    stroke-width: 1;
+}
+
+.sprotty-edge.selected-component path,
+.sprotty-edge.selected-component line,
+.sprotty-edge.selected-component polyline {
+    stroke: var(--color-selected);
+}
+
+.sprotty-edge.other-selected path,
+.sprotty-edge.other-selected line,
+.sprotty-edge.other-selected polyline {
+    stroke-opacity: 0.5;
+}
+
+rect.do-fill,	
+ellipse.do-fill, 
+polygon.do-fill, 
+line.do-fill, 
+path.do-fill,
+circle.do-fill {
+    fill: var(--color-foreground);
+}
+
+
+.always-passive rect,
+.always-passive ellipse,
+.always-passive polygon,
+.always-passive line,
+.always-passive path,
+.always-passive circle {
+    stroke-opacity: 0.5;
+    fill-opacity: 0.5;
+}
+
+.always-passive text {
+    fill-opacity: 0.5;
+}

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+        "target": "ES2019",
+        "module": "commonjs",
+        "esModuleInterop": true,
+        "sourceMap": true,
+        "experimentalDecorators": true,
+        "jsx": "react",
+        "types": ["reflect-metadata"],
+        "resolveJsonModule": true
+  },
+  "references": [
+      {
+      "path": "./tsconfig.node.json"
+      },
+      {
+      "path": "./tsconfig.app.json"
+      }
+  ],
+  "lib": ["ES2019", "DOM"]
+}
